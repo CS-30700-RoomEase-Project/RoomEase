@@ -1,4 +1,4 @@
-## RoomEase
+# RoomEase
 
 ### Team Members:
 - William Parodi
