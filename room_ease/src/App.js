@@ -1,25 +1,17 @@
-import './App.css';
-import logo from './logo.svg';
+import React from "react";
+import "./App.css";
+import BoxButton from "./components/Shared_components/Box_button"; //Import BoxButton component
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app-container flex items-center justify-center min-h-screen">
+      <div className="flex space-x-4">
+        <BoxButton width={90} height={80} redirectPage="https://example.com" numComponents = {3} />
+        <BoxButton width={90} height={80} redirectPage="https://example.com" numComponents = {3} />
+        <BoxButton width={90} height={80} redirectPage="https://example.com" numComponents={3} />
+      </div>
     </div>
   );
-}
+};
 
 export default App;
