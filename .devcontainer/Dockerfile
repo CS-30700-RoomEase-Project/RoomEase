@@ -10,6 +10,21 @@ RUN . /etc/os-release \
     && if [ "$(dpkg --print-architecture)" = "amd64" ]; then apt-get install -y mongodb-database-tools; fi \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
+# Set working directory for the dev container
+WORKDIR /workspace
+
+# Create a new directory for React and Express
+RUN mkdir -p /workspace/myapp
+
+# Set working directory to the newly created app folder
+WORKDIR /workspace/myapp
+
+# Initialize a new Node.js project
+RUN npm init -y
+
+# Install React and Express
+RUN npm install react express
+
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
 #     && apt-get -y install --no-install-recommends <your-package-list-here>
@@ -20,6 +35,3 @@ RUN . /etc/os-release \
 
 # [Optional] Uncomment if you want to install more global node modules
 # RUN su node -c "npm install -g <your-package-list-here>"
-
-
-
