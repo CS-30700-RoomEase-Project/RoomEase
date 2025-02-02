@@ -31,7 +31,6 @@ jobs:
         with:
           node-version: 14.19.0
       - run: npm install
-      - run: CI=true npm run build
       - run: rm -rf public
       - run: mv build public
       - name: Deploy to GitHub Pages
