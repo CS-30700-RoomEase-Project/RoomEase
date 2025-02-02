@@ -1,23 +1,42 @@
-name: CI/CD Pipeline
+name: CI
 
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
+      - master
       - main
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        node-version: [14.19.0]
     steps:
-    - name: Build project
-      run: npm run 
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
+      - run: CI=true npm test
 
   deploy:
-    needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
+    needs: test
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js 14.19.0
+        uses: actions/setup-node@v2
+        with:
+          node-version: 14.19.0
+      - run: npm install
+      - run: CI=true npm run build
+      - run: rm -rf public
+      - run: mv build public
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: public
