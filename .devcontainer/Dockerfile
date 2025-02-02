@@ -35,3 +35,31 @@ RUN npm install react express
 
 # [Optional] Uncomment if you want to install more global node modules
 # RUN su node -c "npm install -g <your-package-list-here>"
+<<<<<<< HEAD
+=======
+# Use the official Jenkins LTS image from Docker Hub
+FROM jenkins/jenkins:lts
+
+# Set the user to root to install additional dependencies
+USER root
+
+# Install necessary tools (e.g., git, curl, etc.)
+RUN apt-get update && \
+    apt-get install -y git curl sudo
+
+# Install the Jenkins plugins you need
+# For example, install Git plugin, Docker plugin, etc.
+RUN jenkins-plugin-cli --plugins "git docker-workflow"
+
+# Set the user back to Jenkins
+USER jenkins
+
+# Expose Jenkins default port (8080)
+EXPOSE 8080
+
+# Start Jenkins
+ENTRYPOINT ["java", "-jar", "/usr/share/jenkins/jenkins.war"]
+
+
+
+>>>>>>> daf804a8732d7b45c69af2346eb72fc3c2aef8e1
