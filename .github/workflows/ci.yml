@@ -32,7 +32,6 @@ jobs:
           node-version: 14.19.0
       - run: npm install
       - run: rm -rf public
-      - run: mv build public
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
