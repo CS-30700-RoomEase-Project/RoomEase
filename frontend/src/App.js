@@ -27,7 +27,18 @@ function App() {
       .catch(error => console.error("Error fetching data:", error));
   }, []);
 
-  return <div>{message} ON FRONTEND</div>;
+  const sendMessage = () => {
+    axios.post("http://localhost:5001/log-message", { message: "Hello from frontend" })
+      .then(response => console.log("Message sent:", response.data))
+      .catch(error => console.error("Error sending message:", error));
+  };
+
+  return (
+    <div>
+      {message} ON FRONTEND
+      <button onClick={sendMessage}>Send Message</button>
+    </div>
+  );
 }
 
 export default App;
