@@ -41,3 +41,8 @@ _(Insert Deliverables Here)_
 
 ### 1/31/25
 - Added Webhook
+
+How To Run:
+ CD into /backend and run "node App.js"
+ onf another terminal
+ CD into /frontend and run "npm start"
