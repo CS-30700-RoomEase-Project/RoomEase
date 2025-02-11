@@ -1,5 +1,5 @@
 // import React from "react";
-// import "./App.css";
+import "./App.css";
 // import BoxButton from "./components/Shared_components/Box_button"; //Import BoxButton component
 
 // const App = () => {
@@ -17,8 +17,9 @@
 // export default App;
 import axios from "axios";
 import { useEffect, useState } from "react";
+import BoxButton from "./components/Shared_components/Box_button"; //Import BoxButton component
 
-function App() {
+function MasterRoom() {
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -34,11 +35,15 @@ function App() {
   };
 
   return (
-    <div>
-      {message} ON FRONTEND
-      <button onClick={sendMessage}>Send Message</button>
+
+    <div className="app-container flex items-center justify-center min-h-screen">
+      <div className="flex space-x-4">
+        <BoxButton width={90} height={80} onClick={sendMessage} numComponents={3} />
+        <BoxButton width={90} height={80} onClick={sendMessage} numComponents = {3} />
+        <BoxButton width={90} height={80} onClick={sendMessage} numComponents={3} />
+      </div>
     </div>
   );
 }
 
-export default App;
+export default MasterRoom;
