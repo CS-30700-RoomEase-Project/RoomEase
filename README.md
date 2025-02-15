@@ -48,7 +48,7 @@ _(Insert Deliverables Here)_
 - Use Github for CD/CI
 =======
 How To Run:
- CD into /backend and run "node App.js"
+ CD into /backend and run "node Index.js"
  onf another terminal
  CD into /frontend and run "npm start"
 >>>>>>> 536550bb75bf06c7bd3f8fd1222e0f9f985d043f
