@@ -1,7 +1,7 @@
 import React from "react";
 
 //Shared button component that redirects to a specified page
-const BoxButton = ({ width, height, onClick, numComponents = 3 }) => { // 4 props: width, height, onClick, and numComponents
+const BoxButton = ({ width, height, onClick, numComponents = 3, message }) => { // 4 props: width, height, onClick, and numComponents
     // numComponents is default 3 unless something is passed in
     const handleClick = () => { // Function that calls the onClick prop
         if (typeof onClick === 'function') {
@@ -15,7 +15,7 @@ const BoxButton = ({ width, height, onClick, numComponents = 3 }) => { // 4 prop
             style={{ width: `${width / numComponents}vw`, height: `${height}vh` }} //CSS styling for the button
             onClick={handleClick} // When the button is clicked, the handleClick function is called
         >
-            Click Me {/* Text displayed on the button */}
+            {message}{/* Text displayed on the button */}
         </div>
     );
 };

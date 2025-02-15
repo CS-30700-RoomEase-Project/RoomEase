@@ -1,24 +1,30 @@
 const express = require("express");
 const cors = require("cors");
-require("dotenv").config();
+require('dotenv').config();
+const mongoose = require('mongoose');
+const userRoutes = require('./routes/userRoutes');
 
+// Initialize app after importing dependencies
 const app = express();
-const PORT = process.env.PORT || 5001;
 
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('MongoDB Connected'))
+  .catch(err => console.error('MongoDB Connection Error:', err));
+
+// Middlewares and routes
 app.use(cors());
 app.use(express.json());
+
+app.use('/api/users', userRoutes);
 
 // Test route
 app.get("/", (req, res) => {
   res.send("Express server is running");
 });
 
-app.post("/log-message", (req, res) => {
-  const { message } = req.body;
-  console.log(`Message from front end: ${message}`);
-  res.status(200).send("Message logged");
-});
-
+// Start server after app is fully initialized
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
