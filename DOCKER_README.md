@@ -19,3 +19,9 @@ Run the command to reopen in a dev container.
 Use `"docker ps"` to list any open containers.  
 If you have an open container, it will **STAY OPEN** in the background.  
 If the container is not closing, use `"docker kill <container_id>"`, where `container_id` is found using `docker ps`.
+
+<br>
+
+An optional extension to have would be the Docker extension in the extensions [tab](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker): 
+
+<img src="./images/optional_extension.png" alt="Reopen in Dev Container" width="40%">

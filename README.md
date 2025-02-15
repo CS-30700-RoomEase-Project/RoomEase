@@ -38,6 +38,10 @@ _(Insert Project Objectives Here)
 ### Project Deliverables:
 _(Insert Deliverables Here)_
 
-
 ### 1/31/25
 - Added Webhook
+
+### 2/2/25
+- Added support fo Jenkins
+- Removed failed Jenkins attempts
+- Use Github for CD/CI
