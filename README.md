@@ -41,7 +41,14 @@ _(Insert Deliverables Here)_
 ### 1/31/25
 - Added Webhook
 
+<<<<<<< HEAD
 ### 2/2/25
 - Added support fo Jenkins
 - Removed failed Jenkins attempts
 - Use Github for CD/CI
+=======
+How To Run:
+ CD into /backend and run "node App.js"
+ onf another terminal
+ CD into /frontend and run "npm start"
+>>>>>>> 536550bb75bf06c7bd3f8fd1222e0f9f985d043f
