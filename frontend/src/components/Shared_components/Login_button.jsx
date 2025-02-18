@@ -6,8 +6,8 @@ import { useNavigate } from 'react-router-dom';
 const GoogleSignIn = () => {
     const clientId = '734717984588-h621pe3pomsbae2ac69qkj16fga93fvs.apps.googleusercontent.com'; // Replace with your actual Client ID
 
-    const [username, setName] = useState(localStorage.getItem('username') || '');
-    const [userId, setId] = useState(localStorage.getItem('userId') || '');
+    const [username, setName] = useState('');
+    const [userId, setId] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -23,34 +23,36 @@ const GoogleSignIn = () => {
     const handleSubmit = async (userName, userId) => {
         setName(userName);
         setId(userId);
-
-        // Store user info in localStorage
-        localStorage.setItem('username', userName);
-        localStorage.setItem('userId', userId);
-
+    
+        // Store user info in localStorage temporarily (before backend response)
+        // localStorage.setItem('username', userName);
+        // localStorage.setItem('userId', userId);
+    
         const userData = { username: userName, userId };
         console.log("Sending request with data:", userData);
-    
+        
         try {
             const response = await fetch('http://localhost:5001/api/users/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
             });
-    
+        
             const data = await response.json();
             console.log("Response received:", data);
-    
-            if (!response.ok) {
-                throw new Error(data.message || "Failed to register user");
+        
+            if (response.ok) {
+                // Store the full user data returned from the backend in localStorage
+                localStorage.setItem('userData', JSON.stringify(data.userData)); // Store the user data here
+                navigate('/dashboard');
+            } else {
+                console.error("Error in registration:", data.message);
             }
-
-            // Redirect after successful login
-            navigate('/dashboard');
         } catch (error) {
             console.error("Error in fetch request:", error);
         }
     };
+    
 
     const onSuccess = (response) => {
         console.log('Login Success:', response);

@@ -11,12 +11,16 @@ function Register() {
      * @param {Event} e - The event object from the form submission.
      * @returns {Promise<void>} - A promise that resolves when the form submission is complete.
      */
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
+        const userName = localStorage.getItem('username');
+        const userId = localStorage.getItem('userId');
+        
+        setName(userName); // state update for UI purposes
+        setId(userId);
     
-        const userData = { name, email, password };
-        console.log("Sending request with data:", userData); // Log request payload
-    
+        const userData = { username: userName, userId };
+        console.log("Sending request with data:", userData);
+        
         try {
             const response = await fetch('http://localhost:5001/api/users/register', {
                 method: 'POST',
@@ -25,15 +29,19 @@ function Register() {
             });
     
             const data = await response.json();
-            console.log("Response received:", data); // Log response from backend
+            console.log("Response received:", data);
     
             if (!response.ok) {
                 throw new Error(data.message || "Failed to register user");
             }
+    
+            // Redirect after successful login
+            navigate('/dashboard');
         } catch (error) {
-            console.error("Error in fetch request:", error); // Log fetch errors
+            console.error("Error in fetch request:", error);
         }
     };
+    
 
     return (
         <form onSubmit={handleSubmit}>
