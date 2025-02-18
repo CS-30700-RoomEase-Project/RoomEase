@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const fs = require('fs');
 
 const router = express.Router();
 
@@ -12,7 +13,21 @@ router.post('/register', async (req, res) => {
     try {
         let user = await User.findOne({ userId });
         if (user) {
-            return res.status(400).json({ message: "User already exists" });
+            const userData = {
+                username: user.username,
+                userId: user.userId,
+                profilePic: user.profilePic,
+                contactInfo: user.contactInfo,
+                totalPoints: user.totalPoints,
+                //notifications
+                reviews: user.reviews,
+                //room Cosmetics
+                //notification settings
+                chatFilter: user.chatFilter,
+            // Add other fields as necessary
+            };
+            console.log("User data sent in response:", userData);
+            return res.status(200).json({ message: "User already exists", userData });
         }
 
         user = new User({ username, userId });
