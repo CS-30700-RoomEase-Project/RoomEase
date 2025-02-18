@@ -9,22 +9,24 @@ function Dashboard() {
   const handleLogout = () => {
     localStorage.removeItem('username');
     localStorage.removeItem('userId');
-    navigate('/register');
+    navigate('/');
   };
 
   return (
     <div className={styles.dashboardAppContainer}>
       <div className={styles.dashboardBanner}>
-        <div className={styles.signout}>
-          <BoxButton 
-            className="signout" 
-            width={8} 
-            height={8} 
-            onClick={handleLogout} 
-            numComponents={1} 
-            message={"Sign Out"} 
-          />
-        </div>
+        <BoxButton 
+          className={styles.signoutButton}  // Correct class from CSS module
+          width={8} 
+          height={8} 
+          onClick={handleLogout} 
+          numComponents={1} 
+          message={"Sign Out"} 
+        />
+      </div>
+      <div className={styles.mainContent}>
+        <h1>Welcome to the Dashboard</h1>
+        {/* Add more content here */}
       </div>
     </div>
   );

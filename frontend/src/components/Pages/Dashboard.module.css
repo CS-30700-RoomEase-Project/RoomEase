@@ -1,49 +1,53 @@
-/* .app-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    /* min-height: 100vh;
-    background-color: #f0f0f0; /* Light gray background for contrast */
-    /* padding-top: 100px; /* Add padding to prevent content from being hidden behind the banner */
-/* } */ 
-  
-/* .banner { */
-    /* width: 100vw; Full width of the viewport */
-    /* height: 100px; Adjust height as needed */
-    /* background-color: black; Solid black color */
-    /* display: flex; */
-    /* align-items: center; */
-    /* justify-content: right; */
-    /* position: absolute; Fix the banner at the top */
-    /* top: 0; Position it at the top */
-    /* left: 0; Ensure it spans the full width */
-    /* z-index: 1000; Ensure it appears above other content */
-    /* padding-right: 10vw; */
-/* } */
-  
-/* .signout {
-    color: white;
-    text-decoration: none;
-} */ 
-
-/* Dashboard.module.css */
 .dashboardAppContainer {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+    flex-direction: column; /* Ensuring column layout */
+    justify-content: top;  /* Centers the container vertically */
+    align-items: left;  /* Centers the container horizontally */
+    height: 100vh;  /* Full viewport height */
     width: 100%;
     padding: 20px;
-    overflow: hidden; 
+    overflow: hidden;
+    background-color: #f4f4f9;  /* Light background for visual clarity */
 }
 
 .dashboardBanner {
+    left: 0;
+    top: 0;
     width: 100%;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-end;  /* Aligns the signout button to the right */
+    padding: 10px;
+    background-color: black;  /* Blue background for the banner */
 }
 
-.signout {
-    margin-right: 20px;
+.signoutButton {
+    color: white;
+    background-color: #f44336; /* Red button */
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;  /* Larger font for readability */
+}
+
+/* Optional: hover effect for the button */
+.signoutButton:hover {
+    background-color: #d32f2f; /* Darker red for hover */
+}
+
+/* Adding some space and style for main content */
+.mainContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.mainContent h1 {
+    color: #333;  /* Dark text color for contrast */
 }
