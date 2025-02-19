@@ -33,8 +33,20 @@ router.post('/register', async (req, res) => {
         user = new User({ username, userId });
         await user.save();
         console.log("User saved to MongoDB:", user);
-
-        res.status(201).json({ message: "User registered successfully" });
+        const userData = {
+            username: user.username,
+            userId: user.userId,
+            profilePic: user.profilePic,
+            contactInfo: user.contactInfo,
+            totalPoints: user.totalPoints,
+            //notifications
+            reviews: user.reviews,
+            //room Cosmetics
+            //notification settings
+            chatFilter: user.chatFilter,
+        // Add other fields as necessary
+        };
+        res.status(200).json({ message: "User registered successfully", userData });
     } catch (error) {
         console.error("Error saving user:", error);
         res.status(500).json({ message: "Server error", error });
