@@ -52,7 +52,7 @@ const choreSchema = new mongoose.Schema({
 /* method to rotate to the next user */
 choreSchema.methods.switchUser = function() {
     if (this.order.length === 0) return null; // No users in the order
-
+    
     this.whoseTurn = (this.whoseTurn + 1) % this.order.length; // Move to the next user
     return this.order[this.whoseTurn]; // Return the new current user's ID
 };
