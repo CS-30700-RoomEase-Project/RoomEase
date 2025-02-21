@@ -26,7 +26,7 @@ const GoogleSignIn = () => {
     
         // Store user info in localStorage temporarily (before backend response)
         // localStorage.setItem('username', userName);
-        // localStorage.setItem('userId', userId);
+        localStorage.setItem('userId', userId);
     
         const userData = { username: userName, userId };
         console.log("Sending request with data:", userData);

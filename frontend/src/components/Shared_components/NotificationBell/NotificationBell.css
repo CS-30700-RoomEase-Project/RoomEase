@@ -1,0 +1,27 @@
+.notification-bell {
+    position: relative;
+    display: inline-block;
+    font-size: 24px;
+    height: 100px;
+    width: 100px;
+    color: #fffdfd;
+    cursor: pointer;
+}
+
+.notification-bell .bell-icon {
+    height: 100%;
+    width: 100%;
+    font-size: 24px;
+}
+
+.notification-bell .notification-count {
+    position: absolute;
+    top:  20px;
+    right: 20px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
