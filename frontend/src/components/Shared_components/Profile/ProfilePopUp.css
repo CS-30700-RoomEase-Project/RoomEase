@@ -1,0 +1,66 @@
+/* ProfilePopUp.css */
+
+/* Remove background and add dark overlay for the Popup */
+.react-popup-overlay {
+    background: rgba(0, 0, 0, 0); /* Semi-transparent dark overlay */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Ensure it covers the whole screen */
+}
+
+/* Style the modal container */
+.modal {
+    background: white;
+    width: 350px;
+    max-width: 90%;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+/* Title styling */
+.content h4 {
+    margin: 0 0 15px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Button styling */
+button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: #0056b3;
+}
+
+/* Remove outline on focus */
+button:focus {
+    outline: none;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

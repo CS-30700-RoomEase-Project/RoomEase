@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
   username: { type: String, unique: false },
   userId: { type: String, unique: true },
+  birthday: { type: String },
   profilePic: { type: String, default: 'https://www.gravatar.com/avatar/'},
   contactInfo: Number,
   totalPoints: { type: Number, default: 0 },
