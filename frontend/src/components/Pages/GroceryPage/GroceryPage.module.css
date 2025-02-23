@@ -1,6 +1,4 @@
-/* RegisterPage.module.css */
-
-.registerAppContainer {
+.appContainer {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -11,7 +9,7 @@
   overflow: hidden; 
 }
 
-.registerCard {
+.card {
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 10px;
   padding: 40px;
@@ -21,7 +19,7 @@
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-.registerTitle {
+.title {
   font-size: 2rem;
   font-weight: bold;
   margin-bottom: 15px;
@@ -36,8 +34,144 @@
   color: #ddd;
 }
 
-.picture {
-  width: 30vw;
-  height: 30vh;
+.inputBox {
+  width: 80%;
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+}
 
+.inputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.Button {
+  background-color: #bc9974;
+  color: #fff;
+  border: none;
+  padding: 3px 15px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.Button:hover {
+  background-color: #a67c52;
+}
+
+.groceryList {
+  background-color: rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+  list-style: none;
+  max-width: 100%;
+}
+
+.groceryItem {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 5px;
+  color: #ddd;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.groceryItemContent {
+  display: flex;
+  align-items: center;
+}
+
+.quantityText {
+  margin-left: 5px;
+}
+
+.quantityBox {
+  width: 20%;
+  padding: 10px;
+  margin: 5px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+.groceryItemButtons {
+  display: flex;
+  gap: 10px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.editButton {
+  display: none;
+  background-color: #bc9974;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.removeButton {
+  display: none;
+  background-color: #bc9974;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.groceryItem:hover .editButton,
+.groceryItem:hover .removeButton {
+  display: inline-block;
+}
+
+.removeButton:hover {
+  background-color: #a67c52;
+}
+
+.editButton:hover {
+  background-color: #a67c52;
+}
+
+.editContainer {
+  display: flex;
+  gap: 10px;
+}
+
+.editInput {
+  width: 25%;
+  padding: 1px 5px;
+  margin-right: 10px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.editQuantityInput {
+  width: 15%; /* Smaller width for the quantity input */
+  padding: 5px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.saveButton {
+  background-color: #2ecc71;
+}
+
+.saveButton:hover {
+  background-color: #27ae60;
+}
+
+.cancelButton {
+  background-color: #e74c3c;
+}
+
+.cancelButton:hover {
+  background-color: #c0392b;
 }
