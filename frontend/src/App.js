@@ -5,6 +5,7 @@ import './App.css';
 import Dashboard from "./components/Pages/Dashboard"; // Correct path
 // import MasterRoom from "./components/Pages/MasterRoom"; // Correct path
 import RegisterPage from "./components/Pages/RegisterPage"; // Correct path
+import Chores from "./components/Pages/Chores";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         {/* <Route path="/" element={<MasterRoom />} /> */}
         <Route path="/" element={<RegisterPage />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/chores" element={<Chores />} />
       </Routes>
     </Router>
   );
