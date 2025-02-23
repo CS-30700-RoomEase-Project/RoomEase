@@ -16,6 +16,7 @@ router.post('/register', async (req, res) => {
             const userData = {
                 username: user.username,
                 userId: user.userId,
+                birthday: user.birthday,
                 profilePic: user.profilePic,
                 contactInfo: user.contactInfo,
                 totalPoints: user.totalPoints,
