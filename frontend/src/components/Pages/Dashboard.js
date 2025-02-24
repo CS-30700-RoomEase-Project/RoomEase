@@ -20,6 +20,10 @@ function Dashboard() {
   };
   let userData = JSON.parse(localStorage.getItem('userData'));
   
+  const handleQuietHoursClick = () => {
+    navigate('/quiet-hours');
+  }
+
   const rooms = [];
   for (let i = 1; i <= 10; i++) {
     rooms.push(<RoomDoor key={i} roomName={`Room ${i}`} />);
@@ -35,9 +39,15 @@ function Dashboard() {
         <AvatarButton imageUrl={userData.profilePic}></AvatarButton>
       </div>
       <div className={styles.dashboardContent}>
+        <div className={styles.quietHoursSection} onClick={handleQuietHoursClick}>
+          <h2>Quiet Hours Settings</h2>
+          <p>Configure quiet hours for your rooms.</p>
+        </div>
+        
         <RoomCreationDoor/>
         <RoomDoor roomName="Master Room" />
         {rooms}
+        
       </div>
     </div>
   );
