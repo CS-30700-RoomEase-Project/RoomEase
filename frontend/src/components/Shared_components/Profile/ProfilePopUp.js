@@ -2,7 +2,7 @@ import React from 'react';
 import Popup from 'reactjs-popup';
 import 'reactjs-popup/dist/index.css';
 import './ProfilePopUp.css';
-
+import ProfileSettings from './ProfileSettings';
 export default function ProfilePopUp({ isOpen, onClose }) {
     const userData = JSON.parse(localStorage.getItem('userData'));
     // const profilePicture = userData ? userData.profilePic : '';
@@ -14,16 +14,17 @@ export default function ProfilePopUp({ isOpen, onClose }) {
             nested
             onClose={onClose}
             contentStyle={{
-                background: 'white', /* Modal background */
+                background:'rgba(0, 0, 0, 0)', /* Modal background */
                 width: '350px', /* Set modal width */
                 maxWidth: '90%', /* Max width for responsiveness */
                 padding: '20px', /* Padding around content */
                 borderRadius: '12px', /* Rounded corners */
-                boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', /* Shadow */
+                // boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.2)', /* Shadow */
                 textAlign: 'center', /* Center text */
+                borderColor:"rgba(0, 0, 0, 0)"
             }}
             overlayStyle={{
-                background: 'rgba(15, 14, 14, 0.5)', /* Dark semi-transparent background */
+                background: 'rgba(15, 14, 14, 0.7)', /* Dark semi-transparent background */
                 display: 'flex',
                 justifyContent: 'center', /* Center horizontally */
                 alignItems: 'center', /* Center vertically */
@@ -31,14 +32,17 @@ export default function ProfilePopUp({ isOpen, onClose }) {
             }}
         >
             <div className='modal'>
-                <div className='content'>
+                {/* <div className='content'>
                     <h4>Profile Settings</h4>
-                </div>
-                <div>
+                </div> */}
+
+                <ProfileSettings onClose={onClose}/>
+                
+                {/* <div>
                     <button onClick={onClose}>
                         Close Settings
                     </button>
-                </div>
+                </div> */}
             </div>
         </Popup>
     );
