@@ -63,9 +63,117 @@ const Chore = Task.discriminator('Chore', choreSchema);
 /* ADD NEW SUBCLASSES BELOW, FEEL FREE TO USE CHORE AS A GUIDE */
 
 
+/* Grocery subclass of Task class.*/
+const grocerySchema = new mongoose.Schema({
+    itemName: String,
+    description: String,
+    purchaser: { type: Schema.Types.ObjectId, ref: 'User' },
+    owed: [Number],
+    requesters: [String],
+    fulfilled: Boolean,
+    paid: Boolean,
+});
+
+// Get itemName
+grocerySchema.methods.getItemName = function() {
+    return this.itemName;
+};
+
+// Set itemName
+grocerySchema.methods.setItemName = function(itemName) {
+    this.itemName = itemName;
+    return this.save();
+};
+
+// Get description
+grocerySchema.methods.getDescription = function() {
+    return this.description;
+};
+
+// Set description
+grocerySchema.methods.setDescription = function(description) {
+    this.description = description;
+    return this.save();
+};
+
+// Get purchaser
+grocerySchema.methods.getPurchaser = function() {
+    return this.purchaser;
+};
+
+// Set purchaser
+grocerySchema.methods.setPurchaser = function(purchaserId) {
+    this.purchaser = purchaserId;
+    return this.save();
+};
+
+// Get owed
+grocerySchema.methods.getOwed = function() {
+    return this.owed;
+};
+
+// Set owed
+grocerySchema.methods.setOwed = function(owedArray) {
+    this.owed = owedArray;
+    return this.save();
+};
+
+// Get requesters
+grocerySchema.methods.getRequesters = function() {
+    return this.requesters;
+};
+
+// Set requesters
+grocerySchema.methods.setRequesters = function(requestersArray) {
+    this.requesters = requestersArray;
+    return this.save();
+};
+
+// Get fulfilled
+grocerySchema.methods.getFulfilled = function() {
+    return this.fulfilled;
+};
+
+// Set fulfilled
+grocerySchema.methods.setFulfilled = function(fulfilledStatus) {
+    this.fulfilled = fulfilledStatus;
+    return this.save();
+};
+
+// Get paid
+grocerySchema.methods.getPaid = function() {
+    return this.paid;
+};
+
+// Set paid
+grocerySchema.methods.setPaid = function(paidStatus) {
+    this.paid = paidStatus;
+    return this.save();
+};
+
+// Delete grocery
+grocerySchema.methods.delete = function() {   
+    return this.remove()
+}
+
+// Mark as paid
+grocerySchema.methods.markAsPaid = function() {
+    this.paid = true;
+    return this.save()
+}
+
+// Mark as fulfilled
+grocerySchema.methods.markAsFulfilled = function() {
+    this.fulfilled = true;
+    return this.save()
+}
+
+/* create model for the grocery class */
+const Grocery = Task.discriminator('Grocery', grocerySchema);
+
 /*
  * Exports the task class so it can be used in other files.
  * Update this with each new subclass of tasks
  */
-module.exports = { Task, Chore };
+module.exports = { Task, Chore, Grocery };
 
