@@ -1,9 +1,10 @@
 .modal {
     text-align: center;
+    width: 100%;
 }
 
 .inputField {
-    width: 80%;
+    max-width: 90%;
     padding: 8px;
     margin: 10px 0;
     border: 1px solid #ccc;

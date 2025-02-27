@@ -3,6 +3,7 @@ const cors = require("cors");
 require('dotenv').config();
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
+const choreRoutes = require('./routes/choreRoutes');
 
 // Initialize app after importing dependencies
 const app = express();
@@ -17,6 +18,7 @@ app.use(cors());
 app.use(express.json());
 
 app.use('/api/users', userRoutes);
+app.use('/api/chores', choreRoutes);
 
 // Test route
 app.get("/", (req, res) => {

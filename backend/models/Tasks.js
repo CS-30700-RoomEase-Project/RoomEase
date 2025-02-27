@@ -25,8 +25,7 @@ const options = { discriminatorKey: 'type', collection: 'tasks' };
 
 /* Schema for the task class */
 const taskSchema = new mongoose.Schema({
-    taskId: Number,
-    creatorId: Number
+    creatorId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 }, options);
 
 taskSchema.methods.notify = function() {
@@ -44,7 +43,8 @@ const Task = mongoose.model('Task', taskSchema)
  * and finally we turn the schema into a model
  */
 const choreSchema = new mongoose.Schema({
-    order: [{ type: Schema.Types.objectID, ref: 'User'}], //establishes order as an array of users
+    choreName: String,
+    order: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User'}], //establishes order as an array of users
     description: String,
     whoseTurn: Number
 });
@@ -67,7 +67,7 @@ const Chore = Task.discriminator('Chore', choreSchema);
 const grocerySchema = new mongoose.Schema({
     itemName: String,
     description: String,
-    purchaser: { type: Schema.Types.ObjectId, ref: 'User' },
+    purchaser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     owed: [Number],
     requesters: [String],
     fulfilled: Boolean,
