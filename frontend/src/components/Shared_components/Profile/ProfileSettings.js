@@ -4,19 +4,19 @@ import { useState } from "react"
 import "./ProfileSettings.css"
 
 const ProfileSettings = ({ onClose }) => {
-  // Load data from localStorage
   const storedData = JSON.parse(localStorage.getItem("userData")) || {}
 
-  // State to manage form fields
   const [userData, setUserData] = useState({
     username: storedData.username || "",
-    // userId: storedData.userId || "",
     chatFilter: storedData.chatFilter || false,
     profilePic: storedData.profilePic || "",
     totalPoints: storedData.totalPoints || 0,
+    contactInfo: storedData.contactInfo || 1111111111,
+    reviews: storedData.reviews || [],
+    userId: storedData.userId || "",
+    birthday: storedData.birthday || "01/01/2000",
   })
 
-  // Handle input changes
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
     setUserData((prevState) => ({
@@ -25,12 +25,35 @@ const ProfileSettings = ({ onClose }) => {
     }))
   }
 
-  // Save updated data to localStorage
-  const handleSave = () => {
-    localStorage.setItem("userData", JSON.stringify(userData))
-    alert("Profile settings saved!")
-  }
-
+  const handleSave = async () => {
+    localStorage.setItem("userData", JSON.stringify(userData));
+    alert("Profile settings saved!");
+  
+    try {
+      const response = await fetch("http://localhost:5001/api/users/profile/updateProfile", {
+        method: "POST",  // POST method to send data
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),  // Send userData as JSON in the request body
+      });
+      
+  
+      // Check if the response is OK (status 200)
+      if (!response.ok) {
+        console.error(`Error: ${response.status} - ${response.statusText}`);
+        alert("Server responded with an error.");
+        return;
+      }
+  
+      // Attempt to parse the response as JSON
+      const data = await response.json();
+      alert("Profile updated successfully!");
+      localStorage.setItem("userData", JSON.stringify(data.userData));  // Save updated data to localStorage
+    } catch (error) {
+      console.error("Error in the fetch request:", error);
+      alert("An error occurred while sending the profile data.");
+    }
+  };
+  
   return (
     <div className="modal">
       <div className="content">
@@ -38,12 +61,24 @@ const ProfileSettings = ({ onClose }) => {
 
         <div className="input-group">
           <label htmlFor="username">Username:</label>
-          <input type="text" id="username" name="username" value={userData.username} onChange={handleChange} />
+          <input
+            type="text"
+            id="username"
+            name="username"
+            value={userData.username}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="input-group">
           <label htmlFor="profilePic">Profile Picture URL:</label>
-          <input type="text" id="profilePic" name="profilePic" value={userData.profilePic} onChange={handleChange} />
+          <input
+            type="text"
+            id="profilePic"
+            name="profilePic"
+            value={userData.profilePic}
+            onChange={handleChange}
+          />
         </div>
 
         <div className="input-group">
@@ -70,11 +105,6 @@ const ProfileSettings = ({ onClose }) => {
           />
         </div>
 
-        {/* <div className="input-group">
-          <label htmlFor="userId">User ID:</label>
-          <input type="text" id="userId" name="userId" value={userData.userId} readOnly className="read-only" />
-        </div> */}
-
         <div className="button-group">
           <button className="save-button" onClick={handleSave}>
             Save Settings
@@ -89,4 +119,3 @@ const ProfileSettings = ({ onClose }) => {
 }
 
 export default ProfileSettings
-
