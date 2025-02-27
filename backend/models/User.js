@@ -3,9 +3,9 @@ const mongoose = require('mongoose');
 const UserSchema = new mongoose.Schema({
   username: { type: String, unique: false },
   userId: { type: String, unique: true },
-  birthday: { type: String },
+  birthday: { type: String, default: '01/01/2000' },
   profilePic: { type: String, default: 'https://www.gravatar.com/avatar/'},
-  contactInfo: Number,
+  contactInfo: {type: Number, default: 1111111111},
   totalPoints: { type: Number, default: 0 },
   //notifications
   reviews: { type: Array, default: [] },

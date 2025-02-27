@@ -38,6 +38,7 @@ router.post('/register', async (req, res) => {
             username: user.username,
             userId: user.userId,
             profilePic: user.profilePic,
+            birthday: user.birthday,
             contactInfo: user.contactInfo,
             totalPoints: user.totalPoints,
             //notifications

@@ -14,9 +14,17 @@ const AvatarButton = ({ imageUrl }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('username');
+    const userData = {
+      userId: "",
+      username: "",
+      profilePic: "",
+      reviews: [],
+      totalPoints: 0
+    };
+    localStorage.setItem('userData', JSON.stringify(userData));
     localStorage.removeItem('userId');
-    localStorage.removeItem('profilePic');
+    // localStorage.removeItem('username');
+    // localStorage.removeItem('profilePic');
     navigate('/');
   };
 

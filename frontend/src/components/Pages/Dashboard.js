@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
 import AvatarButton from "../Shared_components/AvatarButton/AvatarButton";
-import RoomDoor from "../Shared_components/RoomDoors/RoomDoor.js";
+import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
 import RoomCreationDoor from "../Shared_components/RoomDoors/RoomCreationDoor.js";
+import RoomDoor from "../Shared_components/RoomDoors/RoomDoor.js";
 import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 
 /**
@@ -12,12 +12,12 @@ import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 function Dashboard() {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('username');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('profilePic');
-    navigate('/');
-  };
+  // const handleLogout = () => {
+    // localStorage.setItem('username', "");
+    // localStorage.removeItem('userId');
+  //   localStorage.removeItem('profilePic');
+  //   navigate('/');
+  // };
   let userData = JSON.parse(localStorage.getItem('userData'));
   
   const handleQuietHoursClick = () => {
