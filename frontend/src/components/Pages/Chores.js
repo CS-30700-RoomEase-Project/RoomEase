@@ -7,6 +7,7 @@ function Chores() {
     const navigate = useNavigate();
     const [isChorePopupOpen, setChorePopupOpen] = useState(false);
     const [chores, setChores] = useState([]); // Store fetched chores
+    const [selectedChore, setSelectedChore] = useState(null); // Track selected chore for editing
 
     // Fetch chores from API
     const fetchChores = async () => {
@@ -25,37 +26,45 @@ function Chores() {
         fetchChores();
     }, []);
 
-    //delete chore when delete button clicked
+    // Delete chore when delete button clicked
     const handleDeleteChore = async (choreId) => {
         try {
-            const response = await fetch(`http://localhost:5001/api/chores/${choreId}`, {
+            const response = await fetch(`http://localhost:5001/api/chores/delete/${choreId}`, {
                 method: "DELETE",
             });
-    
+
             if (!response.ok) throw new Error("Failed to delete chore");
-    
+
             setChores(prevChores => prevChores.filter(chore => chore._id !== choreId));
         } catch (error) {
             console.error("Error deleting chore:", error);
         }
         fetchChores();
     };
-    
 
     const handleGoToRoom = () => {
         navigate('/Room');
     };
 
+    // Open popup for adding a new chore
     const handleNewChore = () => {
+        setSelectedChore(null); // Ensure no chore is selected (new chore mode)
+        setChorePopupOpen(true);
+    };
+
+    // Open popup for editing a chore
+    const handleEditChore = (chore) => {
+        setSelectedChore(chore); // Set selected chore for editing
         setChorePopupOpen(true);
     };
 
     const closeChorePopup = () => {
         setChorePopupOpen(false);
+        setSelectedChore(null); // Reset selected chore when closing
     };
 
-    const handleChoreAdded = () => {
-        fetchChores(); // Refresh the chores list after adding a new chore
+    const handleChoreSaved = () => {
+        fetchChores(); // Refresh the chores list after adding or editing
         closeChorePopup(); // Close the popup
     };
 
@@ -72,13 +81,18 @@ function Chores() {
             </div>
 
             <div className={styles.list}>
-                {chores.map((chore, index) => (
+                {chores.map((chore) => (
                     <div key={chore._id} className={styles.listItem}>
                         <span>{chore.choreName}</span>
                         <span>{chore.description}</span>
-                        <span>{chore.whoseTurn}</span>
+                        <span>{chore.order[chore.whoseTurn].username}</span>
                         <div className={styles.buttonContainer}>
-                            <button className={styles.editButton}>edit</button>
+                            <button 
+                                className={styles.editButton} 
+                                onClick={() => handleEditChore(chore)}
+                            >
+                                edit
+                            </button>
                             <button 
                                 className={styles.deleteButton}
                                 onClick={() => handleDeleteChore(chore._id)}
@@ -90,7 +104,12 @@ function Chores() {
                 ))}
             </div>
 
-            <ChorePopup isOpen={isChorePopupOpen} onClose={closeChorePopup} onChoreAdded={handleChoreAdded} />
+            <ChorePopup 
+                isOpen={isChorePopupOpen} 
+                onClose={closeChorePopup} 
+                onChoreSaved={handleChoreSaved} 
+                chore={selectedChore} 
+            />
         </div>
     );
 }

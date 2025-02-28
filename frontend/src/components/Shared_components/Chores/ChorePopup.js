@@ -1,13 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import styles from "./ChorePopup.module.css"; // Create a new CSS file for styling
 
-const ChorePopup = ({ isOpen, onClose }) => {
+const ChorePopup = ({ isOpen, onClose, chore }) => {
 
     const [choreName, setChoreName] = useState("");
     const [choreDescription, setChoreDescription] = useState("");
     const [orderOfTurns, setOrderOfTurns] = useState("");
     const [firstTurn, setFirstTurn] = useState("");
+
+    // Populate state if chore exists (Editing Mode)
+    useEffect(() => {
+        if (chore) {
+            setChoreName(chore.choreName || "");
+            setChoreDescription(chore.description || "");
+            setOrderOfTurns(chore.order ? chore.order.map(ObjectId => ObjectId.username).join(", ") : "");
+            setFirstTurn(chore.order[chore.whoseTurn].username || "");
+        } else {
+            // Reset fields if adding a new chore
+            setChoreName("");
+            setChoreDescription("");
+            setOrderOfTurns("");
+            setFirstTurn("");
+        }
+    }, [chore]);
+
 
     // Function to handle form submission
     const handleAddChore = async () => {
@@ -20,19 +37,31 @@ const ChorePopup = ({ isOpen, onClose }) => {
         console.log(choreData)
 
         try {
-            const response = await fetch('http://localhost:5001/api/chores/addChore', { // Replace with your actual server URL
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(choreData),
-            });
+            let response;
+            if (chore) {
+                console.log("attempting update")
+                // If chore exists, update it (PUT request)
+                choreData.id = chore._id;
+                response = await fetch(`http://localhost:5001/api/chores/updateChore/${chore.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(choreData),
+                });
+            } else {
+                console.log("making new")
+                // If chore doesn't exist, create a new one (POST request)
+                response = await fetch('http://localhost:5001/api/chores/addChore', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(choreData),
+                });
+            }
 
             if (response.ok) {
-                alert("Chore added successfully!");
-                onClose(); // Close the popup after successful submission
+                alert(chore ? "Chore updated successfully!" : "Chore added successfully!");
+                onClose();
             } else {
-                alert("Failed to add chore. Please try again.");
+                alert("Failed to save chore. Please try again.");
             }
         } catch (error) {
             console.error("Error:", error);
@@ -64,7 +93,7 @@ const ChorePopup = ({ isOpen, onClose }) => {
             }}
         >
             <div className={styles.modal}>
-                <h4>Add a New Chore</h4>
+                <h4>{chore ? "Edit Chore" : "Add a New Chore"}</h4>
                 <input 
                     type="text" 
                     placeholder="Chore Name" 
@@ -81,7 +110,7 @@ const ChorePopup = ({ isOpen, onClose }) => {
                 />
                 <input 
                     type='text' 
-                    placeholder="Order of turns (ex. John, Will, Krish...)" 
+                    placeholder="Order of turns: ex. John, Will, Krish..." 
                     className={styles.inputField} 
                     value={orderOfTurns}
                     onChange={(e) => setOrderOfTurns(e.target.value)}
@@ -93,7 +122,7 @@ const ChorePopup = ({ isOpen, onClose }) => {
                     value={firstTurn}
                     onChange={(e) => setFirstTurn(e.target.value)}
                 />
-                <button className={styles.addButton} onClick={handleAddChore}>Add</button>
+                <button className={styles.addButton} onClick={handleAddChore}>{chore ? "update" : "add"}</button>
                 <button className={styles.cancelButton} onClick={onClose}>Cancel</button>
             </div>
         </Popup>

@@ -57,6 +57,22 @@ choreSchema.methods.switchUser = function() {
     return this.order[this.whoseTurn]; // Return the new current user's ID
 };
 
+choreSchema.methods.setChoreName = function(name) {
+    this.choreName = name;
+}
+
+choreSchema.methods.setOrder = function(order) {
+    this.order = order;
+}
+
+choreSchema.methods.setDescription = function(description) {
+    this.description = description;
+}
+
+choreSchema.methods.setWhoseTurn = function(turn) {
+    this.whoseTurn = turn;
+}
+
 /* create model for the chore class using the discriminator and the schema */
 const Chore = Task.discriminator('Chore', choreSchema);
 
