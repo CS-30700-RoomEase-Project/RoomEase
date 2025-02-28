@@ -1,20 +1,28 @@
 /* Ensure overlay for ProfilePopUp covers the entire screen */
 .profile-popup-overlay {
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.7) !important;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
-    position: fixed;
+    height: 100vh !important;
+    width: 100vw !important;
+    position: fixed !important;
     top: 0;
     left: 0;
-    z-index: 1000;
+    z-index: 2000 !important; /* Ensure it's above everything */
 }
 
-/* Ensure only ProfilePopUp modal is centered */
+/* Remove default reactjs-popup styles */
+.popup-content {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* Center modal and content */
 .profile-popup-content {
-    background: #333;
+    background: #333 !important;
     width: 350px;
     max-width: 90%;
     padding: 20px;
@@ -23,6 +31,21 @@
     text-align: center;
     position: relative;
     animation: fadeIn 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Remove unnecessary styling from modal */
+.modal {
+    background: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Fade-in animation */
@@ -49,12 +72,13 @@
     cursor: pointer;
 }
 
-/* Ensure the profile settings modal fits well within the avatar button layout */
+/* Center the profile settings content */
 .profile-settings-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 15px;
+    width: 100%;
 }
 
 /* Styling for buttons inside the ProfilePopUp */
@@ -84,4 +108,38 @@
 
 .profile-popup-cancel:hover {
     background-color: rgb(220, 50, 50);
+}
+
+/* Center input fields and labels */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 90%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #777;
+    background: #222;
+    color: white;
+    text-align: center;
+}
+
+/* Button group centering */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px;
 }

@@ -95,19 +95,40 @@ const ProfileSettings = ({ onClose }) => {
         </div>
 
         <div className="input-group">
-          <label htmlFor="totalPoints">Total Points:</label>
+          <label htmlFor="contactInfo">Phone Number:</label>
           <input
-            type="number"
-            id="totalPoints"
-            name="totalPoints"
-            value={userData.totalPoints}
-            onChange={handleChange}
-          />
-        </div>
+            type="text"
+            id="contactInfo"
+            name="contactInfo"
+            value={(userData.contactInfo ?? "").toString().replace(/(\d{3})(\d{3})(\d{4})/, "$1-$2-$3")}
+            onChange={(e) => {
+              const formattedValue = e.target.value.replace(/\D/g, "").slice(0, 10);
+              handleChange({ target: { name: "contactInfo", value: formattedValue } });
+            }}
+            />
+          </div>
 
-        <div className="button-group">
-          <button className="save-button" onClick={handleSave}>
-            Save Settings
+          <div className="input-group">
+            <label htmlFor="birthday">Birthday:</label>
+            <input
+            type="text"
+            id="birthday"
+            name="birthday"
+            value={userData.birthday.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$1/$2/$3")}
+            onChange={(e) => {
+              const formattedValue = e.target.value.replace(/\D/g, "").slice(0, 8);
+              const month = formattedValue.slice(0, 2);
+              const day = formattedValue.slice(2, 4);
+              const year = formattedValue.slice(4, 8);
+              const newValue = `${month}/${day}/${year}`;
+              handleChange({ target: { name: "birthday", value: newValue } });
+            }}
+            />
+          </div>
+
+          <div className="button-group">
+            <button className="save-button" onClick={() => { handleSave(); onClose(); }}>
+            Save
           </button>
           <button className="close-button" onClick={onClose}>
             Close
