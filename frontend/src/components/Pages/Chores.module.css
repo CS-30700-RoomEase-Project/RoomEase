@@ -102,8 +102,19 @@
     gap: 8px; /* Adds spacing between buttons */
 }
 
+.markButton {
+    width: 30%;
+    border-radius: 10%;
+    color: white;
+    background-color: green;
+}
+
+.markButton:hover {
+    background-color: greenyellow;
+}
+
 .editButton {
-    width: 50%;
+    width: 30%;
     border-radius: 10%;
     color: white;
     background-color: green;
@@ -114,7 +125,7 @@
 }
 
 .deleteButton {
-    width: 50%;
+    width: 30%;
     border-radius: 10%;
     color: white;
     background-color: maroon;

@@ -26,6 +26,25 @@ function Chores() {
         fetchChores();
     }, []);
 
+    // Mark chore as complete and switch to next person
+    const handleMarkAsComplete = async (chore) => {
+        try {
+            const nextTurn = (chore.whoseTurn + 1) % chore.order.length; // Cycle to the next person
+            
+            const response = await fetch(`http://localhost:5001/api/chores/markComplete/${chore._id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ whoseTurn: nextTurn })
+            });
+            
+            if (!response.ok) throw new Error("Failed to mark chore as complete");
+            
+            setChores(prevChores => prevChores.map(c => c._id === chore._id ? { ...c, whoseTurn: nextTurn } : c));
+        } catch (error) {
+            console.error("Error marking chore as complete:", error);
+        }
+    };
+
     // Delete chore when delete button clicked
     const handleDeleteChore = async (choreId) => {
         try {
@@ -87,6 +106,12 @@ function Chores() {
                         <span>{chore.description}</span>
                         <span>{chore.order[chore.whoseTurn].username}</span>
                         <div className={styles.buttonContainer}>
+                            <button
+                                className={styles.markButton}
+                                onClick={() => handleMarkAsComplete(chore)}
+                            >
+                                "Mark as complete"
+                            </button>
                             <button 
                                 className={styles.editButton} 
                                 onClick={() => handleEditChore(chore)}

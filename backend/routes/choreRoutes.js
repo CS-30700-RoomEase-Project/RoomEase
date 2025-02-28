@@ -3,6 +3,30 @@ const router = express.Router();
 const { Chore } = require('../models/Tasks'); // Import Chore model
 const User = require('../models/User'); // Import User model
 
+// Route to mark a chore as complete and switch to the next person
+router.put('/markComplete/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { whoseTurn } = req.body;
+
+        const chore = await Chore.findById(id);
+        if (!chore) {
+            return res.status(404).json({ message: "Chore not found" });
+        }
+
+        // Update whoseTurn to the next person
+        chore.whoseTurn = whoseTurn;
+        await chore.save();
+
+        res.status(200).json({ message: "Chore marked as complete and assigned to next person", chore });
+    } catch (error) {
+        console.error("Error marking chore as complete:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+});
+
+
+
 //route to update a chore by id
 router.put('/updateChore/:id', async (req, res) => {
     console.log("making update");
