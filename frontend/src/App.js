@@ -27,6 +27,18 @@ function App() {
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />
+
+        {/* Grocery page route */}
+        <Route path="/grocery" element={<GroceryPage />} />
+
+        {/* Quiet Hours Settings route */}
+        <Route path="/quiet-hours" element={<QuietHoursSettings />} />
+
+        {/* Bills/Expenses Settings route */}
+        <Route path="/bills" element={<BillsExpenses/>} />
+
+        {/* Redirect from any other route to the home page (optional) */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );
