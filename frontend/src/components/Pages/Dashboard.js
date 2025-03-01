@@ -25,7 +25,7 @@ function Dashboard() {
   }
 
   const rooms = [];
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 4; i++) {
     rooms.push(<RoomDoor key={i} roomName={`Room ${i}`} />);
   }
 

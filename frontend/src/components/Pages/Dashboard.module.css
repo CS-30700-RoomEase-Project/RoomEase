@@ -1,73 +1,351 @@
-.dashboardAppContainer {
+@keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideInFromTop {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes pulseGlow {
+    0% {
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    }
+    50% {
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.4);
+    }
+    100% {
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3);
+    }
+  }
+  
+  @keyframes gradientShift {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  .dashboardAppContainer {
     display: flex;
-    flex-direction: column; /* Ensuring column layout */
-    justify-content: top;  /* Centers the container vertically */
-    align-items: left;  /* Centers the container horizontally */
-    height: 100vh;  /* Full viewport height */
-    width: 100%;  /* Full viewport width */
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
     overflow: auto;
     overflow-x: hidden;
-    background: linear-gradient(to right, #bc9974, #f7e4d2);
-    box-sizing: border-box;  /* Ensures padding and border are included in width */
+    background: linear-gradient(to bottom, #a6825d, #735d45);
+    background-size: 300% 300%;
+    animation: gradientShift 10s ease-in-out infinite alternate;
+    color: #f5f5f5;
+    box-sizing: border-box;
+    transition: all 0.5s ease-in-out;
+}
+
+/* Animated Background */
+@keyframes gradientShift {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 100% 100%; }
 }
 
 .dashboardBanner {
     display: flex;
-    justify-content: space-between; /* Spreads items apart */
-    align-items: center;  /* Centers items vertically */
+    justify-content: space-between;
+    align-items: center;
     width: 100%;
-    padding: 10px;
-    background: rgba(219, 149, 20, 0.495); 
-    box-sizing: border-box;
+    padding: 15px 25px;
+    background: rgba(51, 28, 11, 0.9);
+    box-shadow: 0px 6px 16px rgba(0, 0, 0, 0.6);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    transition: background 0.3s ease, transform 0.3s ease;
+}
+
+/* Navbar Hover Effect */
+.dashboardBanner:hover {
+    background: rgba(51, 28, 11, 1);
+    transform: scale(1.01);
 }
 
 .dashboardContent {
-    flex-grow: 1;  /* Takes up remaining space */
-    padding: 30px;
+    flex-grow: 1;
+    padding: 40px;
     margin: 0 auto;
     width: 90%;
-    margin-right: 100px;
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));  /* Responsive grid */
-    row-gap: 60px;  /* Adds space between grid items vertically */
-    column-gap: 40px;  /* Adds less space between grid items horizontally */
-    box-sizing: border-box;  /* Ensures padding and border are included in width */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 50px;
+    box-sizing: border-box;
+    animation: fadeIn 0.8s ease-out forwards;
 }
 
-.signoutButton {
+/* Fade-in effect */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Card Styling */
+.dashboardCard {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Card Hover Effect */
+.dashboardCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.4);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .dashboardContent {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    }
+}
+
+  .card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: calc(0.1s * var(--index, 0));
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .card:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+  }
+  
+  .cardContent {
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .signoutButton {
     color: white;
-    background-color: #f44336; /* Red button */
+    background: linear-gradient(135deg, #ff4b2b, #ff416c); /* Modern red gradient */
+    background-size: 200% 200%;
+    animation: gradientShift 3s ease infinite;
     border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
+    padding: 12px 24px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;  /* Larger font for readability */
-}
-
-/* Optional: hover effect for the button */
-.signoutButton:hover {
-    background-color: #d32f2f; /* Darker red for hover */
-}
-
-/* Adding some space and style for main content */
-.mainContent {
+    font-size: 16px;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0px 4px 8px rgba(255, 65, 108, 0.4);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .signoutButton:hover {
+    background: linear-gradient(135deg, #d32f2f, #b71c1c);
+    box-shadow: 0px 6px 12px rgba(255, 65, 108, 0.6);
+    transform: translateY(-2px);
+  }
+  
+  .signoutButton:active {
+    transform: translateY(1px);
+    box-shadow: 0px 2px 6px rgba(255, 65, 108, 0.4);
+  }
+  
+  .signoutButton::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 5px;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.5);
+    opacity: 0;
+    border-radius: 100%;
+    transform: scale(1, 1) translate(-50%);
+    transform-origin: 50% 50%;
+  }
+  
+  .signoutButton:focus:not(:active)::after {
+    animation: ripple 1s ease-out;
+  }
+  
+  @keyframes ripple {
+    0% {
+      transform: scale(0, 0);
+      opacity: 0.5;
+    }
+    100% {
+      transform: scale(20, 20);
+      opacity: 0;
+    }
+  }
+  
+  /* Sleek main content styling */
+  .mainContent {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin: 30px auto;
+    padding: 25px;
+    background: #181818; /* Deep black card-like background */
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
     box-sizing: border-box;
-}
-
-.mainContent h1 {
-    color: #333;  /* Dark text color for contrast */
-}
-
-.header {
+    width: 85%;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeIn 1s ease-out forwards;
+    animation-delay: 0.3s;
+    transition: all 0.4s ease;
+  }
+  
+  .mainContent:hover {
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.7);
+    transform: translateY(-5px);
+  }
+  
+  .mainContent h1 {
+    color: #e0e0e0; /* Softer white for readability */
+    position: relative;
+    padding-bottom: 10px;
+  }
+  
+  .mainContent h1::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, #ff416c, #ff4b2b);
+    transition: width 0.6s ease;
+  }
+  
+  .mainContent:hover h1::after {
+    width: 100%;
+  }
+  
+  .mainContent p {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeIn 0.8s ease-out forwards;
+    animation-delay: 0.8s;
+  }
+  
+  .header {
     flex-grow: 1;
     text-align: center;
-}
+    font-size: 22px;
+    font-weight: bold;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .header::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.5), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+  }
+  
+  .dashboardBanner:hover .header::before {
+    transform: translateX(100%);
+  }
+  
+  /* Add animation for each card with staggered delay */
+  .dashboardContent > *:nth-child(1) {
+    --index: 1;
+  }
+  .dashboardContent > *:nth-child(2) {
+    --index: 2;
+  }
+  .dashboardContent > *:nth-child(3) {
+    --index: 3;
+  }
+  .dashboardContent > *:nth-child(4) {
+    --index: 4;
+  }
+  .dashboardContent > *:nth-child(5) {
+    --index: 5;
+  }
+  .dashboardContent > *:nth-child(6) {
+    --index: 6;
+  }
+  .dashboardContent > *:nth-child(7) {
+    --index: 7;
+  }
+  .dashboardContent > *:nth-child(8) {
+    --index: 8;
+  }
+  .dashboardContent > *:nth-child(9) {
+    --index: 9;
+  }
+  .dashboardContent > *:nth-child(10) {
+    --index: 10;
+  }
+  .dashboardContent > *:nth-child(11) {
+    --index: 11;
+  }
+  .dashboardContent > *:nth-child(12) {
+    --index: 12;
+  }
+  
+  /* Add loading animation */
+  @keyframes shimmer {
+    0% {
+      background-position: -200% 0;
+    }
+    100% {
+      background-position: 200% 0;
+    }
+  }
+  
+  .loading {
+    background: linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.05) 25%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0.05) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+  
+  
