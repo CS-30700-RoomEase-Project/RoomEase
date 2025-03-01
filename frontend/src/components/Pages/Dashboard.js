@@ -36,7 +36,7 @@ function Dashboard() {
           <h1>{userData.username}'s Rooms</h1>
         </div>
         <NotificationBell></NotificationBell>
-        <AvatarButton imageUrl={userData.profilePic}></AvatarButton>
+        <AvatarButton></AvatarButton>
       </div>
       <div className={styles.dashboardContent}>
         <div className={styles.quietHoursSection} onClick={handleQuietHoursClick}>

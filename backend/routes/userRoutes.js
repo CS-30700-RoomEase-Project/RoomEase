@@ -55,4 +55,53 @@ router.post('/register', async (req, res) => {
     }
 });
 
+router.post('/createRoom', async (req, res) => {
+    const { userId, roomName, settings,  } = req.body;
+
+    console.log("Received data:", { userId }); // Add this log for debugging
+
+    try {
+        let user = await User
+            .findOne({ userId })
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        const newRoom = new Room({ roomName, settings });
+        newRoom.roomId = newRoom._id;
+        await newRoom.save();
+        console.log("Room saved to MongoDB:", newRoom);
+        user.rooms.push(newRoom._id);
+        await user.save();
+        res.status(200).json({ message: "Room created successfully", room: newRoom });
+    }
+    catch (error) {
+        console.error("Error saving user:", error);
+        res.status(500).json({ message: "Server error", error });
+    }
+});
+
+router.get('/getRoom', async( req, res) => {
+    const { roomId, userId } = req.body;
+    try {
+        // Find the room
+        let room = await Room.findOne({
+            roomId
+        });
+
+        // Check if the room exists
+        if (!room) {
+            return res.status(404).json({ message: "Room not found" });
+        }
+        res.status(200).json({ message: "Room found", room });
+
+        // Check if the user is in the room, send the data if they are
+        if (room.users.includes(userId)) {
+            return res.status(200).json({ message: "User is in the room", room });
+        } else {
+            return res.status(404).json({ message: "Access Denied: User is not a member of this room" });
+        }
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error });
+    }
+});
 module.exports = router;

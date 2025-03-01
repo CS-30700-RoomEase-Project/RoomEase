@@ -2,6 +2,7 @@
     display: flex;
     min-width: fit-content;
     margin-right: 50px;
+    animation: fadeIn 1.5s ease-in-out;
   }
   
   .circularImage {

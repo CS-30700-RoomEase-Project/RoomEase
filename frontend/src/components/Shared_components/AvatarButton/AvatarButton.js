@@ -4,10 +4,13 @@ import Popup from 'reactjs-popup';
 import ProfilePopUp from '../Profile/ProfilePopUp';
 import './AvatarButton.css';
 
-const AvatarButton = ({ imageUrl }) => {
+const AvatarButton = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+
+  /* Get the User data to find the avatar image */
+  let userData = JSON.parse(localStorage.getItem('userData'));
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
@@ -39,7 +42,7 @@ const AvatarButton = ({ imageUrl }) => {
         trigger={
           <div className='container'>
             <img
-              src={imageUrl}
+              src={userData.profilePic}
               alt="Profile"
               className='circularImage'
               onClick={toggleDropdown}
