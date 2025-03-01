@@ -1,0 +1,38 @@
+.modal {
+    text-align: center;
+}
+
+.inputField {
+    width: 80%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+.addButton {
+    background-color: green;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.addButton:hover {
+    background-color: greenyellow;
+}
+
+.cancelButton {
+    background-color: maroon;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.cancelButton:hover {
+    background-color: red;
+}

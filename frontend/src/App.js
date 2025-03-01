@@ -3,6 +3,7 @@ import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router-d
 import "./App.css";
 import Dashboard from "./components/Pages/Dashboard"; // Correct path
 import RegisterPage from "./components/Pages/RegisterPage"; // Correct path
+import Chores from "./components/Pages/Chores";
 import GroceryPage from "./components/Pages/GroceryPage/GroceryPage";
 import QuietHoursSettings from "./components/Pages/QuietHoursSettings/QuietHoursSettings"; // Uncommented import
 import BillsExpenses from "./components/Pages/BillsExpenses";
@@ -16,6 +17,16 @@ function App() {
 
         {/* Dashboard route */}
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/chores" element={<Chores />} />
+
+        {/* Grocery page route */}
+        <Route path="/grocery" element={<GroceryPage />} />
+
+        {/* Quiet Hours Settings route */}
+        <Route path="/quiet-hours" element={<QuietHoursSettings />} />
+
+        {/* Redirect from any other route to the home page (optional) */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>
   );
