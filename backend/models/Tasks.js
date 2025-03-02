@@ -178,11 +178,16 @@ const Grocery = Task.discriminator('Grocery', grocerySchema);
 const billSchema = new mongoose.Schema({
     title: { type: String, required: true },
     amount: { type: Number, required: true },
-    dueDate: { type: Date }
+    dueDate: { type: Date },
+    responsible: { type: String }
 });
 
 billSchema.methods.getFormattedDueDate = function() {
     return this.dueDate ? this.dueDate.toLocaleDateString() : "No due date";
+};
+
+billSchema.methods.getResponsible = function() {
+    return this.responsible;
 };
 
 const Bill = Task.discriminator('Bill', billSchema);
