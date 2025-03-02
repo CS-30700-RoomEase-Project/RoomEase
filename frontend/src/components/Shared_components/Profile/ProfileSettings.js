@@ -27,7 +27,7 @@ const ProfileSettings = ({ onClose }) => {
 
   const handleSave = async () => {
     localStorage.setItem("userData", JSON.stringify(userData));
-    alert("Profile settings saved!");
+    // alert("Profile settings saved!");
   
     try {
       const response = await fetch("http://localhost:5001/api/users/profile/updateProfile", {
@@ -46,14 +46,15 @@ const ProfileSettings = ({ onClose }) => {
   
       // Attempt to parse the response as JSON
       const data = await response.json();
-      alert("Profile updated successfully!");
+      // alert("Profile updated successfully!");
       localStorage.setItem("userData", JSON.stringify(data.userData));  // Save updated data to localStorage
     } catch (error) {
       console.error("Error in the fetch request:", error);
       alert("An error occurred while sending the profile data.");
     }
+
+    window.location.reload();  // Force reload all React components
   };
-  
   return (
     <div className="modal">
       <div className="content">
