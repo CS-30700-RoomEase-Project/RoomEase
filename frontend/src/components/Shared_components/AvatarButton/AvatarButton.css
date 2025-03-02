@@ -34,10 +34,9 @@
     font-size: 16px;  /* Larger font for readability */
     border: none;
     color: white;
-  }
-  display: flex;
-  min-width: fit-content;
-  margin-right: 50px;
+    display: flex;
+    min-width: fit-content;
+    margin-right: 50px;
 }
 
 .circularImage {
