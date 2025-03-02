@@ -25,7 +25,7 @@ function Dashboard() {
   }
 
   const rooms = [];
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 4; i++) {
     rooms.push(<RoomDoor key={i} roomName={`Room ${i}`} />);
   }
 
@@ -38,17 +38,28 @@ function Dashboard() {
         <NotificationBell></NotificationBell>
         <AvatarButton imageUrl={userData.profilePic}></AvatarButton>
       </div>
-      <div className={styles.dashboardContent}>
+      <div className={styles.dashboardContent}> 
+        <RoomCreationDoor/>
+        <RoomDoor roomName="Master Room" />
+        {rooms}
         <div className={styles.quietHoursSection} onClick={handleQuietHoursClick}>
           <h2>Quiet Hours Settings</h2>
           <p>Configure quiet hours for your rooms.</p>
         </div>
-        
-        <RoomCreationDoor/>
-        <RoomDoor roomName="Master Room" />
-        {rooms}
-        
       </div>
+      <footer className={styles.footer}>
+        <p>© 2025 RoomEase. All rights reserved.</p>
+        <p>
+          <a href="/privacy-policy" className={styles.footerLink}>
+            Privacy Policy
+          </a>{" "}
+          |{" "}
+          <a href="/terms-of-service" className={styles.footerLink}>
+            Terms of Service
+          </a>
+        </p>
+      </footer>
+
     </div>
   );
 }
