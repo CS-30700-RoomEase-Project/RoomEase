@@ -50,15 +50,16 @@ function Dashboard() {
       <footer className={styles.footer}>
         <p>© 2025 RoomEase. All rights reserved.</p>
         <p>
-          <a href="#" className={styles.footerLink}>
+          <a href="/privacy-policy" className={styles.footerLink}>
             Privacy Policy
           </a>{" "}
           |{" "}
-          <a href="#" className={styles.footerLink}>
+          <a href="/terms-of-service" className={styles.footerLink}>
             Terms of Service
           </a>
         </p>
       </footer>
+
     </div>
   );
 }
