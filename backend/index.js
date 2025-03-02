@@ -4,6 +4,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const updateProfileRoutes = require('./routes/updateProfileRoutes');
+const billsRoutes = require('./routes/billsRoutes'); 
 
 // Initialize app after importing dependencies
 const app = express();
@@ -25,6 +26,7 @@ app.use(cors({
 // Use different routes to avoid conflict
 app.use('/api/users', userRoutes); // For user-related routes
 app.use('/api/users/profile', updateProfileRoutes); // For profile update routes
+app.use('/api/bills', billsRoutes); // For bills/expenses routes
 
 // Test route
 app.get("/", (req, res) => {

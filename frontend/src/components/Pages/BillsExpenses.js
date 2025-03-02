@@ -21,7 +21,7 @@ const BillsExpenses = () => {
 
   // Fetch existing bills/expenses on mount
   useEffect(() => {
-    fetch('http://localhost:5000/api/bills')
+    fetch('http://localhost:5001/api/bills')
       .then((res) => res.json())
       .then((data) => setBills(data))
       .catch((err) => console.error(err));
@@ -35,13 +35,22 @@ const BillsExpenses = () => {
   // Handle form submission to add a new bill/expense
   const handleSubmit = (e) => {
     e.preventDefault();
+  
+    // Parse the dueDate as a local date
+    const dueDateValue = formData.dueDate
+      ? (() => {
+          const [year, month, day] = formData.dueDate.split('-');
+          return new Date(year, month - 1, day); // month is zero-indexed
+        })()
+      : null;
+  
     const newBill = {
       title: formData.title,
       amount: parseFloat(formData.amount),
-      dueDate: formData.dueDate ? new Date(formData.dueDate) : null,
+      dueDate: dueDateValue,
     };
-
-    fetch('http://localhost:5000/api/bills', {
+  
+    fetch('http://localhost:5001/api/bills', { // Ensure the correct port is used
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newBill),
@@ -53,6 +62,15 @@ const BillsExpenses = () => {
       })
       .catch((err) => console.error(err));
   };
+  
+
+  // Create a sorted copy of bills by due date
+  const sortedBills = bills.slice().sort((a, b) => {
+    if (!a.dueDate && !b.dueDate) return 0;
+    if (!a.dueDate) return 1;
+    if (!b.dueDate) return -1;
+    return new Date(a.dueDate) - new Date(b.dueDate);
+  });
 
   return (
     <div className={styles.billsAppContainer}>
@@ -114,7 +132,7 @@ const BillsExpenses = () => {
         {/* List of all bills/expenses */}
         <h3>All Bills & Expenses</h3>
         <ul className={styles.billList}>
-          {bills.map((bill) => (
+          {sortedBills.map((bill) => (
             <li key={bill._id} className={styles.billItem}>
               <strong>{bill.title}</strong> - ${bill.amount}
               {bill.dueDate && (
