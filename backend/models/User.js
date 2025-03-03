@@ -9,6 +9,7 @@ const UserSchema = new mongoose.Schema({
   totalPoints: { type: Number, default: 0 },
   //notifications
   reviews: { type: Array, default: [] },
+  rooms: { type: Array, default: [] },
   //room Cosmetics
   //notification settings
   chatFilter: { type: Boolean, default: false },

@@ -10,12 +10,6 @@ const GoogleSignIn = () => {
     const [userId, setId] = useState('');
     const navigate = useNavigate();
 
-    useEffect(() => {
-        if (userId) {
-            navigate('/dashboard'); // Redirect if already signed in
-        }
-    }, [userId, navigate]);
-
     const onFailure = (error) => {
         console.error('Login Failed:', error);
     };
@@ -44,7 +38,7 @@ const GoogleSignIn = () => {
             if (response.ok) {
                 // Store the full user data returned from the backend in localStorage
                 localStorage.setItem('userData', JSON.stringify(data.userData)); // Store the user data here
-                navigate('/dashboard');
+                navigate(`/dashboard`);
             } else {
                 console.error("Error in registration:", data.message);
             }
