@@ -1,129 +1,80 @@
 .container {
-    max-width: 600px;
-    margin: 0 auto;
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .currentSettings {
-    background-color: #f9f9f9;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-  }
-  
-  .currentSettings h2 {
-    margin-top: 0;
-  }
-  
-  .form {
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 8px;
-  }
-  
-  .formGroup {
-    margin-bottom: 15px;
-  }
-  
-  .formGroup label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-  }
-  
-  .formGroup input,
-  .formGroup select {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
-  }
-  
-  .submitButton {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .submitButton:hover {
-    background-color: #0056b3;
-  }
-  
-  .dashboardAppContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: top;
-    align-items: left;
-    height: 100vh;
-    width: 100%;
-    overflow: auto;
-    overflow-x: hidden;
-    background: linear-gradient(to right, #bc9974, #f7e4d2);
-    box-sizing: border-box;
-  }
-  
-  .dashboardBanner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    padding: 10px;
-    background: rgba(219, 149, 20, 0.495);
-    box-sizing: border-box;
-  }
-  
-  .dashboardContent {
-    flex-grow: 1;
-    padding: 30px;
-    margin: 0 auto;
-    width: 90%;
-    margin-right: 100px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-    row-gap: 60px;
-    column-gap: 40px;
-    box-sizing: border-box;
-  }
-  
-  .signoutButton {
-    color: white;
-    background-color: #f44336;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .signoutButton:hover {
-    background-color: #d32f2f;
-  }
-  
-  .mainContent {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    box-sizing: border-box;
-  }
-  
-  .mainContent h1 {
-    color: #333;
-  }
-  
-  .header {
-    flex-grow: 1;
-    text-align: center;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  height: 100vh;
+  width: 100%;
+  background: linear-gradient(to right, #bc9974, #f7e4d2);
+}
+
+.roomState,
+.noState {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.roomState h2,
+.noState h2 {
+  color: #bc9974;
+}
+
+.roomState p {
+  font-size: 1.1rem;
+  margin: 10px 0;
+}
+
+.clearButton {
+  padding: 10px 20px;
+  background-color: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.clearButton:hover {
+  background-color: #c0392b;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+  background-color: rgba(40, 38, 38, 0.8);
+  border-radius: 8px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup label {
+  font-weight: bold;
+}
+
+.formGroup input,
+.formGroup select {
+  padding: 8px;
+  margin-top: 5px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.submitButton {
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submitButton:hover {
+  background-color: #0056b3;
+}
