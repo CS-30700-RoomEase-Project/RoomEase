@@ -173,8 +173,28 @@ grocerySchema.methods.markAsFulfilled = function() {
 const Grocery = Task.discriminator('Grocery', grocerySchema);
 
 /*
+    Bills Subclass of Task class
+*/
+const billSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    amount: { type: Number, required: true },
+    dueDate: { type: Date },
+    responsible: { type: String }
+});
+
+billSchema.methods.getFormattedDueDate = function() {
+    return this.dueDate ? this.dueDate.toLocaleDateString() : "No due date";
+};
+
+billSchema.methods.getResponsible = function() {
+    return this.responsible;
+};
+
+const Bill = Task.discriminator('Bill', billSchema);
+
+/*
  * Exports the task class so it can be used in other files.
  * Update this with each new subclass of tasks
  */
-module.exports = { Task, Chore, Grocery };
+module.exports = { Task, Chore, Grocery, Bill };
 
