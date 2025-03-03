@@ -15,7 +15,7 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
     const formatDateForDisplay = (isoDate) => {
         if (!isoDate) return "";
         const date = new Date(isoDate);
-        return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+        return `${(date.getUTCMonth() + 1).toString().padStart(2, '0')}/${date.getUTCDate().toString().padStart(2, '0')}/${date.getUTCFullYear()}`;
     };
 
     // Populate state if chore exists (Editing Mode)
@@ -40,6 +40,15 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
 
     // Function to handle form submission
     const handleAddChore = async () => {
+        // Attempt to parse the due date
+        const parsedDate = new Date(dueDate);
+        
+        // Check if dueDate is valid
+        if (!dueDate || isNaN(parsedDate.getTime())) {
+            alert("Please enter a valid due date.");
+            return;
+        }
+
         const choreData = {
             name: choreName,
             description: choreDescription,
@@ -108,6 +117,7 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
         >
             <div className={styles.modal}>
                 <h4>{chore ? "Edit Chore" : "Add a New Chore"}</h4>
+                <h6>Chore Name</h6>
                 <input 
                     type="text" 
                     placeholder="Chore Name" 
@@ -115,6 +125,7 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
                     value={choreName}
                     onChange={(e) => setChoreName(e.target.value)}
                 />
+                <h6>Chore Description</h6>
                 <input 
                     type="text" 
                     placeholder="Chore description" 
@@ -122,6 +133,7 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
                     value={choreDescription}
                     onChange={(e) => setChoreDescription(e.target.value)}   
                 />
+                <h6>Order of Turns</h6>
                 <input 
                     type='text' 
                     placeholder="Order of turns: ex. John, Will, Krish..." 
@@ -129,6 +141,7 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
                     value={orderOfTurns}
                     onChange={(e) => setOrderOfTurns(e.target.value)}
                 />
+                <h6>Who goes first?</h6>
                 <input 
                     type='text' 
                     placeholder="Whose turn is it first?" 
@@ -136,6 +149,7 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
                     value={firstTurn}
                     onChange={(e) => setFirstTurn(e.target.value)}
                 />
+                <h6>When is it due?</h6>
                 <input 
                     type='text' 
                     placeholder="Due Date (MM/DD/YYYY)" 
@@ -143,6 +157,7 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
                     value={dueDate}
                     onChange={(e) => setDueDate(e.target.value)}
                 />
+                <h6>After how many days should it be due again? <br /> (0 for non recurring)</h6>
                 <input 
                     type='number' 
                     placeholder="Recurring Days (0 for non-recurring)" 

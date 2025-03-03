@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
 import AvatarButton from "../Shared_components/AvatarButton/AvatarButton";
-import RoomDoor from "../Shared_components/RoomDoors/RoomDoor.js";
+import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
 import RoomCreationDoor from "../Shared_components/RoomDoors/RoomCreationDoor.js";
+import RoomDoor from "../Shared_components/RoomDoors/RoomDoor.js";
 import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 
 /**
@@ -12,21 +12,15 @@ import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 function Dashboard() {
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('username');
-    localStorage.removeItem('userId');
-    localStorage.removeItem('profilePic');
-    navigate('/');
-  };
-  let userData = JSON.parse(localStorage.getItem('userData'));
+  const userData = JSON.parse(localStorage.getItem('userData'));
   
   const handleQuietHoursClick = () => {
     navigate('/quiet-hours');
   }
 
-  const rooms = [];
-  for (let i = 1; i <= 10; i++) {
-    rooms.push(<RoomDoor key={i} roomName={`Room ${i}`} />);
+  function getRoom(roomId) {
+    localStorage.setItem('roomData', roomId);
+    navigate(`/room/${roomId}`);
   }
 
   return (
@@ -36,19 +30,38 @@ function Dashboard() {
           <h1>{userData.username}'s Rooms</h1>
         </div>
         <NotificationBell></NotificationBell>
-        <AvatarButton imageUrl={userData.profilePic}></AvatarButton>
+        <AvatarButton></AvatarButton>
       </div>
-      <div className={styles.dashboardContent}>
+      <div className={styles.dashboardContent}> 
+        <RoomCreationDoor/>
+        <RoomDoor roomName="Master Room" />
+
+        {userData.rooms.map((room) => (
+          <RoomDoor
+            key={room._id}
+            roomName={room.roomName}
+            onClick={() => getRoom(room._id)}
+          />
+        ))}
+
         <div className={styles.quietHoursSection} onClick={handleQuietHoursClick}>
           <h2>Quiet Hours Settings</h2>
           <p>Configure quiet hours for your rooms.</p>
         </div>
-        
-        <RoomCreationDoor/>
-        <RoomDoor roomName="Master Room" />
-        {rooms}
-        
       </div>
+      <footer className={styles.footer}>
+        <p>© 2025 RoomEase. All rights reserved.</p>
+        <p>
+          <a href="/privacy-policy" className={styles.footerLink}>
+            Privacy Policy
+          </a>{" "}
+          |{" "}
+          <a href="/terms-of-service" className={styles.footerLink}>
+            Terms of Service
+          </a>
+        </p>
+      </footer>
+
     </div>
   );
 }

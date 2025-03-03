@@ -5,10 +5,12 @@
     transform: translate(-50%, -50%);
     z-index: 1000;
     background-color: rgba(0, 0, 0, 0);
+    
   }
   
   .content {
-    background-color: white;
+    background-color: rgba(0, 0, 0, 0.7);
+    overflow: hidden;
     padding: 2rem;
     border-radius: 12px;
     content: left;
@@ -30,7 +32,7 @@
   }
   
   h4 {
-    color: #333;
+    color: #e7e7e7;
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
     text-align: center;
@@ -43,7 +45,7 @@
   label {
     display: block;
     margin-bottom: 0.5rem;
-    color: #555;
+    color: #e7e7e7;
     font-weight: 500;
   }
   
@@ -101,12 +103,12 @@
   }
   
   .save-button:hover {
-    background-color: #45a049;
+    background-color: #bcfebf;
   }
   
   .close-button {
-    background-color: #f8f9fa;
-    color: #333;
+    background-color: #b56565;
+    color: #ffffff;
   }
   
   .close-button:hover {
