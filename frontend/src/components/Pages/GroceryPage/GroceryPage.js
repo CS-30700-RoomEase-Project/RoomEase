@@ -11,7 +11,8 @@ function GroceryPage() {
 
   const addItem = () => {
     if (input.trim() !== "" && quantity > 0 && quantity <= 999) {
-      setItems([...items, { name: input, quantity, purchased: false }]);
+      // Added a note property to each new item.
+      setItems([...items, { name: input, quantity, purchased: false, note: "" }]);
       setInput("");
       setQuantity(1);
     }
@@ -30,6 +31,7 @@ function GroceryPage() {
 
   const togglePurchased = (index) => {
     const updatedItems = [...items];
+    // Toggle purchased state, which in turn controls the insert box visibility.
     updatedItems[index].purchased = !updatedItems[index].purchased;
     setItems(updatedItems);
   };
@@ -55,11 +57,18 @@ function GroceryPage() {
     }
   };
 
+  // Function to update the note for a specific item.
+  const updateNote = (index, note) => {
+    const updatedItems = [...items];
+    updatedItems[index].note = note;
+    setItems(updatedItems);
+  };
+
   return (
     <div className={styles.appContainer}>
       <div className={styles.card}>
         <h2 className={styles.title}>Grocery List</h2>
-        <p className={styles.registerDescription}>
+        <p className={styles.groceryTitleDescription}>
           A shared grocery list to add and track items easily.
         </p>
 
@@ -91,19 +100,13 @@ function GroceryPage() {
         <ul className={styles.groceryList}>
           <h3 className={styles.title}>Items</h3>
           {items.map((item, index) => (
-            <li key={index} className={styles.groceryItem} style={{ position: "relative" }}>
-              {/* Purchase Button placed absolutely outside the groceryItem box */}
+            <li key={index} className={styles.groceryItem}>
+              {/* Purchase Button positioned on the left */}
               <button
                 onClick={() => togglePurchased(index)}
                 className={styles.purchaseButton}
-                style={{
-                  position: "absolute",
-                  left: "-40px",
-                  top: "50%",
-                  transform: "translateY(-50%)"
-                }}
               >
-                {item.purchased ? "✔" : "□"}
+                {item.purchased && <span className={styles.checkmark}>✔</span>}
               </button>
               <div
                 className={styles.groceryItemContent}
@@ -170,6 +173,18 @@ function GroceryPage() {
                   </>
                 )}
               </div>
+              {/* Conditionally render the insert box when the item is marked as purchased */}
+              {item.purchased && (
+                <div className={styles.insertBox}>
+                  <input
+                    type="text"
+                    value={item.note}
+                    onChange={(e) => updateNote(index, e.target.value)}
+                    placeholder="Cost Amount"
+                    className={styles.inputBox}
+                  />
+                </div>
+              )}
             </li>
           ))}
         </ul>

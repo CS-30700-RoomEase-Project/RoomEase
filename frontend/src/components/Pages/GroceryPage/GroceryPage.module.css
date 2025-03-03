@@ -22,12 +22,12 @@
 .title {
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   letter-spacing: 2px;
   color: #bc9974;
 }
 
-.registerDescription {
+.groceryTitleDescription {
   font-size: 1rem;
   margin-bottom: 30px;
   opacity: 0.9;
@@ -53,7 +53,7 @@
   color: #fff;
   padding: 3px 15px;
   cursor: pointer;
-  font-size : 11.5px;
+  font-size: 11.5px;
 }
 
 .Button:hover {
@@ -72,7 +72,7 @@
 .groceryItem {
   background-color: rgba(255, 255, 255, 0.2);
   padding: 10px;
-  margin: 5px 0;
+  margin: 8px 0;
   border-radius: 5px;
   color: #ddd;
   display: flex;
@@ -144,7 +144,6 @@
   margin-right: 120px; /* Added margin to prevent overlap with buttons */
 }
 
-
 .editInput {
   width: 80%;
   padding: 5px !important;
@@ -183,10 +182,37 @@
 }
 
 .purchaseButton {
-  padding: 4px 10px;
+  position: absolute;
+  left: -30px;
+  top: 25%;
+  transform: translateY(10%);
+  width: 20px !important;
+  height: 20px !important;
+  border: 2px solid #bc9974;
+  border-radius: 3px;
   background-color: transparent;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 !important;
+  box-sizing: border-box;
+}
+
+.checkmark {
+  font-size: 2.2rem;
   color: #bc9974;
+  position: relative;
+  top: -5px;
+}
+
+/* New style for the insert box */
+.insertBox {
+  position: absolute;
+  left: 100%;
+  width: 100px !important;
+  margin-left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px;
+  border-radius: 5px;
 }
