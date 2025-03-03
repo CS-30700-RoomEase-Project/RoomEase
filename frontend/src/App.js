@@ -6,6 +6,7 @@ import RegisterPage from "./components/Pages/RegisterPage"; // Correct path
 import Chores from "./components/Pages/Chores";
 import GroceryPage from "./components/Pages/GroceryPage/GroceryPage";
 import QuietHoursSettings from "./components/Pages/QuietHoursSettings/QuietHoursSettings"; // Uncommented import
+import BillsExpenses from "./components/Pages/BillsExpenses";
 
 function App() {
   return (
@@ -23,6 +24,18 @@ function App() {
 
         {/* Quiet Hours Settings route */}
         <Route path="/quiet-hours" element={<QuietHoursSettings />} />
+
+        {/* Redirect from any other route to the home page (optional) */}
+        <Route path="*" element={<Navigate to="/" />} />
+
+        {/* Grocery page route */}
+        <Route path="/grocery" element={<GroceryPage />} />
+
+        {/* Quiet Hours Settings route */}
+        <Route path="/quiet-hours" element={<QuietHoursSettings />} />
+
+        {/* Bills/Expenses Settings route */}
+        <Route path="/bills" element={<BillsExpenses/>} />
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />
