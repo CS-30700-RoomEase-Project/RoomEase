@@ -1,7 +1,42 @@
 .container {
-  display: flex;
-  min-width: fit-content;
-  margin-right: 50px;
+    display: flex;
+    min-width: fit-content;
+    margin-right: 50px;
+    animation: fadeIn 1.5s ease-in-out;
+  }
+  
+  .circularImage {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    display: block;
+    cursor: pointer;
+    object-fit : cover;
+    
+  }
+  
+  .dropdown {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 80px;
+    box-shadow: 0px 4px 6px rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    z-index: 1;
+  }
+  
+  .dropdownItem {
+    width: 120px;
+    height: 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgb(107, 96, 76);
+    font-size: 16px;  /* Larger font for readability */
+    border: none;
+    color: white;
+    display: flex;
+    min-width: fit-content;
+    margin-right: 50px;
 }
 
 .circularImage {
