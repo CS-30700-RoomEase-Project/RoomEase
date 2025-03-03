@@ -35,6 +35,7 @@ router.post("/updateProfile", async (req, res) => {
             totalPoints: user.totalPoints,
             reviews: user.reviews,
             chatFilter: user.chatFilter,
+            rooms: user.rooms
         };
 
         console.log("Updated user data:", updatedUserData); // Ensure the user data is being sent back
