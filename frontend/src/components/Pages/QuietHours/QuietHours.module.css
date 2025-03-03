@@ -1,0 +1,124 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(to right, #bc9974, #f7e4d2);
+  box-sizing: border-box;
+  color: #333;
+}
+
+.currentSettings {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.currentSettings h2 {
+  color: red; /* Red color for "Current Quiet Hours" */
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 10px;
+}
+
+.formGroup label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.formGroup input,
+.formGroup select {
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.selectAndInput {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.addLevelContainer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.customLevelInput {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  width: 150px;
+}
+
+.addLevelButton {
+  padding: 5px 10px;
+  background-color: #bc9974;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.addLevelButton:hover {
+  background-color: #a67c52;
+}
+
+.submitButton {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  width: 100%;
+}
+
+.submitButton:hover {
+  background-color: #0056b3;
+}
+
+/* Styling for the container of the time format buttons */
+.timeFormatContainer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+/* Styling for the time format buttons */
+.timeFormatButton {
+  padding: 10px 20px;
+  background-color: #f7e4d2;
+  color: black;
+  border: 2px solid #bc9974;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+}
+
+/* Active button state (when selected) */
+.timeFormatButton.active {
+  background-color: #bc9974;
+  color: white;
+}
+
+.timeFormatButton:hover {
+  background-color: #a67c52;
+}

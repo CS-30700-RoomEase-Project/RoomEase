@@ -1,0 +1,125 @@
+/* Chores.module.css */
+
+
+
+.choresAppContainer {
+    position:fixed;
+    top:0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    background-color: antiquewhite;
+    height: 100vh;
+    padding: 20px;
+}
+
+
+.choresHeader {
+    display: flex;
+    justify-content: center; /* Center the header */
+    align-items: center;
+    width: 100%;
+    position: relative;
+    margin-bottom: 0; /* Space between header and list */
+    
+}
+
+.addChore {
+    width:15%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: green;
+    border-radius: 5px;
+    height:80%;
+}
+
+.addChore:hover {
+    background-color: yellowgreen;
+}
+
+
+.titleText {
+    margin-left: 25%;
+    margin-right: 25%;
+    width: 20%;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    border-color: black;
+    background-color: antiquewhite;
+    border-radius: 5px;
+}
+
+
+.logoutButton {
+    color:white;
+    background-color: maroon; /* Optional: Style adjustments */
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15%;
+    height: 80%;
+}
+
+.logoutButton:hover {
+    background-color: red;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    overflow-y: auto; /* Enables vertical scrolling */
+    background-color: white;
+    border: 1px solid #ccc;
+    padding-top: 2%;
+    padding-bottom: 3%;
+    padding-left: 2%;
+    padding-right: 2%;
+    gap: 2%;
+}
+
+
+.listItem {
+    display: flex;
+    justify-content: space-between; /* Pushes buttons to the right */
+    align-items: center; /* Align items vertically */
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    height: 10%;
+}
+
+.buttonContainer {
+    display: flex;
+    gap: 8px; /* Adds spacing between buttons */
+}
+
+.editButton {
+    width: 50%;
+    border-radius: 10%;
+    color: white;
+    background-color: green;
+}
+
+.editButton:hover {
+    background-color: greenyellow;
+}
+
+.deleteButton {
+    width: 50%;
+    border-radius: 10%;
+    color: white;
+    background-color: maroon;
+}
+
+.deleteButton:hover {
+    background-color: red;
+}
