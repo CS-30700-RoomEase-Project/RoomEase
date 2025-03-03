@@ -1,128 +1,218 @@
-.container {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: Arial, sans-serif;
-}
-
-.currentSettings {
-  background-color: #f9f9f9;
-  padding: 15px;
-  border-radius: 8px;
-  margin-bottom: 20px;
-}
-
-.currentSettings h2 {
-  margin-top: 0;
-}
-
-.form {
-  background-color: #f9f9f9;
-  padding: 20px;
-  border-radius: 8px;
-}
-
-.formGroup {
-  margin-bottom: 15px;
-}
-
-.formGroup label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-.formGroup input,
-.formGroup select {
-  width: 100%;
-  padding: 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 16px;
-}
-
-.submitButton {
-  background-color: #007bff;
-  color: white;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.submitButton:hover {
-  background-color: #0056b3;
-}
-
-.dashboardAppContainer {
+.appContainer {
   display: flex;
-  flex-direction: column;
-  justify-content: top;
-  align-items: left;
+  justify-content: center;
+  align-items: center;
   height: 100vh;
   width: 100%;
-  overflow: auto;
-  overflow-x: hidden;
-  background: linear-gradient(to right, #bc9974, #f7e4d2);
-  box-sizing: border-box;
+  padding: 20px;
+  background: black; 
+  overflow: hidden; 
 }
 
-.dashboardBanner {
+.card {
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+  color: #bc9974;
+}
+
+.groceryTitleDescription {
+  font-size: 1rem;
+  margin-bottom: 30px;
+  opacity: 0.9;
+  color: #ddd;
+}
+
+.inputBox {
+  width: 80%;
+  padding: 5px !important;
+  margin: 10px 0;
+  border-radius: 5px;
+}
+
+.inputContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.Button {
+  background-color: #bc9974;
+  color: #fff;
+  padding: 3px 15px;
+  cursor: pointer;
+  font-size: 11.5px;
+}
+
+.Button:hover {
+  background-color: #a67c52;
+}
+
+.groceryList {
+  background-color: rgba(0, 0, 0, 0.15);
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 10px;
+  list-style: none;
+  max-width: 100%;
+}
+
+.groceryItem {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 5px;
+  color: #ddd;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 100%;
-  padding: 10px;
-  background: rgba(219, 149, 20, 0.495);
-  box-sizing: border-box;
+  position: relative;
 }
 
-.dashboardContent {
-  flex-grow: 1;
-  padding: 30px;
-  margin: 0 auto;
-  width: 90%;
-  margin-right: 100px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  row-gap: 60px;
-  column-gap: 40px;
-  box-sizing: border-box;
+.groceryItemContent {
+  display: flex;
+  align-items: center;
 }
 
-.signoutButton {
-  color: white;
-  background-color: #f44336;
+.quantityText {
+  margin-left: 5px;
+}
+
+.quantityBox {
+  width: 20% !important;
+  padding: 5px !important;
+  margin: 5px 0;
   border: none;
-  padding: 10px 20px;
+  border-radius: 5px;
+}
+
+.groceryItemButtons {
+  display: flex;
+  gap: 10px;
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.editButton {
+  display: none;
+  background-color: #bc9974;
+  color: white;
+  padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
-  font-size: 16px;
 }
 
-.signoutButton:hover {
-  background-color: #d32f2f;
+.removeButton {
+  display: none;
+  background-color: #bc9974;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
-.mainContent {
+.groceryItem:hover .editButton,
+.groceryItem:hover .removeButton {
+  display: inline-block;
+}
+
+.removeButton:hover {
+  background-color: #a67c52;
+}
+
+.editButton:hover {
+  background-color: #a67c52;
+}
+
+.editContainer {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  gap: 10px;
+  margin-right: 120px; /* Added margin to prevent overlap with buttons */
+}
+
+.editInput {
+  width: 80%;
+  padding: 5px !important;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+.editQuantityInput {
+  width: 40% !important;
+  height: 20% !important;
+  padding: 5px !important;
+  margin: 8px;
+}
+
+.saveButton {
+  background-color: #2ecc71;
+}
+
+.saveButton:hover {
+  background-color: #27ae60;
+}
+
+.cancelButton {
+  background-color: #e74c3c;
+}
+
+.cancelButton:hover {
+  background-color: #c0392b;
+}
+
+.saveButton,
+.cancelButton {
+  padding: 4px 10px;
+  font-size: 0.8rem;
+}
+
+.purchaseButton {
+  position: absolute;
+  left: -30px;
+  top: 25%;
+  transform: translateY(10%);
+  width: 20px !important;
+  height: 20px !important;
+  border: 2px solid #bc9974;
+  border-radius: 3px;
+  background-color: transparent;
+  display: flex;
   align-items: center;
-  margin-top: 20px;
-  padding: 20px;
-  background-color: white;
-  border-radius: 10px;
-  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  padding: 0 !important;
   box-sizing: border-box;
 }
 
-.mainContent h1 {
-  color: #333;
+.checkmark {
+  font-size: 2.2rem;
+  color: #bc9974;
+  position: relative;
+  top: -5px;
 }
 
-.header {
-  flex-grow: 1;
-  text-align: center;
+/* New style for the insert box */
+.insertBox {
+  position: absolute;
+  left: 100%;
+  width: 100px !important;
+  margin-left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 5px;
+  border-radius: 5px;
 }
