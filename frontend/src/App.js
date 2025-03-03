@@ -18,6 +18,8 @@ function App() {
 
         {/* Dashboard route */}
         <Route path="/dashboard" element={<Dashboard />} />
+
+        {/*chores page route */}
         <Route path="/chores" element={<Chores />} />
 
         {/* Grocery page route */}
