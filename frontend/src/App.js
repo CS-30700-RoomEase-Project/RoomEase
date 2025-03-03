@@ -1,12 +1,12 @@
 import React from "react";
 import { Route, BrowserRouter as Router, Routes, Navigate } from "react-router-dom";
 import "./App.css";
-import Dashboard from "./components/Pages/Dashboard"; // Correct path
-import RegisterPage from "./components/Pages/RegisterPage"; // Correct path
-import Chores from "./components/Pages/Chores";
+import Dashboard from "./components/Pages/Dashboard/Dashboard"; // Correct path
+import RegisterPage from "./components/Pages/RegisterPage/RegisterPage"; // Correct path
+import Chores from "./components/Pages/Chores/Chores";
 import GroceryPage from "./components/Pages/GroceryPage/GroceryPage";
-import QuietHoursSettings from "./components/Pages/QuietHoursSettings/QuietHoursSettings"; // Uncommented import
-import BillsExpenses from "./components/Pages/BillsExpenses";
+import QuietHoursSettings from "./components/Pages/QuietHours/QuietHoursSettings"; // Uncommented import
+import BillsExpenses from "./components/Pages/BillsExpenses/BillsExpenses";
 
 function App() {
   return (

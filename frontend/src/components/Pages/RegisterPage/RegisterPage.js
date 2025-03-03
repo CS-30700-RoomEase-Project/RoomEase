@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import GoogleSignIn from "../Shared_components/Login_button";
+import GoogleSignIn from "../../Shared_components/Login_button";
 import styles from './RegisterPage.module.css';
 
 export default function RegisterPage() {

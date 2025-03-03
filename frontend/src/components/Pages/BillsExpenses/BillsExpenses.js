@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import NotificationBell from '../Shared_components/NotificationBell/NotificationBell';
-import AvatarButton from '../Shared_components/AvatarButton/AvatarButton';
+import NotificationBell from '../../Shared_components/NotificationBell/NotificationBell';
+import AvatarButton from '../../Shared_components/AvatarButton/AvatarButton';
 import styles from './BillsExpenses.module.css';
 
 const BillsExpenses = () => {

@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import AvatarButton from "../Shared_components/AvatarButton/AvatarButton";
-import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
-import RoomCreationDoor from "../Shared_components/RoomDoors/RoomCreationDoor.js";
-import RoomDoor from "../Shared_components/RoomDoors/RoomDoor.js";
+import AvatarButton from "../../Shared_components/AvatarButton/AvatarButton.js";
+import NotificationBell from "../../Shared_components/NotificationBell/NotificationBell.js";
+import RoomCreationDoor from "../../Shared_components/RoomDoors/RoomCreationDoor.js";
+import RoomDoor from "../../Shared_components/RoomDoors/RoomDoor.js";
 import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 
 /**

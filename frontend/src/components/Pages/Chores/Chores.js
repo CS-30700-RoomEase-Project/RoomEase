@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import ChorePopup from "../Shared_components/ChorePopup";
+import ChorePopup from "../../Shared_components/ChorePopup";
 import { useNavigate } from "react-router-dom";
 import styles from "./Chores.module.css"; //import chores page styles
 
