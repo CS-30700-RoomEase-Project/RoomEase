@@ -14,12 +14,18 @@ function Chores() {
         try {
             const response = await fetch('http://localhost:5001/api/chores/getChores'); // Ensure API is working
             if (!response.ok) throw new Error("Failed to fetch chores");
+
             const data = await response.json();
-            setChores(data); // Update state with fetched chores
+
+            // Sort chores: Incomplete first, then completed
+            const sortedChores = data.sort((a, b) => a.completed - b.completed);
+
+            setChores(sortedChores); // Update state with sorted chores
         } catch (error) {
             console.error("Error fetching chores:", error);
         }
     };
+
 
     // Fetch chores on component mount
     useEffect(() => {
@@ -29,21 +35,22 @@ function Chores() {
     // Mark chore as complete and switch to next person
     const handleMarkAsComplete = async (chore) => {
         try {
-            const nextTurn = (chore.whoseTurn + 1) % chore.order.length; // Cycle to the next person
-            
             const response = await fetch(`http://localhost:5001/api/chores/markComplete/${chore._id}`, {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ whoseTurn: nextTurn })
+                headers: { "Content-Type": "application/json" }
             });
-            
+    
             if (!response.ok) throw new Error("Failed to mark chore as complete");
-            
-            setChores(prevChores => prevChores.map(c => c._id === chore._id ? { ...c, whoseTurn: nextTurn } : c));
+    
+            const updatedChore = await response.json();
+    
+            // Update state with the new chore data from the response
+            fetchChores();
         } catch (error) {
             console.error("Error marking chore as complete:", error);
         }
     };
+    
 
     // Delete chore when delete button clicked
     const handleDeleteChore = async (choreId) => {
@@ -80,11 +87,7 @@ function Chores() {
     const closeChorePopup = () => {
         setChorePopupOpen(false);
         setSelectedChore(null); // Reset selected chore when closing
-    };
-
-    const handleChoreSaved = () => {
-        fetchChores(); // Refresh the chores list after adding or editing
-        closeChorePopup(); // Close the popup
+        fetchChores();
     };
 
     return (
@@ -101,16 +104,21 @@ function Chores() {
 
             <div className={styles.list}>
                 {chores.map((chore) => (
-                    <div key={chore._id} className={styles.listItem}>
+                    <div key={chore._id} className= {chore.completed ? styles.listItemMarked : styles.listItem}>
                         <span>{chore.choreName}</span>
                         <span>{chore.description}</span>
                         <span>{chore.order[chore.whoseTurn].username}</span>
+                        <span>
+                            {String(new Date(chore.dueDate).getUTCMonth() + 1).padStart(2, '0')}-
+                            {String(new Date(chore.dueDate).getUTCDate()).padStart(2, '0')}-
+                            {new Date(chore.dueDate).getUTCFullYear()}
+                        </span>
                         <div className={styles.buttonContainer}>
                             <button
                                 className={styles.markButton}
                                 onClick={() => handleMarkAsComplete(chore)}
                             >
-                                "Mark as complete"
+                                {chore.completed ? "Reuse" : "Mark Complete"}
                             </button>
                             <button 
                                 className={styles.editButton} 
@@ -132,7 +140,6 @@ function Chores() {
             <ChorePopup 
                 isOpen={isChorePopupOpen} 
                 onClose={closeChorePopup} 
-                onChoreSaved={handleChoreSaved} 
                 chore={selectedChore} 
             />
         </div>

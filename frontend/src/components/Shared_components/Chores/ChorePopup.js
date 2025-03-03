@@ -8,23 +8,35 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
     const [choreDescription, setChoreDescription] = useState("");
     const [orderOfTurns, setOrderOfTurns] = useState("");
     const [firstTurn, setFirstTurn] = useState("");
+    const [dueDate, setDueDate] = useState("");
+    const [recurringDays, setRecurringDays] = useState(0);
+
+    // Function to format date to MM/DD/YYYY for display
+    const formatDateForDisplay = (isoDate) => {
+        if (!isoDate) return "";
+        const date = new Date(isoDate);
+        return `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+    };
 
     // Populate state if chore exists (Editing Mode)
     useEffect(() => {
         if (chore) {
             setChoreName(chore.choreName || "");
             setChoreDescription(chore.description || "");
-            setOrderOfTurns(chore.order ? chore.order.map(ObjectId => ObjectId.username).join(", ") : "");
-            setFirstTurn(chore.order[chore.whoseTurn].username || "");
+            setOrderOfTurns(chore.order ? chore.order.map(user => user.username).join(", ") : "");
+            setFirstTurn(chore.order[chore.whoseTurn]?.username || "");
+            setDueDate(formatDateForDisplay(chore.dueDate));
+            setRecurringDays(chore.recurringDays || 0);
         } else {
             // Reset fields if adding a new chore
             setChoreName("");
             setChoreDescription("");
             setOrderOfTurns("");
             setFirstTurn("");
+            setDueDate("");
+            setRecurringDays(0);
         }
     }, [chore]);
-
 
     // Function to handle form submission
     const handleAddChore = async () => {
@@ -32,14 +44,16 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
             name: choreName,
             description: choreDescription,
             turns: orderOfTurns.split(',').map(name => name.trim()), // Convert to array
-            firstTurn: firstTurn
+            firstTurn: firstTurn,
+            dueDate: new Date(dueDate).toISOString().split('T')[0], // Convert to YYYY-MM-DD
+            recurrenceDays: parseInt(recurringDays, 10)
         };
-        console.log(choreData)
+        console.log(choreData);
 
         try {
             let response;
             if (chore) {
-                console.log("attempting update")
+                console.log("attempting update");
                 // If chore exists, update it (PUT request)
                 choreData.id = chore._id;
                 response = await fetch(`http://localhost:5001/api/chores/updateChore/${chore.id}`, {
@@ -48,7 +62,7 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
                     body: JSON.stringify(choreData),
                 });
             } else {
-                console.log("making new")
+                console.log("making new");
                 // If chore doesn't exist, create a new one (POST request)
                 response = await fetch('http://localhost:5001/api/chores/addChore', {
                     method: 'POST',
@@ -122,7 +136,21 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
                     value={firstTurn}
                     onChange={(e) => setFirstTurn(e.target.value)}
                 />
-                <button className={styles.addButton} onClick={handleAddChore}>{chore ? "update" : "add"}</button>
+                <input 
+                    type='text' 
+                    placeholder="Due Date (MM/DD/YYYY)" 
+                    className={styles.inputField} 
+                    value={dueDate}
+                    onChange={(e) => setDueDate(e.target.value)}
+                />
+                <input 
+                    type='number' 
+                    placeholder="Recurring Days (0 for non-recurring)" 
+                    className={styles.inputField} 
+                    value={recurringDays}
+                    onChange={(e) => setRecurringDays(e.target.value)}
+                />
+                <button className={styles.addButton} onClick={handleAddChore}>{chore ? "Update" : "Add"}</button>
                 <button className={styles.cancelButton} onClick={onClose}>Cancel</button>
             </div>
         </Popup>

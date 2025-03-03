@@ -82,11 +82,10 @@
     padding-bottom: 3%;
     padding-left: 2%;
     padding-right: 2%;
-    gap: 2%;
+    gap: 5%;
 }
 
-
-.listItem {
+.listItem, .listItemMarked {
     display: flex;
     justify-content: space-between; /* Pushes buttons to the right */
     align-items: center; /* Align items vertically */
@@ -94,12 +93,26 @@
     background-color: #f9f9f9;
     border: 1px solid #ddd;
     border-radius: 5px;
-    height: 10%;
+    height: 20%;
+}
+
+.listItemMarked {
+    background-color: #ababab;
 }
 
 .buttonContainer {
+    height: 80%;
+    width: 30%;
     display: flex;
     gap: 8px; /* Adds spacing between buttons */
+}
+
+.markButton, .editButton, .deleteButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 80%;
 }
 
 .markButton {
