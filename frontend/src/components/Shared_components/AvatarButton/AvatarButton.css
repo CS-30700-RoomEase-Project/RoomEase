@@ -1,58 +1,56 @@
 .container {
-    display: flex;
-    min-width: fit-content;
-    margin-right: 50px;
-  }
-  
-  .circularImage {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    display: block;
-    cursor: pointer;
-    object-fit : cover;
-    
-  }
-  
-  .dropdown {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    width: 80px;
-    box-shadow: 0px 4px 6px rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    z-index: 1;
-  }
-  
-  .dropdownItem {
-    width: 120px;
-    height: 30px;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: rgb(241, 165, 23);
-    font-size: 16px;  /* Larger font for readability */
-    border: none;
-    color: white;
-  }
-
-  /* hover effect for the dropdownItem */
-  .dropdownItem:hover {
-    background-color:  rgb(184, 126, 19);
-  }
-
-  .signoutButton {
-    color: white;
-    background-color: #f44336; /* Red button */
-    border: none;
-    border-radius: 5px;
-    width: 120px;
-    height: 30px;
-    cursor: pointer;
-    font-size: 16px;  /* Larger font for readability */
+  display: flex;
+  min-width: fit-content;
+  margin-right: 50px;
 }
 
-/* Optional: hover effect for the button */
+.circularImage {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: block;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+.dropdown {
+  position: absolute;
+  top: 0;  /* Restored the lower position */
+  left: 15px; /* Slightly shifted to the right */
+  display: flex;
+  flex-direction: column;
+  width: 150px; /* Slightly wider for better visibility */
+  background-color: rgba(60, 60, 60, 0.97); /* Slightly lighter for better contrast */
+  padding: 10px; /* More padding for spacing */
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.4); /* Stronger shadow */
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border for contrast */
+  z-index: 10;
+}
+
+.dropdownItem, .signoutButton {
+  width: 100%;
+  padding: 12px; /* More padding for better clickability */
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  border: none;
+  color: white;
+  text-align: left;
+}
+
+.dropdownItem {
+  background-color: rgb(107, 96, 76);
+}
+
+.dropdownItem:hover {
+  background-color: rgb(184, 126, 19);
+}
+
+.signoutButton {
+  background-color: #f44336;
+}
+
 .signoutButton:hover {
-    background-color: #d32f2f; /* Darker red for hover */
+  background-color: #d32f2f;
 }
-  

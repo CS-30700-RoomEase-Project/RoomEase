@@ -1,17 +1,28 @@
-/* ProfilePopUp.css */
-
-/* Remove background and add dark overlay for the Popup */
-.react-popup-overlay {
-    background: rgba(0, 0, 0, 0); /* Semi-transparent dark overlay */
+/* Ensure overlay for ProfilePopUp covers the entire screen */
+.profile-popup-overlay {
+    background: rgba(0, 0, 0, 0.7) !important;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Ensure it covers the whole screen */
+    height: 100vh !important;
+    width: 100vw !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    z-index: 2000 !important; /* Ensure it's above everything */
 }
 
-/* Style the modal container */
-.modal {
-    background: white;
+/* Remove default reactjs-popup styles */
+.popup-content {
+    background: transparent !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+}
+
+/* Center modal and content */
+.profile-popup-content {
+    background: #333 !important;
     width: 350px;
     max-width: 90%;
     padding: 20px;
@@ -20,47 +31,115 @@
     text-align: center;
     position: relative;
     animation: fadeIn 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
-/* Title styling */
-.content h4 {
-    margin: 0 0 15px;
-    font-size: 20px;
-    font-weight: 600;
-    color: #333;
-}
-
-/* Button styling */
-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: bold;
-    transition: background-color 0.2s ease-in-out;
-}
-
-/* Button hover effect */
-button:hover {
-    background-color: #0056b3;
-}
-
-/* Remove outline on focus */
-button:focus {
-    outline: none;
+/* Remove unnecessary styling from modal */
+.modal {
+    background: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 /* Fade-in animation */
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: scale(0.9);
     }
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
     }
+}
+
+/* Close button inside ProfilePopUp */
+.profile-popup-close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: white;
+    cursor: pointer;
+}
+
+/* Center the profile settings content */
+.profile-settings-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+/* Styling for buttons inside the ProfilePopUp */
+.profile-popup-button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    color: white;
+    transition: background 0.2s ease-in-out;
+}
+
+/* Different button colors */
+.profile-popup-save {
+    background-color: rgb(34, 193, 195);
+}
+
+.profile-popup-save:hover {
+    background-color: rgb(28, 160, 162);
+}
+
+.profile-popup-cancel {
+    background-color: rgb(255, 69, 58);
+}
+
+.profile-popup-cancel:hover {
+    background-color: rgb(220, 50, 50);
+}
+
+/* Center input fields and labels */
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    text-align: center;
+}
+
+.input-group label {
+    font-size: 14px;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.input-group input {
+    width: 90%;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #777;
+    background: #222;
+    color: white;
+    text-align: center;
+}
+
+/* Button group centering */
+.button-group {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin-top: 15px;
 }

@@ -25,5 +25,3 @@ If the container is not closing, use `"docker kill <container_id>"`, where `cont
 An optional extension to have would be the Docker extension in the extensions [tab](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker): 
 
 <img src="./images/optional_extension.png" alt="Reopen in Dev Container" width="40%">
-
-If you are getting a "docker daemon is not running", is is because your docker is not actually running, and you need to run it again from the start menu. Optionally, you can force run docker with 

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const Schema = mongoose.Schema;
 
 /*
  * PLEASE READ: I've implemented some basic
@@ -44,7 +45,7 @@ const Task = mongoose.model('Task', taskSchema)
  * and finally we turn the schema into a model
  */
 const choreSchema = new mongoose.Schema({
-    order: [{ type: Schema.Types.objectID, ref: 'User'}], //establishes order as an array of users
+    order: [{ type: Schema.Types.ObjectID, ref: 'User'}], //establishes order as an array of users
     description: String,
     whoseTurn: Number
 });
@@ -172,8 +173,28 @@ grocerySchema.methods.markAsFulfilled = function() {
 const Grocery = Task.discriminator('Grocery', grocerySchema);
 
 /*
+    Bills Subclass of Task class
+*/
+const billSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    amount: { type: Number, required: true },
+    dueDate: { type: Date },
+    responsible: { type: String }
+});
+
+billSchema.methods.getFormattedDueDate = function() {
+    return this.dueDate ? this.dueDate.toLocaleDateString() : "No due date";
+};
+
+billSchema.methods.getResponsible = function() {
+    return this.responsible;
+};
+
+const Bill = Task.discriminator('Bill', billSchema);
+
+/*
  * Exports the task class so it can be used in other files.
  * Update this with each new subclass of tasks
  */
-module.exports = { Task, Chore, Grocery };
+module.exports = { Task, Chore, Grocery, Bill };
 

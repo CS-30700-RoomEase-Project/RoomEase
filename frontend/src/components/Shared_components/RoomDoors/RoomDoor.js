@@ -1,7 +1,7 @@
 import React from 'react';
 import './Door.css';
-import roomIcon from './room-icon.png'; 
-
+// import roomIcon from './room-icon.png'; 
+import roomIcon from './Door.png';
 /**
  * TODO: when clicked, redirect to the room with the specified name\
  * 
