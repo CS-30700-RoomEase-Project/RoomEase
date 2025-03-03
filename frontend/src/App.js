@@ -5,9 +5,11 @@ import Dashboard from "./components/Pages/Dashboard"; // Correct path
 import RegisterPage from "./components/Pages/RegisterPage"; // Correct path
 import Chores from "./components/Pages/Chores";
 import GroceryPage from "./components/Pages/GroceryPage/GroceryPage";
-import QuietHoursSettings from "./components/Pages/QuietHoursSettings/QuietHoursSettings"; // Uncommented import
+import QuietHoursSettings from "./components/Pages/QuietHours/QuietHours"; // Uncommented import
 import Room from "./components/Pages/Room/Room";
 import BillsExpenses from "./components/Pages/BillsExpenses";
+import RoomState from "./components/Pages/RoomState/RoomState"; // Import RoomState component
+
 
 function App() {
   return (
@@ -39,6 +41,9 @@ function App() {
 
         {/* Quiet Hours Settings route */}
         <Route path="/quiet-hours" element={<QuietHoursSettings />} />
+
+        {/* Room State route */}
+        <Route path="/room-state" element={<RoomState />} />
 
         {/* Bills/Expenses Settings route */}
         <Route path="/bills" element={<BillsExpenses/>} />
