@@ -23,6 +23,7 @@ router.post('/register', async (req, res) => {
                 totalPoints: user.totalPoints,
                 //notifications
                 reviews: user.reviews,
+                rooms: user.rooms,
                 //room Cosmetics
                 //notification settings
                 chatFilter: user.chatFilter,
@@ -44,6 +45,7 @@ router.post('/register', async (req, res) => {
             totalPoints: user.totalPoints,
             //notifications
             reviews: user.reviews,
+            rooms: user.rooms,
             //room Cosmetics
             //notification settings
             chatFilter: user.chatFilter,
@@ -72,8 +74,16 @@ router.post('/createRoom', async (req, res) => {
         newRoom.roomId = newRoom._id;
         await newRoom.save();
         console.log("Room saved to MongoDB:", newRoom);
-        user.rooms.push(newRoom._id);
+
+        // Add the room to the user's list of rooms
+        user.rooms.push(newRoom);
         await user.save();
+
+        // Add the user to list of room members
+
+        newRoom.roomMembers.push(userId);
+        await newRoom.save();
+
         res.status(200).json({ message: "Room created successfully", room: newRoom });
     }
     catch (error) {
@@ -83,23 +93,21 @@ router.post('/createRoom', async (req, res) => {
 });
 
 router.get('/getRoom', async( req, res) => {
-    const { roomId, userId } = req.body;
+    const { roomId, userId } = req.query;
     try {
         // Find the room
-        let room = await Room.findOne({
-            roomId
-        });
-
+        let room = await Room.findOne({ _id: roomId });
+        console.log("Room found:", room);
         // Check if the room exists
         if (!room) {
             return res.status(404).json({ message: "Room not found" });
         }
-        res.status(200).json({ message: "Room found", room });
-
+        
         // Check if the user is in the room, send the data if they are
-        if (room.users.includes(userId)) {
+        if (room.roomMembers.includes(userId)) {
             return res.status(200).json({ message: "User is in the room", room });
         } else {
+            console.log(room.roomMembers);
             return res.status(404).json({ message: "Access Denied: User is not a member of this room" });
         }
     } catch (error) {

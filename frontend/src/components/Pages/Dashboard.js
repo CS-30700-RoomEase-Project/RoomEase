@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import AvatarButton from "../Shared_components/AvatarButton/AvatarButton";
 import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
@@ -12,21 +12,15 @@ import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 function Dashboard() {
   const navigate = useNavigate();
 
-  // const handleLogout = () => {
-    // localStorage.setItem('username', "");
-    // localStorage.removeItem('userId');
-  //   localStorage.removeItem('profilePic');
-  //   navigate('/');
-  // };
-  let userData = JSON.parse(localStorage.getItem('userData'));
+  const userData = JSON.parse(localStorage.getItem('userData'));
   
   const handleQuietHoursClick = () => {
     navigate('/quiet-hours');
   }
 
-  const rooms = [];
-  for (let i = 1; i <= 4; i++) {
-    rooms.push(<RoomDoor key={i} roomName={`Room ${i}`} />);
+  function getRoom(roomId) {
+    localStorage.setItem('roomData', roomId);
+    navigate(`/room/${roomId}`);
   }
 
   return (
@@ -41,7 +35,15 @@ function Dashboard() {
       <div className={styles.dashboardContent}> 
         <RoomCreationDoor/>
         <RoomDoor roomName="Master Room" />
-        {rooms}
+
+        {userData.rooms.map((room) => (
+          <RoomDoor
+            key={room._id}
+            roomName={room.roomName}
+            onClick={() => getRoom(room._id)}
+          />
+        ))}
+
         <div className={styles.quietHoursSection} onClick={handleQuietHoursClick}>
           <h2>Quiet Hours Settings</h2>
           <p>Configure quiet hours for your rooms.</p>

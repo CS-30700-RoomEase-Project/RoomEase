@@ -26,7 +26,7 @@ function App() {
         <Route path="/quiet-hours" element={<QuietHoursSettings />} />
 
         {/* Room page route */}
-        <Route path="/room" element={<Room />}/>
+        <Route path="/room/:roomId" element={<Room />}/>
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />

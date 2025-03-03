@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import Popup from 'reactjs-popup';
 import ProfilePopUp from '../Profile/ProfilePopUp';
@@ -10,24 +10,45 @@ const AvatarButton = () => {
   const [showSettings, setShowSettings] = useState(false);
 
   /* Get the User data to find the avatar image */
-  let userData = JSON.parse(localStorage.getItem('userData'));
+  const [userData, setUserData] = useState(() => {
+    const savedData = localStorage.getItem('userData');
+    return savedData 
+      ? JSON.parse(savedData) 
+      : { profilePic: '/default-avatar.png', username: 'Guest' };
+  });
 
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
 
-  const handleLogout = () => {
-    const userData = {
-      userId: "",
-      username: "",
-      profilePic: "",
-      reviews: [],
-      totalPoints: 0
+  useEffect(() => {
+    const handleStorageChange = (e) => {
+      if (e.key === 'userData') {
+        setUserData(
+          e.newValue 
+            ? JSON.parse(e.newValue) 
+            : { profilePic: '/default-avatar.png', username: 'Guest' }
+        );
+      }
     };
-    localStorage.setItem('userData', JSON.stringify(userData));
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  const handleLogout = () => {
+    // const userData = {
+    //   userId: "",
+    //   username: "",
+    //   profilePic: "",
+    //   reviews: [],
+    //   totalPoints: 0
+    // };
+    // localStorage.setItem('userData', JSON.stringify(userData));
+    // localStorage.removeItem('userId');
+    // localStorage.removeItem('roomData');
     localStorage.removeItem('userId');
-    // localStorage.removeItem('username');
-    // localStorage.removeItem('profilePic');
+    localStorage.clear();
     navigate('/');
   };
 
