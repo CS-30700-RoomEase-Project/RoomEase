@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
+const Room = require('../models/Room');
 const fs = require('fs');
 
 const router = express.Router();
@@ -56,9 +57,10 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/createRoom', async (req, res) => {
-    const { userId, roomName, settings,  } = req.body;
+    console.log("Received fsdjsifjosdjafoijdsonfjpsddoifjsopdfjiskdfio");
+    const { userId, roomName, groupPic, settings } = req.body;
 
-    console.log("Received data:", { userId }); // Add this log for debugging
+    console.log("Received data:", { userId, roomName, groupPic, settings}); // Add this log for debugging
 
     try {
         let user = await User
@@ -66,7 +68,7 @@ router.post('/createRoom', async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        const newRoom = new Room({ roomName, settings });
+        const newRoom = new Room({ roomName, groupPic, settings });
         newRoom.roomId = newRoom._id;
         await newRoom.save();
         console.log("Room saved to MongoDB:", newRoom);

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
+const Schema = mongoose.Schema;
 
 /*
  * PLEASE READ: I've implemented some basic
@@ -44,7 +45,7 @@ const Task = mongoose.model('Task', taskSchema)
  * and finally we turn the schema into a model
  */
 const choreSchema = new mongoose.Schema({
-    order: [{ type: Schema.Types.objectID, ref: 'User'}], //establishes order as an array of users
+    order: [{ type: Schema.Types.ObjectID, ref: 'User'}], //establishes order as an array of users
     description: String,
     whoseTurn: Number
 });
