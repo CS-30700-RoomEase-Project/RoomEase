@@ -180,7 +180,7 @@ function GroceryPage() {
                     type="text"
                     value={item.note}
                     onChange={(e) => updateNote(index, e.target.value)}
-                    placeholder="Cost Amount"
+                    placeholder="Cost"
                     className={styles.inputBox}
                   />
                 </div>
