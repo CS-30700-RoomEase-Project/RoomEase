@@ -1,0 +1,60 @@
+.modal {
+    background-color: white;
+    border-radius: 5%;
+    text-align: center;
+    width: 100%;
+    padding: 10px !important; /* Override any inherited padding */
+    max-width: 350px;
+    margin: 0 !important; /* Remove unwanted margins */
+}
+
+h6 {
+    margin: 3px 0 !important; /* Reduce space above and below */
+    font-size: 14px;
+    font-weight: bold;
+    padding: 0 !important; /* Ensure no extra padding is added */
+}
+
+.inputField {
+    width: 90% !important;
+    padding: 5px !important;
+    margin: 3px 0 !important;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.addButton, .cancelButton {
+    width: 45%;
+    padding: 5px !important;
+    font-size: 14px !important;
+    margin-top: 5px !important; /* Reduce space above buttons */
+}
+
+
+.addButton {
+    background-color: green;
+    color: white;
+    padding: 0px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+.addButton:hover {
+    background-color: greenyellow;
+}
+
+.cancelButton {
+    background-color: maroon;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.cancelButton:hover {
+    background-color: red;
+}

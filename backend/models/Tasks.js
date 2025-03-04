@@ -26,8 +26,7 @@ const options = { discriminatorKey: 'type', collection: 'tasks' };
 
 /* Schema for the task class */
 const taskSchema = new mongoose.Schema({
-    taskId: Number,
-    creatorId: Number
+    creatorId: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 }, options);
 
 taskSchema.methods.notify = function() {
@@ -45,18 +44,80 @@ const Task = mongoose.model('Task', taskSchema)
  * and finally we turn the schema into a model
  */
 const choreSchema = new mongoose.Schema({
-    order: [{ type: Schema.Types.ObjectID, ref: 'User'}], //establishes order as an array of users
+    choreName: String,
+    order: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }], // Array of users
     description: String,
-    whoseTurn: Number
+    whoseTurn: Number,
+    dueDate: { type: Date, required: false }, // Due date of the chore
+    recurringDays: { type: Number, default: 0 }, // Number of days between occurrences (0 = not recurring)
+    completed: { type: Boolean, default: false } // Indicates if the chore is done
 });
 
-/* method to rotate to the next user */
-choreSchema.methods.switchUser = function() {
-    if (this.order.length === 0) return null; // No users in the order
-    
-    this.whoseTurn = (this.whoseTurn + 1) % this.order.length; // Move to the next user
-    return this.order[this.whoseTurn]; // Return the new current user's ID
+/* Method to get the due date */
+choreSchema.methods.getDueDate = function() {
+    return this.dueDate;
 };
+
+/* Method to set the due date */
+choreSchema.methods.setDueDate = function(date) {
+    this.dueDate = date;
+    return this.save();
+};
+
+/* Method to set the recurrence interval */
+choreSchema.methods.setRecurringDays = function(days) {
+    this.recurringDays = days;
+    return this.save();
+};
+
+/* Method to mark the chore as complete */
+choreSchema.methods.complete = async function() {
+    console.log("completing");
+    if (this.recurringDays === 0) {
+        // If not recurring, mark as complete
+        console.log("marking");
+        this.completed = ! this.completed;
+    } else {
+        // If recurring, just switch the user and update due date
+        await this.switchUser();
+    }
+    return this.save();
+};
+
+/* Updated method to switch to the next user and update the due date */
+choreSchema.methods.switchUser = function() {
+    console.log("switching");
+    if (this.order.length === 0) return null; // No users in the order
+
+    console.log(this.whoseTurn+1);
+    this.whoseTurn = (this.whoseTurn + 1) % this.order.length; // Move to the next user
+    console.log(this.whoseTurn);
+
+    // If the chore is recurring, update the due date
+    if (this.recurringDays > 0 && this.dueDate) {
+        this.dueDate = new Date(this.dueDate.getTime() + this.recurringDays * 24 * 60 * 60 * 1000);
+    }
+
+    this.completed = false; // Reset completed in case it was incorrectly set
+
+    return this.save(); // Save and return the updated chore
+};
+
+choreSchema.methods.setChoreName = function(name) {
+    this.choreName = name;
+}
+
+choreSchema.methods.setOrder = function(order) {
+    this.order = order;
+}
+
+choreSchema.methods.setDescription = function(description) {
+    this.description = description;
+}
+
+choreSchema.methods.setWhoseTurn = function(turn) {
+    this.whoseTurn = turn;
+}
 
 /* create model for the chore class using the discriminator and the schema */
 const Chore = Task.discriminator('Chore', choreSchema);
@@ -68,7 +129,7 @@ const Chore = Task.discriminator('Chore', choreSchema);
 const grocerySchema = new mongoose.Schema({
     itemName: String,
     description: String,
-    purchaser: { type: Schema.Types.ObjectId, ref: 'User' },
+    purchaser: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     owed: [Number],
     requesters: [String],
     fulfilled: Boolean,
