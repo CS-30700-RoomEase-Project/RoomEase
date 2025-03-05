@@ -14,6 +14,13 @@ router.post('/register', async (req, res) => {
     try {
         let user = await User.findOne({ userId });
         if (user) {
+
+            //add notifications to the database if they aren't there yet
+            if (user.notifications.length === 0) {
+                user.notifications = [];
+                await user.save();
+            }
+
             const userData = {
                 username: user.username,
                 userId: user.userId,
@@ -21,7 +28,7 @@ router.post('/register', async (req, res) => {
                 profilePic: user.profilePic,
                 contactInfo: user.contactInfo,
                 totalPoints: user.totalPoints,
-                //notifications
+                notifications: user.notifications,
                 reviews: user.reviews,
                 rooms: user.rooms,
                 //room Cosmetics
@@ -43,7 +50,7 @@ router.post('/register', async (req, res) => {
             birthday: user.birthday,
             contactInfo: user.contactInfo,
             totalPoints: user.totalPoints,
-            //notifications
+            notifications: user.notifications,
             reviews: user.reviews,
             rooms: user.rooms,
             //room Cosmetics

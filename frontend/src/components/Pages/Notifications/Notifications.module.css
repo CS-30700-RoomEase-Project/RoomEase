@@ -1,0 +1,62 @@
+.notificationSheet {
+    background-color: antiquewhite;
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Center the content vertically */
+    height: 100vh; /* Full viewport height */
+    position: relative; /* For positioning the button */
+}
+
+.notificationsContainer {
+    width: 50%;
+    margin: 20px;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1; /* Make sure content stays above the button */
+    position: absolute;
+    top: 20px;
+    right: 25%;
+}
+
+h2 {
+    text-align: center;
+    color: #333;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+.notificationItem {
+    background: #fff;
+    margin: 10px 0;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background 0.3s ease;
+}
+
+.notificationItem:hover {
+    background: #e6f7ff;
+}
+
+.backButton {
+    background-color: maroon;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute; /* Position button in the top-right corner */
+    top: 20px;
+    right: 20px;
+    z-index: 2; /* Ensure button is above other content */
+}
+
+.backButton:hover {
+    background-color: red;
+}
