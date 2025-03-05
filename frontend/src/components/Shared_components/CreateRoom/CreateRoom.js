@@ -37,7 +37,7 @@ const CreateRoom = ({ onClose }) => {
         localStorage.setItem("roomData", JSON.stringify(roomData));
       
         try {
-          const response = await fetch("http://localhost:5001/api/users/createRoom", {
+          const response = await fetch("http://localhost:5001/api/room/createRoom", {
             method: "POST",  // POST method to send data
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -47,8 +47,7 @@ const CreateRoom = ({ onClose }) => {
               settings: roomData.roomSettings,
             }),  // Send roomData as JSON in the request body
           });
-          
-      
+
           // Check if the response is OK (status 200)
           if (!response.ok) {
             console.error(`Error: ${response.status} - ${response.statusText}`);
@@ -58,10 +57,11 @@ const CreateRoom = ({ onClose }) => {
       
           // Attempt to parse the response as JSON
           const data = await response.json();
+          localStorage.setItem("userData", JSON.stringify(data.userData));
           
         } catch (error) {
           console.error("Error in the fetch request:", error);
-          alert("An error occurred while sending the profile data.");
+          alert("An error occurred while creating the room.");
         }
     
         window.location.reload();  // Force reload all React components

@@ -65,60 +65,33 @@ router.post('/register', async (req, res) => {
     }
 });
 
-router.post('/createRoom', async (req, res) => {
-    console.log("Received fsdjsifjosdjafoijdsonfjpsddoifjsopdfjiskdfio");
-    const { userId, roomName, groupPic, settings } = req.body;
-
-    console.log("Received data:", { userId, roomName, groupPic, settings}); // Add this log for debugging
-
+router.get('/getUser', async (req, res) => {
+    const { userId } = req.query;
     try {
-        let user = await User
-            .findOne({ userId })
+        let user = await User.findOne({ userId });
+        console.log("User found:", user);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
-        const newRoom = new Room({ roomName, groupPic, settings });
-        newRoom.roomId = newRoom._id;
-        await newRoom.save();
-        console.log("Room saved to MongoDB:", newRoom);
-
-        // Add the room to the user's list of rooms
-        user.rooms.push(newRoom);
-        await user.save();
-
-        // Add the user to list of room members
-
-        newRoom.roomMembers.push(userId);
-        await newRoom.save();
-
-        res.status(200).json({ message: "Room created successfully", room: newRoom });
-    }
-    catch (error) {
-        console.error("Error saving user:", error);
-        res.status(500).json({ message: "Server error", error });
-    }
-});
-
-router.get('/getRoom', async( req, res) => {
-    const { roomId, userId } = req.query;
-    try {
-        // Find the room
-        let room = await Room.findOne({ _id: roomId });
-        console.log("Room found:", room);
-        // Check if the room exists
-        if (!room) {
-            return res.status(404).json({ message: "Room not found" });
-        }
-        
-        // Check if the user is in the room, send the data if they are
-        if (room.roomMembers.includes(userId)) {
-            return res.status(200).json({ message: "User is in the room", room });
-        } else {
-            console.log(room.roomMembers);
-            return res.status(404).json({ message: "Access Denied: User is not a member of this room" });
-        }
+        const userData = {
+            username: user.username,
+            userId: user.userId,
+            profilePic: user.profilePic,
+            birthday: user.birthday,
+            contactInfo: user.contactInfo,
+            totalPoints: user.totalPoints,
+            //notifications
+            reviews: user.reviews,
+            rooms: user.rooms,
+            //room Cosmetics
+            //notification settings
+            chatFilter: user.chatFilter,
+        };
+        console.log("User data sent in response:", userData);
+        return res.status(200).json({ message: "User data found", userData });
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }
 });
+
 module.exports = router;
