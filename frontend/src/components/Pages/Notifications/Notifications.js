@@ -29,7 +29,8 @@ function Notifications() {
                     }
                 } else {
                     const data = await response.json();
-                    setNotifs(data);
+                    const sortedData = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    setNotifs(sortedData);
                 }
             } catch (error) {
                 console.error("Error fetching notifications:", error);

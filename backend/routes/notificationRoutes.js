@@ -28,8 +28,10 @@ router.delete("/removeNotification/:userId/:notifId", async (req, res) => {
             return res.status(404).json({ message: "Notification not found" });
         }
 
+        actualId = user._id
+
         // Remove the user from the notification's usersNotified array
-        notification.usersNotified = notification.usersNotified.filter((user) => user.toString() !== userId);
+        notification.usersNotified = notification.usersNotified.filter((user) => user.toString() !== actualId.toString());
 
         // Save the updated notification
         await notification.save();
