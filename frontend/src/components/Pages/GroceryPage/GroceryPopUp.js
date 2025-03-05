@@ -6,7 +6,7 @@ import GroceryPage from "./GroceryPage.js"
 
     
 
-export default function GroceryPopUp({ isOpen, onClose }) { 
+export default function GroceryPopUp({ room, isOpen, onClose }) { 
 
     return (
         <Popup
@@ -19,7 +19,7 @@ export default function GroceryPopUp({ isOpen, onClose }) {
             contentClassName="grocery-popup-content"
         >
             <div className="grocery-modal">
-                <GroceryPage />
+                <GroceryPage room = {room}/>
                 <button className="close-button" onClick={onClose}>
                     Close
                 </button>

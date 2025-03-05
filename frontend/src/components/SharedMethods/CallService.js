@@ -1,13 +1,13 @@
 async function CallService(serviceName, data, onResponse, isAsync) {
 
-    const servicePath = "http://localhost:5001/api/users/" + serviceName;
+    const servicePath = "http://localhost:5001/api/" + serviceName;
     const options = {
         method:"POST",
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(data),
-        credentials: 'include'
+        //credentials: 'include'
     };
 
     const headerHandler = response => {if (response.ok) {return response.json();}};

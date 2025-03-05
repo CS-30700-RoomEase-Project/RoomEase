@@ -7,8 +7,9 @@ import GroceryPopUp from '../../GroceryPage/GroceryPopUp';
  * 
  * @returns Fridge component that will go into the room class and display the fridge
  */
-function Fridge() {
+function Fridge(props) {
     
+    const {room} = props;
     const [isPopUpOpen, setPopUpOpen] = useState(false);
     
     return (
@@ -19,7 +20,7 @@ function Fridge() {
             <div className='fridgeDoor'>
                 <div className='fridgeHandle'/>
             </div>
-            <GroceryPopUp isOpen={isPopUpOpen} onClose={() => setPopUpOpen(false)} />
+            <GroceryPopUp room={room} isOpen={isPopUpOpen} onClose={() => setPopUpOpen(false)} />
         </div>
     )
 }

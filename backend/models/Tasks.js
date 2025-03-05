@@ -134,6 +134,7 @@ const grocerySchema = new mongoose.Schema({
     requesters: [String],
     fulfilled: Boolean,
     paid: Boolean,
+    quantity: Number,
 });
 
 // Get itemName

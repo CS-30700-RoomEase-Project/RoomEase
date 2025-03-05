@@ -62,7 +62,7 @@ function Room() {
                 <Avatar />
             </div>
             <div className={'roomBackground'}>
-                <Fridge />
+                <Fridge room={roomData}/>
                 <Desk>
                     <Computer />
                 </Desk>
