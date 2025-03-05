@@ -31,7 +31,7 @@ function Room() {
 
         const fetchRoomData = async () => {
             try {
-                const response = await fetch(`http://localhost:5001/api/users/getRoom?roomId=${roomId}&userId=${userData.userId}`, {
+                const response = await fetch(`http://localhost:5001/api/room/getRoom?roomId=${roomId}&userId=${userData.userId}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" }
                 });
