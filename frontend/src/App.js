@@ -9,6 +9,7 @@ import QuietHoursSettings from "./components/Pages/QuietHours/QuietHours"; // Un
 import Room from "./components/Pages/Room/Room";
 import BillsExpenses from "./components/Pages/BillsExpenses";
 import RoomState from "./components/Pages/RoomState/RoomState"; // Import RoomState component
+import Notifications from "./components/Pages/Notifications/Notifications"; //import notifications
 
 
 function App() {
@@ -47,6 +48,9 @@ function App() {
 
         {/* Bills/Expenses Settings route */}
         <Route path="/bills" element={<BillsExpenses/>} />
+
+        {/* Notifications route */}
+        <Route path="/notifications" element={<Notifications/>} />
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />

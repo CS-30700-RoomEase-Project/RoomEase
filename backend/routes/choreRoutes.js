@@ -142,6 +142,8 @@ router.post('/addChore', async (req, res) => {
         });
 
         await newChore.save();
+        output = await newChore.createNotification();
+        console.log(output);
         res.status(201).json({ message: "Chore added successfully!", chore: newChore });
     } catch (error) {
         console.error(error);

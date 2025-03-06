@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const Schema = mongoose.Schema;
+const Notification = require('../models/Notification');
 
 /*
  * PLEASE READ: I've implemented some basic
@@ -53,6 +54,38 @@ const choreSchema = new mongoose.Schema({
     completed: { type: Boolean, default: false } // Indicates if the chore is done
 });
 
+choreSchema.methods.createNotification = async function() {
+    console.log("creating notification");
+    try {
+        const notification = await Notification.create({
+            description: `Chore '${this.choreName}' has been created. Description: '${this.description}'. Due Date: '${this.dueDate}'`,
+            pageID: "/Chores",
+            usersNotified: this.order,
+            notificationType: 'Chore Assignment',
+            origin: this.creatorId
+        });
+        output = await notification.propagateNotification();
+        return output;
+    } catch (error) {
+        console.error("Error creating notification:", error);
+    }
+};
+
+choreSchema.methods.switchNotification = async function() {
+    try {
+        const notification = await Notification.create({
+            description: `Chore '${this.choreName}' is now your responsibility. Description: '${this.description}'. Due Date: '${this.dueDate}'`,
+            pageID: "/Chores",
+            usersNotified: this.order[this.whoseTurn],
+            notificationType: 'Chore Assignment',
+            origin: this.creatorId
+        });
+        await notification.propagateNotification();
+    } catch (error) {
+        console.error("Error creating notification:", error);
+    }
+}
+
 /* Method to get the due date */
 choreSchema.methods.getDueDate = function() {
     return this.dueDate;
@@ -85,7 +118,7 @@ choreSchema.methods.complete = async function() {
 };
 
 /* Updated method to switch to the next user and update the due date */
-choreSchema.methods.switchUser = function() {
+choreSchema.methods.switchUser = async function() {
     console.log("switching");
     if (this.order.length === 0) return null; // No users in the order
 
@@ -99,6 +132,8 @@ choreSchema.methods.switchUser = function() {
     }
 
     this.completed = false; // Reset completed in case it was incorrectly set
+
+    await this.switchNotification();
 
     return this.save(); // Save and return the updated chore
 };

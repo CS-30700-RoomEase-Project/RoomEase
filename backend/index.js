@@ -6,6 +6,8 @@ const userRoutes = require('./routes/userRoutes');
 const choreRoutes = require('./routes/choreRoutes');
 const updateProfileRoutes = require('./routes/updateProfileRoutes');
 const billsRoutes = require('./routes/billsRoutes'); 
+const notificationRoutes = require('./routes/notificationRoutes');
+const roomRoutes = require('./routes/roomRoutes');
 
 // Initialize app after importing dependencies
 const app = express();
@@ -29,6 +31,8 @@ app.use('/api/chores', choreRoutes);
 app.use('/api/users', userRoutes); // For user-related routes
 app.use('/api/users/profile', updateProfileRoutes); // For profile update routes
 app.use('/api/bills', billsRoutes); // For bills/expenses routes
+app.use('/api/notifications', notificationRoutes); // For notification routes
+app.use('/api/room', roomRoutes); // For room-related routes
 
 // Test route
 app.get("/", (req, res) => {
