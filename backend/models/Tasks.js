@@ -240,7 +240,11 @@ const billSchema = new mongoose.Schema({
     title: { type: String, required: true },
     amount: { type: Number, required: true },
     dueDate: { type: Date },
-    responsible: { type: String }
+    responsible: [{
+      name: { type: String, required: true },
+      paid: { type: Boolean, default: false }
+    }],
+    paymaster: { type: String, default: "" }
 });
 
 billSchema.methods.getFormattedDueDate = function() {
@@ -255,7 +259,7 @@ const Bill = Task.discriminator('Bill', billSchema);
 
 /*
  * Exports the task class so it can be used in other files.
- * Update this with each new subclass of tasks
+ * Update this with each new subclass of tasks.
  */
 module.exports = { Task, Chore, Grocery, Bill };
 
