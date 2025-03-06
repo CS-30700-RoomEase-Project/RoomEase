@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styles from "./GroceryPage.module.css";
 import CallService from "../../SharedMethods/CallService";
 import GroceryItem from "./GroceryItem";
@@ -12,11 +12,7 @@ function GroceryPage({room}) {
 
   const addItem = () => {
     if (input.trim() !== "" && quantity > 0 && quantity <= 999) {
-      // Added a note property to each new item.
-      setItems([...items, { name: input, quantity, purchased: false, note: "" }]);
-      setInput("");
-      setQuantity(1);
-      CallService("grocery/add/" + room._id, {itemName: input, description: "test"}, (data) => console.log(data));
+      CallService("grocery/add/" + room._id, {itemName: input, quantity: quantity, description: "test"}, itemResponseHandler);
     }
   };
 
@@ -25,6 +21,17 @@ function GroceryPage({room}) {
       addItem();
     }
   };
+
+const itemResponseHandler = (data) => {
+      setItems([...items, data ]);
+      setInput("");
+      setQuantity(1);
+}
+
+// Fetch groceryList
+  useEffect(() => {
+    CallService("grocery/getList/" + room._id, {}, setItems);
+  }, []);
 
   return (
     <div className={styles.appContainer}>
@@ -66,7 +73,7 @@ function GroceryPage({room}) {
           <h3 className={styles.title}>Items</h3>
           {items.map((item, index) => (
             <li key={index} className={styles.groceryItem}>
-              <GroceryItem items={items} setItems={setItems} index={index} item={item}/>
+              <GroceryItem items={items} setItems={setItems} index={index} item={item} room={room}/>
             </li>
           ))}
         </ul>

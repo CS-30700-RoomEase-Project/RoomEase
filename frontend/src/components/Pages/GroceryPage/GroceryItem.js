@@ -9,25 +9,29 @@ function GroceryItem(props) {
     const [editQuantity, setEditQuantity] = useState(1);
     const [cost, setCost] = useState(0);
 
-    const {items, setItems, index, item} = props;
+    const {items, setItems, index, item, room} = props;
     const costRef = useRef(null);
     const quantityRef = useRef(null);
 
-    const togglePurchased = (index) => {
+    const togglePurchased = () => {
         const updatedItems = [...items];
         // Toggle purchased state, which in turn controls the insert box visibility.
         updatedItems[index].purchased = !updatedItems[index].purchased;
         setItems(updatedItems);
+        saveItem();
     };
 
-    const removeItem = (index) => {
+    const removeItem = () => {
+        
+        console.log("items" + JSON.stringify(items[index]._id));
         const updatedItems = items.filter((_, i) => i !== index);
         setItems(updatedItems);
+        CallService("grocery/remove/" + room._id + "/" + item._id, {description: "test"}, (data) => console.log(data));
     };
 
-    const startEditing = (index) => {
+    const startEditing = () => {
         setEditIndex(index);
-        setEditName(items[index].name);
+        setEditName(items[index].itemName);
         setEditQuantity(items[index].quantity);
     };
 
@@ -37,15 +41,29 @@ function GroceryItem(props) {
         setEditQuantity(1);
     };
 
-    const saveEdit = (index) => {
+    const saveEdit = () => {
         if (editName.trim() !== "" && editQuantity > 0 && editQuantity <= 999) {
-        const updatedItems = [...items];
-        updatedItems[index] = { ...updatedItems[index], name: editName, quantity: editQuantity };
-        setItems(updatedItems);
-        cancelEdit();
+            const updatedItems = [...items];
+            updatedItems[index] = { ...updatedItems[index], itemName: editName, quantity: editQuantity };
+            const updatedItem = updatedItems[index];
+            CallService("grocery/update", updatedItem, editResponseHandler);
+            setItems(updatedItems);
+            cancelEdit();
         }
     };
 
+    const saveItem = () => {
+        CallService("grocery/update", item, editResponseHandler);
+        setItems(items);
+    };
+
+    const editResponseHandler = (data) => {
+           
+        const newItems = [...items];
+        newItems[index] = data;
+        setItems(newItems);
+    }
+  
     // Function to update the note for a specific item.
     const updateNote = (index, note) => {
     const updatedItems = [...items];
@@ -56,7 +74,7 @@ function GroceryItem(props) {
     return <>
         {/* Purchase Button positioned on the left */}
         <button
-        onClick={() => togglePurchased(index)}
+        onClick={() => togglePurchased()}
         className={styles.purchaseButton}
         >
         {item.purchased && <span className={styles.checkmark}>✔</span>}
@@ -92,7 +110,7 @@ function GroceryItem(props) {
         </div>
         ) : (
         <>
-            {item.name} - <span className={styles.quantityText}>{item.quantity}</span>
+            {item.itemName} - <span className={styles.quantityText}>{item.quantity}</span>
         </>
         )}
         </div>
@@ -100,7 +118,7 @@ function GroceryItem(props) {
         {editIndex === index ? (
         <>
             <button
-            onClick={() => saveEdit(index)}
+            onClick={() => saveEdit()}
             className={`${styles.Button} ${styles.saveButton}`}
             >
             Save
@@ -115,13 +133,13 @@ function GroceryItem(props) {
         ) : (
         <>
             <button
-            onClick={() => startEditing(index)}
+            onClick={() => startEditing()}
             className={`${styles.Button} ${styles.editButton}`}
             >
             Edit
             </button>
             <button
-            onClick={() => removeItem(index)}
+            onClick={() => removeItem()}
             className={`${styles.Button} ${styles.removeButton}`}
             >
             Remove
