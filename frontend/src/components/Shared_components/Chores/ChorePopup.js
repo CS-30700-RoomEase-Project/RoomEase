@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Popup from 'reactjs-popup';
 import styles from "./ChorePopup.module.css"; // Create a new CSS file for styling
 
-const ChorePopup = ({ isOpen, onClose, chore }) => {
+const ChorePopup = ({ isOpen, onClose, chore, roomId }) => {
 
     const [choreName, setChoreName] = useState("");
     const [choreDescription, setChoreDescription] = useState("");
@@ -73,7 +73,7 @@ const ChorePopup = ({ isOpen, onClose, chore }) => {
             } else {
                 console.log("making new");
                 // If chore doesn't exist, create a new one (POST request)
-                response = await fetch('http://localhost:5001/api/chores/addChore', {
+                response = await fetch(`http://localhost:5001/api/chores/addChore/${roomId}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(choreData),

@@ -23,7 +23,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
 
         {/*chores page route */}
-        <Route path="/chores" element={<Chores />} />
+        <Route path="/chores/:roomId" element={<Chores />} />
 
         {/* Grocery page route */}
         <Route path="/grocery" element={<GroceryPage />} />
