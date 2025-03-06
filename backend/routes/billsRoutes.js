@@ -30,8 +30,8 @@ router.get('/:id', async (req, res) => {
 // POST create a new bill
 router.post('/', async (req, res) => {
   try {
-    const { title, amount, dueDate, responsible } = req.body;
-    const newBill = new Bill({ title, amount, dueDate, responsible });
+    const { title, amount, dueDate, responsible, paymaster } = req.body;
+    const newBill = new Bill({ title, amount, dueDate, responsible, paymaster });
     const savedBill = await newBill.save();
     res.status(201).json(savedBill);
   } catch (error) {
@@ -39,6 +39,7 @@ router.post('/', async (req, res) => {
     res.status(500).json({ error: 'Server error while creating bill' });
   }
 });
+
 
 
 // PUT update an existing bill
