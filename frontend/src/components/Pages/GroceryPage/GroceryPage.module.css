@@ -228,3 +228,21 @@
   padding: 5px;
   border-radius: 5px;
 }
+
+.requestButton {
+  display: none;
+  font-size: 0.7rem; /* smaller text */
+  padding: 0.1rem 0.4rem; /* reduced padding */
+  width: auto;
+  height: auto;
+}
+
+/* Show the request button on hover just like the others */
+.groceryItem:hover .requestButton {
+  display: inline-block;
+}
+
+.insertCostBox {
+  margin-left: 0px;
+  /* other styling... */
+}

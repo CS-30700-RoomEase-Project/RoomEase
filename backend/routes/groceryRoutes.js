@@ -25,16 +25,14 @@ router.post('/add/:roomID', async (req, res) => {
 
   router.post('/update', async (req, res) => {
     try {
-      
+      console.log("Update payload:", req.body);
       let updatedItem = req.body;
-      
-      updatedItem = await Grocery.findByIdAndUpdate(updatedItem._id, updatedItem, {new: true});
-
+      updatedItem = await Grocery.findByIdAndUpdate(updatedItem._id, updatedItem, { new: true });
+      updatedItem = await updatedItem.populate('requesters', 'username');
       res.status(200).json(updatedItem);
-
     } catch (error) {
-      console.error('Error creating grocery:', error);
-      res.status(500).json({ error: 'Server error while creating grocery' });
+      console.error('Error updating grocery:', error);
+      res.status(500).json({ error: 'Server error while updating grocery' });
     }
   });
 
@@ -85,13 +83,17 @@ router.post('/add/:roomID', async (req, res) => {
         return res.status(404).json({ error: 'Room not found' });
       }
 
+      
       let groceries = [];
-      room.tasks.forEach(task => {
+
+      for (let i = 0; i < room.tasks.length; i++) {
+        let task = room.tasks[i];
         if (task.type === 'Grocery') {
+          task = await task.populate('requesters', 'username');
           groceries.push(task);
         }
-      });
-
+      }
+      
       res.json(groceries);
     } catch (error) {
       console.error('Error fetching grocery list', error);
@@ -99,28 +101,93 @@ router.post('/add/:roomID', async (req, res) => {
     }
   });
 
+  router.post('/request/:roomId/:itemId', async (req, res) => {
+    const { roomId, itemId } = req.params;
+    const { userId, description } = req.body; // userId is the custom string from the client
+  
+    try {
+      // Find the grocery item by its id (optionally, you can verify roomId here)
+      let item = await Grocery.findById(itemId);
+      if (!item) {
+        return res.status(404).json({ error: 'Item not found in the specified room' });
+      }
+  
+      // Find the user by the custom userId field
+      const user = await User.findOne({ userId });
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Ensure requesters is initialized (should be by default, but just in case)
+      if (!item.requesters) {
+        item.requesters = [];
+      }
+  
+      // Convert the existing ObjectIds to strings for safe comparison
+      const existingRequesters = item.requesters.map(id => id.toString());
+  
+      // Toggle: If user's ObjectId is already present, remove it; otherwise, add it.
+      if (existingRequesters.includes(user._id.toString())) {
+        // Remove the user’s ObjectId from the requesters array
+        item.requesters = item.requesters.filter(id => id.toString() !== user._id.toString());
+        console.log(`User ${user._id} removed from requesters.`);
+      } else {
+        // Add the user’s ObjectId to the requesters array
+        item.requesters.push(user._id);
+        console.log(`User ${user._id} added to requesters.`);
+      }
+  
+      console.log(`Request action: ${description}`);
+  
+      // Save the updated item
+      await item.save();
+  
+      item = await item.populate('requesters', 'username');
+
+      res.json(item);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Server error' });
+    }
+  });
+
   router.post("/notifyPurchased/:roomId/:itemId/", async (req, res) => {
     const { userId, description, pageID } = req.body;
     const { roomId, itemId } = req.params;
     try {
-        const user = await User.findOne({ userId });
-        if (!user) return res.status(404).json({ message: "User not found" });
+      // Optionally, get the notifying user (for origin)
+      const user = await User.findOne({ userId });
+      if (!user) return res.status(404).json({ message: "User not found" });
+  
+      // Find the grocery item by its id
+      const item = await Grocery.findById(itemId);
+      if (!item) {
+        return res.status(404).json({ message: "Item not found" });
+      }
+  
+      item.purchaser = user._id;
 
-        const notification = new Notification({
-            usersNotified: [user._id], // replace with roommates later
-            description,
-            pageID,
-            notificationType: "Grocery",
-            origin: user._id
-        });
-        await notification.save();
-        await notification.propagateNotification();
+      await item.save();
 
-        res.json({ success: true, notification });
+      // Create the notification with usersNotified equal to the requesters array from the grocery item
+      const notification = new Notification({
+        usersNotified: item.requesters, // now using the requesters array
+        description,
+        pageID,
+        notificationType: "Grocery",
+        origin: user._id  // or set to null if not needed
+      });
+  
+      await notification.save();
+      await notification.propagateNotification();
+  
+      res.json({ success: true, notification });
     } catch (error) {
-        console.error("Error creating grocery notification:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+      console.error("Error creating grocery notification:", error);
+      res.status(500).json({ message: "Internal Server Error" });
     }
-});
+  });
+  
+  
 
 module.exports = router;
