@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
-const { Chore } = require('../models/Tasks'); // Import Chore model
+const { Task, Chore } = require('../models/Tasks'); // Import Chore and task models
 const User = require('../models/User'); // Import User model
+const Room = require('../models/Room'); // Import the Room model
 
 // Route to mark a chore as complete and switch to the next person
-router.put('/markComplete/:id', async (req, res) => {
+router.put('/markComplete/:id/:roomId', async (req, res) => {
     try {
-        const { id } = req.params;
+        const { id, roomId } = req.params;
 
         const chore = await Chore.findById(id);
         if (!chore) {
@@ -14,7 +15,7 @@ router.put('/markComplete/:id', async (req, res) => {
         }
 
         // Call the complete method
-        await chore.complete();
+        await chore.complete(roomId);
 
         res.status(200).json({ message: "Chore marked as complete (or switched if recurring)", chore });
     } catch (error) {
@@ -71,33 +72,45 @@ router.put('/updateChore/:id', async (req, res) => {
 
 
 //route to delete a chore by id
-router.delete('/delete/:id', async (req, res) => {
-    console.log("attempting delete");
+router.delete('/delete/:id/:roomId', async (req, res) => {
+    console.log("Attempting to delete chore");
     try {
-        const { id } = req.params;
+        const { id, roomId } = req.params;
+
+        // Delete the chore
         const deletedChore = await Chore.findByIdAndDelete(id);
-        
         if (!deletedChore) {
             return res.status(404).json({ error: "Chore not found" });
         }
 
+        // Remove the chore ID from the room's tasks array
+        await Room.findByIdAndUpdate(roomId, { $pull: { tasks: id } });
+
         res.json({ message: "Chore deleted successfully", deletedChore });
     } catch (error) {
-        console.error(error);
+        console.error("Error deleting chore:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
-
-// Route to fetch all chores
-router.get('/getChores', async (req, res) => {
-    console.log("getting chores");
-    User.find({})
-        .then(users => console.log(users))
-        .catch(err => console.error(err));
+router.get('/getChores/:roomId', async (req, res) => {
     try {
-        const chores = await Chore.find({}).populate('order', 'username'); // Populating user names
-        console.log(chores);
+        const { roomId } = req.params;
+
+        // Find the room and get its tasks array
+        const room = await Room.findById(roomId).select('tasks');
+        if (!room) {
+            return res.status(404).json({ message: "Room not found." });
+        }
+
+        // Find only the tasks that are in the room's tasks array and are of type 'Chore'
+        const chores = await Task.find({ _id: { $in: room.tasks }, type: 'Chore' })
+            .populate('order', 'username'); // Populate order field with usernames
+
+        if (!chores.length) {
+            return res.status(404).json({ message: "No chores found for this room." });
+        }
+
         res.json(chores);
     } catch (error) {
         console.error("Error fetching chores:", error);
@@ -105,9 +118,12 @@ router.get('/getChores', async (req, res) => {
     }
 });
 
+
 // Route to add a new Chore
-router.post('/addChore', async (req, res) => {
+router.post('/addChore/:roomId', async (req, res) => {
     try {
+        const { roomId } = req.params
+
         console.log("adding");
         const { name, description, turns, firstTurn, dueDate, recurrenceDays } = req.body;
         console.log("recurrenceDays");
@@ -142,6 +158,22 @@ router.post('/addChore', async (req, res) => {
         });
 
         await newChore.save();
+
+        console.log("chore saved");
+        // **Find the room and add the chore to its `tasks` array**
+        const updatedRoom = await Room.findByIdAndUpdate(
+            roomId,
+            { $push: { tasks: newChore._id } }, // Add chore to the tasks array
+            { new: true, useFindAndModify: false }
+        );
+        console.log(updatedRoom);
+
+        if (!updatedRoom) {
+            return res.status(404).json({ error: "Room not found" });
+        }
+
+        output = await newChore.createNotification(roomId);
+        console.log(output);
         res.status(201).json({ message: "Chore added successfully!", chore: newChore });
     } catch (error) {
         console.error(error);

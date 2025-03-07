@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('../models/User');
 const Schema = mongoose.Schema;
+const Notification = require('../models/Notification');
 
 /*
  * PLEASE READ: I've implemented some basic
@@ -53,6 +54,38 @@ const choreSchema = new mongoose.Schema({
     completed: { type: Boolean, default: false } // Indicates if the chore is done
 });
 
+choreSchema.methods.createNotification = async function(path) {
+    console.log("creating notification");
+    try {
+        const notification = await Notification.create({
+            description: `Chore '${this.choreName}' has been created. Description: '${this.description}'. Due Date: '${this.dueDate}'`,
+            pageID: `/Chores/${path}`,
+            usersNotified: this.order,
+            notificationType: 'Chore Assignment',
+            origin: this.creatorId
+        });
+        output = await notification.propagateNotification();
+        return output;
+    } catch (error) {
+        console.error("Error creating notification:", error);
+    }
+};
+
+choreSchema.methods.switchNotification = async function(path) {
+    try {
+        const notification = await Notification.create({
+            description: `Chore '${this.choreName}' is now your responsibility. Description: '${this.description}'. Due Date: '${this.dueDate}'`,
+            pageID: `/Chores/${path}`,
+            usersNotified: this.order[this.whoseTurn],
+            notificationType: 'Chore Assignment',
+            origin: this.creatorId
+        });
+        await notification.propagateNotification();
+    } catch (error) {
+        console.error("Error creating notification:", error);
+    }
+}
+
 /* Method to get the due date */
 choreSchema.methods.getDueDate = function() {
     return this.dueDate;
@@ -71,7 +104,7 @@ choreSchema.methods.setRecurringDays = function(days) {
 };
 
 /* Method to mark the chore as complete */
-choreSchema.methods.complete = async function() {
+choreSchema.methods.complete = async function(path) {
     console.log("completing");
     if (this.recurringDays === 0) {
         // If not recurring, mark as complete
@@ -79,13 +112,13 @@ choreSchema.methods.complete = async function() {
         this.completed = ! this.completed;
     } else {
         // If recurring, just switch the user and update due date
-        await this.switchUser();
+        await this.switchUser(path);
     }
     return this.save();
 };
 
 /* Updated method to switch to the next user and update the due date */
-choreSchema.methods.switchUser = function() {
+choreSchema.methods.switchUser = async function(path) {
     console.log("switching");
     if (this.order.length === 0) return null; // No users in the order
 
@@ -99,6 +132,8 @@ choreSchema.methods.switchUser = function() {
     }
 
     this.completed = false; // Reset completed in case it was incorrectly set
+
+    await this.switchNotification(path);
 
     return this.save(); // Save and return the updated chore
 };
@@ -134,6 +169,8 @@ const grocerySchema = new mongoose.Schema({
     requesters: [String],
     fulfilled: Boolean,
     paid: Boolean,
+    quantity: Number,
+    purchased: { type: Boolean },
 });
 
 // Get itemName
@@ -240,7 +277,11 @@ const billSchema = new mongoose.Schema({
     title: { type: String, required: true },
     amount: { type: Number, required: true },
     dueDate: { type: Date },
-    responsible: { type: String }
+    responsible: [{
+      name: { type: String, required: true },
+      paid: { type: Boolean, default: false }
+    }],
+    paymaster: { type: String, default: "" }
 });
 
 billSchema.methods.getFormattedDueDate = function() {
@@ -255,7 +296,7 @@ const Bill = Task.discriminator('Bill', billSchema);
 
 /*
  * Exports the task class so it can be used in other files.
- * Update this with each new subclass of tasks
+ * Update this with each new subclass of tasks.
  */
 module.exports = { Task, Chore, Grocery, Bill };
 

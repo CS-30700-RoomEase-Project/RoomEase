@@ -31,7 +31,7 @@ function Room() {
 
         const fetchRoomData = async () => {
             try {
-                const response = await fetch(`http://localhost:5001/api/users/getRoom?roomId=${roomId}&userId=${userData.userId}`, {
+                const response = await fetch(`http://localhost:5001/api/room/getRoom?roomId=${roomId}&userId=${userData.userId}`, {
                     method: "GET",
                     headers: { "Content-Type": "application/json" }
                 });
@@ -52,6 +52,11 @@ function Room() {
         fetchRoomData();
     }, [roomId, navigate]);
 
+    const handleGoToChores = (roomId) => {
+        console.log("Navigating to chores with roomId:", roomId); // Debugging
+        navigate(`/chores/${roomId}`);
+    }
+
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
     console.log(roomData);
@@ -59,16 +64,17 @@ function Room() {
         <div className='appContainer'>
             <div className='roomBanner'>
                 <h1 className='roomTitle'>{roomData.roomName}</h1>
+                <NotificationButton/>
                 <Avatar />
             </div>
             <div className={'roomBackground'}>
-                <Fridge />
+                <Fridge room={roomData}/>
                 <Desk>
                     <Computer />
                 </Desk>
                 <Clock />
                 <BulletinBoard />
-                <TrashCan />
+                <TrashCan onClick={() => handleGoToChores(roomId)}/>
                 <Broom />
             </div>
             <div className={'roomFloor'}/>

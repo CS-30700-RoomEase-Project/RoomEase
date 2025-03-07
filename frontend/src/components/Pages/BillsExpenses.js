@@ -11,8 +11,11 @@ const BillsExpenses = () => {
     title: '',
     amount: '',
     dueDate: '',
-    responsible: '',
+    // Change responsible from a string to an array of objects
+    responsiblePeople: [],
+    paymaster: ''
   });
+  const [newPerson, setNewPerson] = useState("");
   
   // For pop-up modal editing
   const [selectedBill, setSelectedBill] = useState(null);
@@ -20,7 +23,8 @@ const BillsExpenses = () => {
     title: '',
     amount: '',
     dueDate: '',
-    responsible: '',
+    responsiblePeople: [],
+    paymaster: ''
   });
 
   const userData = JSON.parse(localStorage.getItem('userData')) || {
@@ -36,9 +40,30 @@ const BillsExpenses = () => {
       .catch((err) => console.error(err));
   }, []);
 
-  // Update new bill form data
+  // Update new bill form fields
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value});
+  };
+
+  // Update new responsible person input
+  const handleNewPersonChange = (e) => {
+    setNewPerson(e.target.value);
+  };
+
+  // Add a person to the responsiblePeople array
+  const handleAddPerson = () => {
+    if(newPerson.trim() !== ""){
+      setFormData({
+        ...formData,
+        responsiblePeople: [...formData.responsiblePeople, { name: newPerson.trim(), paid: false }]
+      });
+      setNewPerson("");
+    }
+  };
+
+  // Set the paymaster field to the current user (for new bill)
+  const handleSetMeAsPaymaster = () => {
+    setFormData({ ...formData, paymaster: userData.username });
   };
 
   // Helper: Parse date string (YYYY-MM-DD) into a local Date object
@@ -48,14 +73,15 @@ const BillsExpenses = () => {
     return new Date(year, month - 1, day);
   };
 
-  // Handle new bill submission using parseDueDate to avoid timezone issues
+  // Handle new bill submission (send responsiblePeople array and paymaster)
   const handleSubmit = (e) => {
     e.preventDefault();
     const newBill = {
       title: formData.title,
       amount: parseFloat(formData.amount),
       dueDate: formData.dueDate ? parseDueDate(formData.dueDate) : null,
-      responsible: formData.responsible,
+      responsible: formData.responsiblePeople,
+      paymaster: formData.paymaster
     };
 
     fetch('http://localhost:5001/api/bills', {
@@ -66,7 +92,8 @@ const BillsExpenses = () => {
       .then((res) => res.json())
       .then((savedBill) => {
         setBills([...bills, savedBill]);
-        setFormData({ title: '', amount: '', dueDate: '', responsible: '' });
+        // Reset form including responsible people and paymaster
+        setFormData({ title: '', amount: '', dueDate: '', responsiblePeople: [], paymaster: '' });
       })
       .catch((err) => console.error(err));
   };
@@ -79,20 +106,37 @@ const BillsExpenses = () => {
     return new Date(a.dueDate) - new Date(b.dueDate);
   });
 
-  // When a bill is clicked, show the pop-up menu
+  // When a bill is clicked, show the pop-up menu for editing
   const handleBillClick = (bill) => {
     setSelectedBill(bill);
     setEditFormData({
       title: bill.title,
       amount: bill.amount,
       dueDate: bill.dueDate ? new Date(bill.dueDate).toISOString().split('T')[0] : '',
-      responsible: bill.responsible || '',
+      responsiblePeople: bill.responsible || [],
+      paymaster: bill.paymaster || ''
     });
   };
 
-  // Update edit form fields
+  // Update edit form fields for text inputs
   const handleEditChange = (e) => {
     setEditFormData({...editFormData, [e.target.name]: e.target.value});
+  };
+
+  // Toggle the 'paid' status for a responsible person in edit mode
+  const handleTogglePaid = (index) => {
+    const updatedPeople = editFormData.responsiblePeople.map((person, idx) => {
+      if(idx === index) {
+        return { ...person, paid: !person.paid };
+      }
+      return person;
+    });
+    setEditFormData({ ...editFormData, responsiblePeople: updatedPeople });
+  };
+
+  // Set paymaster to current user in edit mode
+  const handleSetMeAsPaymasterEdit = () => {
+    setEditFormData({ ...editFormData, paymaster: userData.username });
   };
 
   // Handle saving changes for a bill
@@ -103,7 +147,8 @@ const BillsExpenses = () => {
       title: editFormData.title,
       amount: parseFloat(editFormData.amount),
       dueDate: editFormData.dueDate ? parseDueDate(editFormData.dueDate) : null,
-      responsible: editFormData.responsible,
+      responsible: editFormData.responsiblePeople,
+      paymaster: editFormData.paymaster
     };
 
     fetch(`http://localhost:5001/api/bills/${selectedBill._id}`, {
@@ -183,16 +228,46 @@ const BillsExpenses = () => {
             />
           </div>
 
+          {/* Responsible People Section */}
           <div className={styles.formGroup}>
-            <label htmlFor="responsible">Responsible:</label>
-            <input
-              type="text"
-              id="responsible"
-              name="responsible"
-              value={formData.responsible}
-              onChange={handleChange}
-              placeholder="Name of the responsible person"
-            />
+            <label htmlFor="newPerson">Add Responsible Person:</label>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <input
+                type="text"
+                id="newPerson"
+                value={newPerson}
+                onChange={handleNewPersonChange}
+                placeholder="Enter name"
+              />
+              <button type="button" onClick={handleAddPerson}>
+                Add Person
+              </button>
+            </div>
+            {formData.responsiblePeople.length > 0 && (
+              <ul>
+                {formData.responsiblePeople.map((person, index) => (
+                  <li key={index}>{person.name}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+
+          {/* Paymaster Section */}
+          <div className={styles.formGroup}>
+            <label htmlFor="paymaster">Paymaster:</label>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <input
+                type="text"
+                id="paymaster"
+                name="paymaster"
+                value={formData.paymaster}
+                onChange={handleChange}
+                placeholder="Who should be paid?"
+              />
+              <button type="button" onClick={handleSetMeAsPaymaster}>
+                Me
+              </button>
+            </div>
           </div>
 
           <button type="submit" className={styles.submitButton}>
@@ -215,8 +290,20 @@ const BillsExpenses = () => {
                 {bill.dueDate && (
                   <span> - Due: {new Date(bill.dueDate).toLocaleDateString()}</span>
                 )}
-                {bill.responsible && (
-                  <span> - Responsible: {bill.responsible}</span>
+                {bill.responsible && bill.responsible.length > 0 && (
+                  <div>
+                    Responsible:
+                    <ul>
+                      {bill.responsible.map((person, index) => (
+                        <li key={index}>
+                          {person.name} {person.paid ? "(Paid)" : "(Not Paid)"}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {bill.paymaster && (
+                  <div>Paymaster: {bill.paymaster}</div>
                 )}
               </div>
             </li>
@@ -264,16 +351,40 @@ const BillsExpenses = () => {
                   />
                 </div>
 
+                {/* Edit Responsible People Section */}
                 <div className={styles.formGroup}>
-                  <label htmlFor="editResponsible">Responsible:</label>
-                  <input
-                    type="text"
-                    id="editResponsible"
-                    name="responsible"
-                    value={editFormData.responsible}
-                    onChange={handleEditChange}
-                    placeholder="Responsible"
-                  />
+                  <label>Responsible People:</label>
+                  {editFormData.responsiblePeople.map((person, index) => (
+                    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span>{person.name}</span>
+                      <label>
+                        Paid:
+                        <input
+                          type="checkbox"
+                          checked={person.paid}
+                          onChange={() => handleTogglePaid(index)}
+                        />
+                      </label>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Edit Paymaster Section */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="editPaymaster">Paymaster:</label>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <input
+                      type="text"
+                      id="editPaymaster"
+                      name="paymaster"
+                      value={editFormData.paymaster}
+                      onChange={handleEditChange}
+                      placeholder="Who should be paid?"
+                    />
+                    <button type="button" onClick={handleSetMeAsPaymasterEdit}>
+                      Me
+                    </button>
+                  </div>
                 </div>
 
                 <div className={styles.buttonGroup}>
