@@ -56,6 +56,16 @@ function Room() {
         console.log("Navigating to chores with roomId:", roomId); // Debugging
         navigate(`/chores/${roomId}`);
     }
+    
+    const handleGoToHours = (roomId) => {
+        console.log("Navigating to quiet-hours with roomId:", roomId); // Debugging
+        navigate(`/quiet-hours/`);
+    }
+    
+    const handleGoToState = (roomId) => {
+        console.log("Navigating to state with roomId:", roomId); // Debugging
+        navigate(`/room-state/`);
+    }
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
@@ -72,8 +82,8 @@ function Room() {
                 <Desk>
                     <Computer />
                 </Desk>
-                <Clock />
-                <BulletinBoard />
+                <Clock onClick={() => handleGoToState(roomId)}/>
+                <BulletinBoard onClick={() => handleGoToHours(roomId)}/>
                 <TrashCan onClick={() => handleGoToChores(roomId)}/>
                 <Broom />
             </div>

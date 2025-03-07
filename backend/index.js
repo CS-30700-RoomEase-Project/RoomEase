@@ -9,6 +9,7 @@ const updateProfileRoutes = require('./routes/updateProfileRoutes');
 const billsRoutes = require('./routes/billsRoutes'); 
 const notificationRoutes = require('./routes/notificationRoutes');
 const roomRoutes = require('./routes/roomRoutes');
+const roomStateRoutes = require('./routes/stateRoutes'); 
 
 // Initialize app after importing dependencies
 const app = express();

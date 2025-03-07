@@ -21,10 +21,6 @@ function Dashboard() {
     userData = {};
   }
 
-  const handleQuietHoursClick = () => {
-    navigate("/quiet-hours");
-  };
-
   function getRoom(roomId) {
     localStorage.setItem("roomData", roomId);
     navigate(`/room/${roomId}`);
@@ -53,10 +49,6 @@ function Dashboard() {
             />
           ))}
 
-        <div className={styles.quietHoursSection} onClick={handleQuietHoursClick}>
-          <h2>Quiet Hours Settings</h2>
-          <p>Configure quiet hours for your rooms.</p>
-        </div>
       </div>
       <footer className={styles.footer}>
         <p>© 2025 RoomEase. All rights reserved.</p>

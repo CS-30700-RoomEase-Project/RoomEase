@@ -58,7 +58,7 @@ choreSchema.methods.createNotification = async function(path) {
     console.log("creating notification");
     try {
         const notification = await Notification.create({
-            description: `Chore '${this.choreName}' has been created. Description: '${this.description}'. Due Date: '${this.dueDate}'`,
+            description: `Chore '${this.choreName}' has been created. Description: '${this.description}'. Due Date: '${this.dueDate}'. First assigned to '${this.order[this.whoseTurn]}'`,
             pageID: `/Chores/${path}`,
             usersNotified: this.order,
             notificationType: 'Chore Assignment',
@@ -77,6 +77,21 @@ choreSchema.methods.switchNotification = async function(path) {
             description: `Chore '${this.choreName}' is now your responsibility. Description: '${this.description}'. Due Date: '${this.dueDate}'`,
             pageID: `/Chores/${path}`,
             usersNotified: this.order[this.whoseTurn],
+            notificationType: 'Chore Assignment',
+            origin: this.creatorId
+        });
+        await notification.propagateNotification();
+    } catch (error) {
+        console.error("Error creating notification:", error);
+    }
+}
+
+choreSchema.methods.overDueNotification = async function(path) {
+    try {
+        const notification = await Notification.create({
+            description: `Chore '${this.choreName}' is Overdue. Description: '${this.description}'. Due Date: '${this.dueDate}'`,
+            pageID: `/Chores/${path}`,
+            usersNotified: [this.order[this.whoseTurn]],
             notificationType: 'Chore Assignment',
             origin: this.creatorId
         });
