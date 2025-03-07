@@ -91,7 +91,7 @@ function Room() {
             <div className={style.roomBackground}>
                 <Fridge room={roomData}/>
                 <Desk>
-                    <Computer handleInviteClick={handleInviteClick} handleSettingsClick={handleSettingsClick}/>
+                    <Computer handleInviteClick={handleInviteClick} handleSettingsClick={handleSettingsClick} roomId={roomData._id} />
                 </Desk>
                 <Clock onClick={() => handleGoToState(roomId)}/>
                 <BulletinBoard onClick={() => handleGoToHours(roomId)}/>

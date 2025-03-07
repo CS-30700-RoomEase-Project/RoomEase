@@ -38,6 +38,7 @@ app.use('/api/bills', billsRoutes); // For bills/expenses routes
 app.use('/api/notifications', notificationRoutes); // For notification routes
 app.use('/api/room', roomRoutes); // For room-related routes
 app.use('/api/invite', inviteRoutes); // For invite related routes
+app.use('/api/roomstate', roomStateRoutes);
 
 // Test route
 app.get("/", (req, res) => {

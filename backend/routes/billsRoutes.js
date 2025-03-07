@@ -1,51 +1,72 @@
 const express = require('express');
 const router = express.Router();
-const { Bill } = require('../models/Tasks');
+const { Task, Bill } = require('../models/Tasks');
+const Room = require('../models/Room');
 
-// GET all bills
-router.get('/', async (req, res) => {
+/**
+ * GET all bills for a specific room
+ * GET /api/bills/getBills/:roomId
+ */
+router.get('/getBills/:roomId', async (req, res) => {
   try {
-    const bills = await Bill.find();
-    res.json(bills);
-  } catch (error) {
-    console.error('Error fetching bills:', error);
-    res.status(500).json({ error: 'Server error while fetching bills' });
-  }
-});
-
-// GET a single bill by ID
-router.get('/:id', async (req, res) => {
-  try {
-    const bill = await Bill.findById(req.params.id);
-    if (!bill) {
-      return res.status(404).json({ error: 'Bill not found' });
+    const { roomId } = req.params;
+    // Find the room to get its tasks array
+    const room = await Room.findById(roomId).select('tasks');
+    if (!room) {
+      return res.status(404).json({ message: "Room not found." });
     }
-    res.json(bill);
+    // Find only the tasks in the room's tasks array that are type 'Bill'
+    const bills = await Task.find({ _id: { $in: room.tasks }, type: 'Bill' });
+    res.json(bills.length ? bills : []);
   } catch (error) {
-    console.error('Error fetching bill:', error);
-    res.status(500).json({ error: 'Server error while fetching bill' });
+    console.error("Error fetching bills:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 });
 
-// POST create a new bill
-router.post('/', async (req, res) => {
+/**
+ * POST create a new Bill for a specific room
+ * POST /api/bills/addBill/:roomId
+ */
+router.post('/addBill/:roomId', async (req, res) => {
   try {
+    const { roomId } = req.params;
     const { title, amount, dueDate, responsible, paymaster } = req.body;
-    const newBill = new Bill({ title, amount, dueDate, responsible, paymaster });
-    const savedBill = await newBill.save();
-    res.status(201).json(savedBill);
+
+    // Create a new Bill
+    const newBill = new Bill({
+      title,
+      amount,
+      dueDate,
+      responsible,
+      paymaster
+    });
+    await newBill.save();
+
+    // Push the new Bill's ID into the room's tasks array
+    const updatedRoom = await Room.findByIdAndUpdate(
+      roomId,
+      { $push: { tasks: newBill._id } },
+      { new: true }
+    );
+    if (!updatedRoom) {
+      return res.status(404).json({ error: "Room not found" });
+    }
+    res.status(201).json(newBill);
   } catch (error) {
     console.error('Error creating bill:', error);
     res.status(500).json({ error: 'Server error while creating bill' });
   }
 });
 
-
-
-// PUT update an existing bill
-router.put('/:id', async (req, res) => {
+/**
+ * PUT update an existing bill
+ * PUT /api/bills/updateBill/:billId
+ */
+router.put('/updateBill/:billId', async (req, res) => {
   try {
-    const updatedBill = await Bill.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const { billId } = req.params;
+    const updatedBill = await Bill.findByIdAndUpdate(billId, req.body, { new: true });
     if (!updatedBill) {
       return res.status(404).json({ error: 'Bill not found' });
     }
@@ -56,14 +77,23 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-
-// DELETE a bill
-router.delete('/:id', async (req, res) => {
+/**
+ * DELETE a bill (also remove from room's tasks array)
+ * DELETE /api/bills/deleteBill/:billId/:roomId
+ */
+router.delete('/deleteBill/:billId/:roomId', async (req, res) => {
   try {
-    const deletedBill = await Bill.findByIdAndDelete(req.params.id);
+    const { billId, roomId } = req.params;
+
+    // Delete the bill
+    const deletedBill = await Bill.findByIdAndDelete(billId);
     if (!deletedBill) {
       return res.status(404).json({ error: 'Bill not found' });
     }
+
+    // Remove the bill ID from the room's tasks array
+    await Room.findByIdAndUpdate(roomId, { $pull: { tasks: billId } });
+
     res.json({ message: 'Bill deleted successfully' });
   } catch (error) {
     console.error('Error deleting bill:', error);

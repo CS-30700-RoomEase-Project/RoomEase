@@ -120,11 +120,6 @@ function Dashboard() {
               decline={() => declineInvite({invite})}
             />
           ))}
-
-        <div className={styles.quietHoursSection} onClick={handleQuietHoursClick}>
-          <h2>Quiet Hours Settings</h2>
-          <p>Configure quiet hours for your rooms.</p>
-        </div>
       </div>
       <footer className={styles.footer}>
         <p>© 2025 RoomEase. All rights reserved.</p>

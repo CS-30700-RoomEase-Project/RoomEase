@@ -48,7 +48,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
 
         {/* Bills/Expenses Settings route */}
-        <Route path="/bills" element={<BillsExpenses/>} />
+        <Route path="/room/:roomId/bills" element={<BillsExpenses/>} />
 
         {/* Notifications route */}
         <Route path="/notifications" element={<Notifications/>} />
