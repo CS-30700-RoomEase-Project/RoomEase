@@ -64,7 +64,7 @@ function Room() {
     
     const handleGoToState = (roomId) => {
         console.log("Navigating to state with roomId:", roomId); // Debugging
-        navigate(`/quiet-hours/`);
+        navigate(`/room-state/`);
     }
 
     if (loading) return <div>Loading...</div>;
