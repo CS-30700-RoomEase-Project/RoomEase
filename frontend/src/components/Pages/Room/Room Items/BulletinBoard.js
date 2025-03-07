@@ -3,7 +3,7 @@ import './RoomItems.css';
 
 function BulltinBoard() {
     return (
-        <div className="bulletinBoard">
+        <div className="bulletinBoard" title="Bulletin Board">
             <div className="bulletinBoardFrame">
                 <div className="bulletinBoardContent"/>
             </div>

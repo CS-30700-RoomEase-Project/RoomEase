@@ -43,7 +43,7 @@ router.post('/sendInvite', async (req, res) => {
 
         // Create an invite entry and save to the database
         console.log("RECIEVER ID: ", reciever.userId);
-        const invite = new Invite({ source: senderId, reciever: reciever.userId, room });
+        const invite = new Invite({ source: senderId, reciever: reciever.userId, room, roomName: room.roomName });
         await invite.save();
         console.log("Invite saved to database");
 
@@ -100,15 +100,17 @@ router.post('/acceptInvite', async( req, res) => {
         // return the updated room and user data. Then remove the invite from all arrays and from
         // the collection as a whole
         user.rooms.push(room);        
-        room.roomMembers.push(user);
+        room.roomMembers.push(user.userId);
+
+        console.log("Room membership arrays successfully updated")
 
         // Now delete all instances of an invite from the arrays and collections in the database
         const userArr = user.invites.filter(
             (inv) => inv._id.toString() !== invite._id.toString()
           );
         user.invites = userArr.length ? userArr : [];
-        await User.save();
-
+        await user.save();
+        
         const roomArr = room.outGoingInvites.filter(
             (inv) => inv._id.toString() !== invite._id.toString()
           );
@@ -118,6 +120,8 @@ router.post('/acceptInvite', async( req, res) => {
         await Invite.deleteOne({ _id: invite._id });
 
         console.log("Invite successfully accepted!");
+        user = await User.findOne({ userId: userId });
+        console.log(user);
         res.status(200).json({ message: "Invite successfully accepted!", room, user });
 
     } catch (error) {
@@ -163,7 +167,8 @@ router.delete ('/deleteInvite', async( req, res ) => {
         await Invite.deleteOne({_id: invite._id});
 
         console.log("Invite successfully deleted!");
-        res.status(200).json({ message: "Invite successfully deleted!", room });
+        console.log(deleter);
+        res.status(200).json({ message: "Invite successfully deleted!", room, reciever  });
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Server error", error })

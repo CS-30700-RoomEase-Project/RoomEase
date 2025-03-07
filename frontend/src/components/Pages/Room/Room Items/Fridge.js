@@ -7,7 +7,7 @@ import './RoomItems.css';
  */
 function Fridge() {
     return (
-        <div className='fridgeContainer'>
+        <div className='fridgeContainer' title='Grocery List'>
             <div className='freezerDoor'>
                 <div className='fridgeHandle'/>
             </div>
