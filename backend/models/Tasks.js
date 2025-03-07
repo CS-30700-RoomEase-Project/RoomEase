@@ -91,7 +91,7 @@ choreSchema.methods.overDueNotification = async function(path) {
         const notification = await Notification.create({
             description: `Chore '${this.choreName}' is Overdue. Description: '${this.description}'. Due Date: '${this.dueDate}'`,
             pageID: `/Chores/${path}`,
-            usersNotified: this.order[this.whoseTurn],
+            usersNotified: [this.order[this.whoseTurn]],
             notificationType: 'Chore Assignment',
             origin: this.creatorId
         });
