@@ -3,6 +3,7 @@ const router = express.Router();
 const { Grocery } = require('../models/Tasks');
 const User = require('../models/User'); // Import User model
 const Room  = require('../models/Room');
+const Notification = require('../models/Notification');
 
 router.post('/add/:roomID', async (req, res) => {
     try {
@@ -88,7 +89,6 @@ router.post('/add/:roomID', async (req, res) => {
       room.tasks.forEach(task => {
         if (task.type === 'Grocery') {
           groceries.push(task);
-          console.log(task.type);
         }
       });
 
@@ -98,5 +98,29 @@ router.post('/add/:roomID', async (req, res) => {
       res.status(500).json({ error: 'Server error while fetching grocery list' });
     }
   });
+
+  router.post("/notifyPurchased/:roomId/:itemId/", async (req, res) => {
+    const { userId, description, pageID } = req.body;
+    const { roomId, itemId } = req.params;
+    try {
+        const user = await User.findOne({ userId });
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const notification = new Notification({
+            usersNotified: [user._id], // replace with roommates later
+            description,
+            pageID,
+            notificationType: "Grocery",
+            origin: user._id
+        });
+        await notification.save();
+        await notification.propagateNotification();
+
+        res.json({ success: true, notification });
+    } catch (error) {
+        console.error("Error creating grocery notification:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
 
 module.exports = router;

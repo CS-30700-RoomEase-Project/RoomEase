@@ -19,6 +19,17 @@ function GroceryItem(props) {
         updatedItems[index].purchased = !updatedItems[index].purchased;
         setItems(updatedItems);
         saveItem();
+
+        if (updatedItems[index].purchased) {
+            console.log("purchased");
+            const notificationData = {
+                userId: localStorage.getItem("userId"), // temporarily your userId
+                description: `${updatedItems[index].itemName} purchased!`,
+                pageID: "/grocery", // adjust accordingly
+            };
+            // Call the backend service to create and propagate the notification
+            CallService("grocery/notifyPurchased/" + room._id + "/" + item._id, notificationData, (data) => {console.log("Notification response:", data)});
+        }
     };
 
     const removeItem = () => {
