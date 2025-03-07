@@ -85,7 +85,7 @@ function Room() {
                 <Clock onClick={() => handleGoToState(roomId)}/>
                 <BulletinBoard onClick={() => handleGoToHours(roomId)}/>
                 <TrashCan onClick={() => handleGoToChores(roomId)}/>
-                <Broom />
+                <Broom onClick={() => handleGoToChores(roomId)}/>
             </div>
             <div className={'roomFloor'}/>
         </div>
