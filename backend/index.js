@@ -4,6 +4,7 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const choreRoutes = require('./routes/choreRoutes');
+const groceryRoutes = require('./routes/groceryRoutes');
 const updateProfileRoutes = require('./routes/updateProfileRoutes');
 const billsRoutes = require('./routes/billsRoutes'); 
 const notificationRoutes = require('./routes/notificationRoutes');
@@ -27,6 +28,7 @@ app.use(cors({
 }));
 
 app.use('/api/chores', choreRoutes);
+app.use('/api/grocery', groceryRoutes);
 // Use different routes to avoid conflict
 app.use('/api/users', userRoutes); // For user-related routes
 app.use('/api/users/profile', updateProfileRoutes); // For profile update routes

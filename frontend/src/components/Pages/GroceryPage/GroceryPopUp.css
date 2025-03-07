@@ -1,0 +1,24 @@
+
+.grocery-popup-content {
+    color: white;
+}
+
+.grocery-popup-container {
+    color: white;
+}
+
+.grocery-modal {
+    width: fit-content;
+  color: black;
+  background: hsla(0, 0%, 0%, 0.7);
+  margin: auto;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: transparent;
+  border-width: 30px;
+  border-style: solid;
+  border-radius: 10px;
+}
