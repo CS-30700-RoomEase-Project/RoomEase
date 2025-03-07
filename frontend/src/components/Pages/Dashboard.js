@@ -21,10 +21,6 @@ function Dashboard() {
     userData = {};
   }
 
-  const handleQuietHoursClick = () => {
-    navigate("/quiet-hours");
-  };
-
   function getRoom(roomId) {
     localStorage.setItem("roomData", roomId);
     navigate(`/room/${roomId}`);
@@ -53,14 +49,6 @@ function Dashboard() {
             />
           ))}
 
-        <div className={styles.quietHoursSection} onClick={handleQuietHoursClick}>
-          <img
-            src="https://www.citypng.com/public/uploads/preview/hd-vector-calendar-icon-transparent-background-701751695033013y1f6o6ukoh.png"
-            alt="Calendar Icon"
-            className={styles.calendarIcon} // Styling the calendar icon
-          />
-          <h2>Configure Quiet Hours</h2>
-        </div>
       </div>
       <footer className={styles.footer}>
         <p>© 2025 RoomEase. All rights reserved.</p>

@@ -54,18 +54,11 @@ function QuietHours() {
 
   return (
     <div className={styles.container}>
-      <h1>Quiet Hours Settings</h1>
-      <div className={styles.currentSettings}>
+      <div className={styles.quietHours}>
         <h2>Current Quiet Hours</h2>
-        <p>
-          <strong>Start Time:</strong> {formatTime(quietHours.startTime)}
-        </p>
-        <p>
-          <strong>End Time:</strong> {formatTime(quietHours.endTime)}
-        </p>
-        <p>
-          <strong>Level:</strong> {quietHours.level}
-        </p>
+        <p><strong>Start Time:</strong> {formatTime(quietHours.startTime)}</p>
+        <p><strong>End Time:</strong> {formatTime(quietHours.endTime)}</p>
+        <p><strong>Level:</strong> {quietHours.level}</p>
       </div>
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -94,60 +87,55 @@ function QuietHours() {
           />
         </div>
 
-        <div className={styles.selectAndInput}>
-          <div className={styles.formGroup}>
-            <label htmlFor="level">Quiet Level:</label>
-            <select
-              id="level"
-              name="level"
-              value={quietHours.level}
-              onChange={handleChange}
-              required
-            >
-              {levels.map((level, index) => (
-                <option key={index} value={level}>
-                  {level}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className={styles.addLevelContainer}>
-            <input
-              type="text"
-              value={customLevel}
-              onChange={(e) => setCustomLevel(e.target.value)}
-              className={styles.customLevelInput}
-              placeholder="Add custom level"
-            />
-            <button
-              type="button"
-              onClick={handleAddCustomLevel}
-              className={styles.addLevelButton}
-            >
-              Add Level
-            </button>
-          </div>
+        <div className={styles.formGroup}>
+          <label htmlFor="level">Quiet Level:</label>
+          <select
+            id="level"
+            name="level"
+            value={quietHours.level}
+            onChange={handleChange}
+            required
+          >
+            {levels.map((level, index) => (
+              <option key={index} value={level}>
+                {level}
+              </option>
+            ))}
+          </select>
         </div>
 
-        <div className={styles.formGroup}>
-          <label>Time Format:</label>
-          <div className={styles.timeFormatContainer}>
-            <button
-              type="button"
-              onClick={() => setIs12HourFormat(false)}
-              className={`${styles.timeFormatButton} ${!is12HourFormat ? styles.active : ""}`}
-            >
-              24-Hour Time
-            </button>
-            <button
-              type="button"
-              onClick={() => setIs12HourFormat(true)}
-              className={`${styles.timeFormatButton} ${is12HourFormat ? styles.active : ""}`}
-            >
-              12-Hour Time
-            </button>
-          </div>
+        <div className={styles.addLevelContainer}>
+          <input
+            type="text"
+            value={customLevel}
+            onChange={(e) => setCustomLevel(e.target.value)}
+            className={styles.customLevelInput}
+            placeholder="Add custom level"
+          />
+          <button
+            type="button"
+            onClick={handleAddCustomLevel}
+            className={styles.addLevelButton}
+          >
+            Add Level
+          </button>
+        </div>
+
+        <div className={styles.timeFormatContainer}>
+          <button
+            type="button"
+            onClick={() => setIs12HourFormat(false)}
+            className={`${styles.timeFormatButton} ${!is12HourFormat ? styles.active : ""}`}
+          >
+            24-Hour Time
+          </button>
+          <button
+            type="button"
+            onClick={() => setIs12HourFormat(true)}
+            className={`${styles.timeFormatButton} ${is12HourFormat ? styles.active : ""}`}
+          >
+            12-Hour Time
+          </button>
         </div>
 
         <button type="submit" className={styles.submitButton}>
