@@ -16,6 +16,11 @@ router.post('/register', async (req, res) => {
         if (user) {
             if (!user.email) { 
                 user.email = email; // Give the user an email if it wasn't given before
+            }
+
+            //add notifications to the database if they aren't there yet
+            if (user.notifications.length === 0) {
+                user.notifications = [];
                 await user.save();
             }
 
@@ -27,7 +32,7 @@ router.post('/register', async (req, res) => {
                 profilePic: user.profilePic,
                 contactInfo: user.contactInfo,
                 totalPoints: user.totalPoints,
-                //notifications
+                notifications: user.notifications,
                 reviews: user.reviews,
                 rooms: user.rooms,
                 //room Cosmetics
@@ -51,7 +56,7 @@ router.post('/register', async (req, res) => {
             birthday: user.birthday,
             contactInfo: user.contactInfo,
             totalPoints: user.totalPoints,
-            //notifications
+            notifications: user.notifications,
             reviews: user.reviews,
             rooms: user.rooms,
             //room Cosmetics

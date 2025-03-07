@@ -1,0 +1,62 @@
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+.appContainer {
+    display: flex;
+    flex-direction: column; /* Ensuring column layout */
+    justify-content: top;  /* Centers the container vertically */
+    align-items: left;  /* Centers the container horizontally */
+    height: 100vh;  /* Full viewport height */
+    width: 100%;  /* Full viewport width */
+    overflow: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;  /* Ensures padding and border are included in width */
+}
+
+.roomBanner {
+    display: flex;
+    justify-content: space-between; /* Spreads items apart */
+    align-items: center;  /* Centers items vertically */
+    width: 100%;
+    height: 15%;
+    padding: 10px;
+    background-color: #8b6b4f; 
+    box-sizing: border-box;
+}
+
+.roomTitle {
+    font-size: 2rem;
+    margin-top: 1rem;
+    max-width: 40rem;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    align-self: top;
+    justify-self: center;
+    line-height: 1.6;
+    animation: fadeIn 1.5s ease-in-out;
+  }
+
+.roomBackground {
+    width: 100vw;
+    height: 80%;
+    flex-grow: 1;
+    margin: 0;
+    align-items: center;
+    position: relative;
+    display: flex;
+    background-color: black;
+    box-sizing: border-box;
+}
+
+.roomFloor {
+    width: 100%;
+    height: 5%;
+    margin: 0;
+    background-color: #8b6b4f;
+}

@@ -4,10 +4,13 @@ require('dotenv').config();
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/userRoutes');
 const choreRoutes = require('./routes/choreRoutes');
+const groceryRoutes = require('./routes/groceryRoutes');
 const updateProfileRoutes = require('./routes/updateProfileRoutes');
 const billsRoutes = require('./routes/billsRoutes'); 
+const notificationRoutes = require('./routes/notificationRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const inviteRoutes = require('./routes/inviteRoutes');
+const roomStateRoutes = require('./routes/stateRoutes'); 
 
 // Initialize app after importing dependencies
 const app = express();
@@ -27,10 +30,12 @@ app.use(cors({
 }));
 
 app.use('/api/chores', choreRoutes);
+app.use('/api/grocery', groceryRoutes);
 // Use different routes to avoid conflict
 app.use('/api/users', userRoutes); // For user-related routes
 app.use('/api/users/profile', updateProfileRoutes); // For profile update routes
 app.use('/api/bills', billsRoutes); // For bills/expenses routes
+app.use('/api/notifications', notificationRoutes); // For notification routes
 app.use('/api/room', roomRoutes); // For room-related routes
 app.use('/api/invite', inviteRoutes); // For invite related routes
 

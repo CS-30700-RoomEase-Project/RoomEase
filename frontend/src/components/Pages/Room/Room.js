@@ -54,6 +54,7 @@ function Room() {
         fetchRoomData();
     }, [roomId, navigate]);
 
+<<<<<<< HEAD
 
 
     /* Functions to handle launching the invite page and settings page */
@@ -64,11 +65,28 @@ function Room() {
     const handleSettingsClick = () => {
         navigate(`/room/${roomId}/settings`);
     };
+=======
+    const handleGoToChores = (roomId) => {
+        console.log("Navigating to chores with roomId:", roomId); // Debugging
+        navigate(`/chores/${roomId}`);
+    }
+    
+    const handleGoToHours = (roomId) => {
+        console.log("Navigating to quiet-hours with roomId:", roomId); // Debugging
+        navigate(`/quiet-hours/`);
+    }
+    
+    const handleGoToState = (roomId) => {
+        console.log("Navigating to state with roomId:", roomId); // Debugging
+        navigate(`/room-state/`);
+    }
+>>>>>>> main
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
     console.log(roomData);
     return (
+<<<<<<< HEAD
         <div className={style.appContainer}>
             <div className={style.roomBanner}>
                 <ExitRoom onClick={() => navigate('/dashboard')} />
@@ -77,12 +95,29 @@ function Room() {
             </div>
             <div className={style.roomBackground}>
                 <Fridge />
+=======
+        <div className='appContainer'>
+            <div className='roomBanner'>
+                <h1 className='roomTitle'>{roomData.roomName}</h1>
+                <NotificationButton/>
+                <Avatar />
+            </div>
+            <div className={'roomBackground'}>
+                <Fridge room={roomData}/>
+>>>>>>> main
                 <Desk>
                     <Computer handleInviteClick={handleInviteClick} handleSettingsClick={handleSettingsClick}/>
                 </Desk>
+<<<<<<< HEAD
                 <Clock />
                 <BulletinBoard />
                 <ChoreItems />
+=======
+                <Clock onClick={() => handleGoToState(roomId)}/>
+                <BulletinBoard onClick={() => handleGoToHours(roomId)}/>
+                <TrashCan onClick={() => handleGoToChores(roomId)}/>
+                <Broom />
+>>>>>>> main
             </div>
             <div className={style.roomFloor}/>
         </div>

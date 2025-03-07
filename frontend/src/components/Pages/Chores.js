@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import ChorePopup from "../Shared_components/Chores/ChorePopup";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Chores.module.css";
+import NotificationButton from '../Shared_components/NotificationBell/NotificationBell';
 
 function Chores() {
+    const { roomId } = useParams(); // Gets the roomId from the URL
     const navigate = useNavigate();
+
     const [isChorePopupOpen, setChorePopupOpen] = useState(false);
     const [chores, setChores] = useState([]); // Store fetched chores
     const [selectedChore, setSelectedChore] = useState(null); // Track selected chore for editing
@@ -12,7 +15,7 @@ function Chores() {
     // Fetch chores from API
     const fetchChores = async () => {
         try {
-            const response = await fetch('http://localhost:5001/api/chores/getChores'); // Ensure API is working
+            const response = await fetch(`http://localhost:5001/api/chores/getChores/${roomId}`); // Ensure API is working
             if (!response.ok) throw new Error("Failed to fetch chores");
 
             const data = await response.json();
@@ -27,15 +30,16 @@ function Chores() {
     };
 
 
-    // Fetch chores on component mount
     useEffect(() => {
-        fetchChores();
-    }, []);
+        if (roomId) {
+            fetchChores();
+        }
+    }, ); // Refetch chores when roomId changes
 
     // Mark chore as complete and switch to next person
     const handleMarkAsComplete = async (chore) => {
         try {
-            const response = await fetch(`http://localhost:5001/api/chores/markComplete/${chore._id}`, {
+            const response = await fetch(`http://localhost:5001/api/chores/markComplete/${chore._id}/${roomId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" }
             });
@@ -55,7 +59,7 @@ function Chores() {
     // Delete chore when delete button clicked
     const handleDeleteChore = async (choreId) => {
         try {
-            const response = await fetch(`http://localhost:5001/api/chores/delete/${choreId}`, {
+            const response = await fetch(`http://localhost:5001/api/chores/delete/${choreId}/${roomId}`, {
                 method: "DELETE",
             });
 
@@ -69,7 +73,7 @@ function Chores() {
     };
 
     const handleGoToRoom = () => {
-        navigate('/Room');
+        navigate(`/Room/${roomId}`);
     };
 
     // Open popup for adding a new chore
@@ -96,6 +100,7 @@ function Chores() {
                 <button className={styles.addChore} onClick={handleNewChore}>
                     <h4>Add Chore</h4>
                 </button>
+                <NotificationButton/>
                 <h1 className={styles.titleText}>Chores</h1>
                 <button className={styles.logoutButton} onClick={handleGoToRoom}>
                     <h4>Back to Room</h4>
@@ -141,6 +146,7 @@ function Chores() {
                 isOpen={isChorePopupOpen} 
                 onClose={closeChorePopup} 
                 chore={selectedChore} 
+                roomId={roomId}
             />
         </div>
     );

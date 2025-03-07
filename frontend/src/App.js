@@ -9,6 +9,7 @@ import QuietHoursSettings from "./components/Pages/QuietHours/QuietHours"; // Un
 import Room from "./components/Pages/Room/Room";
 import BillsExpenses from "./components/Pages/BillsExpenses";
 import RoomState from "./components/Pages/RoomState/RoomState"; // Import RoomState component
+import Notifications from "./components/Pages/Notifications/Notifications"; //import notifications
 import InvitePage from "./components/Pages/InvitePage/InvitePage"; // Import InvitePage component
 import RoomSettings from "./components/Pages/RoomSettings/RoomSettings"; // Import InvitePage component
 
@@ -23,7 +24,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard />} />
 
         {/*chores page route */}
-        <Route path="/chores" element={<Chores />} />
+        <Route path="/chores/:roomId" element={<Chores />} />
 
         {/* Grocery page route */}
         <Route path="/grocery" element={<GroceryPage />} />
@@ -34,6 +35,9 @@ function App() {
         {/* Room page route */}
         <Route path="/room/:roomId" element={<Room />}/>
 
+        {/* Room State route */}
+        <Route path="/room-state" element={<RoomState />} />
+
         {/* Invite page route */}
         <Route path="/room/:roomId/invite" element={<InvitePage />} />
 
@@ -43,17 +47,11 @@ function App() {
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />
 
-        {/* Grocery page route */}
-        <Route path="/grocery" element={<GroceryPage />} />
-
-        {/* Quiet Hours Settings route */}
-        <Route path="/quiet-hours" element={<QuietHoursSettings />} />
-
-        {/* Room State route */}
-        <Route path="/room-state" element={<RoomState />} />
-
         {/* Bills/Expenses Settings route */}
         <Route path="/bills" element={<BillsExpenses/>} />
+
+        {/* Notifications route */}
+        <Route path="/notifications" element={<Notifications/>} />
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />

@@ -16,7 +16,8 @@ const RoomSchema = new mongoose.Schema({
     completedTasks: [], // list
     bulletinNotes: [{ type: Array, default: [] }], // list of Strings
     bulletinPhotos: [{ type: Array, default: [] }], // list of URLs
-    outGoingInvites: { type: Array, default: [] } // list of invites
+    outGoingInvites: { type: Array, default: [] }, // list of invites
+    quietHours: [{ type: Array, default: []}] // list of tuples
 }, { timestamps: true });
 
 // Define the Room model

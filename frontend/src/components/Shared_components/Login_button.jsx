@@ -40,12 +40,30 @@ const GoogleSignIn = () => {
             if (response.ok) {
                 // Store the full user data returned from the backend in localStorage
                 localStorage.setItem('userData', JSON.stringify(data.userData)); // Store the user data here
+
+                await checkOverdueChores(userId);
+
                 navigate(`/dashboard`);
             } else {
                 console.error("Error in registration:", data.message);
             }
         } catch (error) {
             console.error("Error in fetch request:", error);
+        }
+    };
+
+    // Function to check overdue chores
+    const checkOverdueChores = async (userId) => {
+        try {
+            const response = await fetch(`http://localhost:5001/api/chores/checkOverdue/${userId}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            
+            const data = await response.json();
+            console.log("Overdue chores check:", data);
+        } catch (error) {
+            console.error("Error checking overdue chores:", error);
         }
     };
     

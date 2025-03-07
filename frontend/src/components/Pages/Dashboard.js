@@ -23,10 +23,6 @@ function Dashboard() {
     userData = {};
   }
 
-  const handleQuietHoursClick = () => {
-    navigate("/quiet-hours");
-  };
-
   function getRoom(roomId) {
     localStorage.setItem("roomData", roomId);
     navigate(`/room/${roomId}`);

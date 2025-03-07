@@ -25,3 +25,59 @@
     font-size: 12px;
     font-weight: bold;
 }
+
+.dropdown {
+    position: absolute;
+    top: 110%; /* Moves dropdown below the bell */
+    left: 50%;
+    transform: translateX(-50%); /* Centers it below the bell */
+    display: flex;
+    flex-direction: column;
+    min-width: 180px; /* Ensures enough space for text */
+    background: white;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    z-index: 10;
+    padding: 8px;
+}
+
+.dropdownItem {
+    width: 100%;
+    height: 40px;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: rgb(107, 96, 76);
+    font-size: 16px;
+    border: none;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-align: center;
+}
+
+.notificationsContainer {
+    margin: 5px;
+    padding: 5px;
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    z-index: 1; /* Make sure content stays above the button */
+}
+
+.notificationItem {
+    background: #fff;
+    font-size: smaller;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 50px; /* Set a maximum height */
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Limits text to 2 lines */
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+}
+
