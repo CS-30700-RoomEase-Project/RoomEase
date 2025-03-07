@@ -37,6 +37,49 @@ const RoomState = () => {
     setRoomState(null);
   };
 
+  const handleAddState = async () => {
+    if (!request.trim()) {
+      alert("Request cannot be empty.");
+      return;
+    }
+  
+    const finalLevel = customLevel ? customLevel : level;
+    const userId = localStorage.getItem("userId"); // Replace with actual user ID
+  
+    console.log(request);
+    console.log(finalLevel);
+    console.log(userId);
+
+    try {
+      const response = await fetch("http://localhost:5001/api/roomstate/addRoomState", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          request,
+          level: finalLevel,
+          userId,
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setRoomState({ request, level: finalLevel });
+        setRequest("");
+        setCustomLevel("");
+        alert("Room state added successfully!");
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error adding room state:", error);
+      alert("Failed to add room state.");
+    }
+  };
+  
+
   return (
     <div className={styles.container}>
       <h1>Room State</h1>
@@ -93,7 +136,7 @@ const RoomState = () => {
           </div>
         )}
 
-        <button type="submit" className={styles.submitButton}>
+        <button type="submit" className={styles.submitButton} onClick={handleAddState}>
           Submit Request
         </button>
       </form>

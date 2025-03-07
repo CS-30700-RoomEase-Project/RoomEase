@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ChorePopup from "../Shared_components/Chores/ChorePopup";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Chores.module.css";
+import NotificationButton from '../Shared_components/NotificationBell/NotificationBell';
 
 function Chores() {
     const { roomId } = useParams(); // Gets the roomId from the URL
@@ -99,6 +100,7 @@ function Chores() {
                 <button className={styles.addChore} onClick={handleNewChore}>
                     <h4>Add Chore</h4>
                 </button>
+                <NotificationButton/>
                 <h1 className={styles.titleText}>Chores</h1>
                 <button className={styles.logoutButton} onClick={handleGoToRoom}>
                     <h4>Back to Room</h4>
