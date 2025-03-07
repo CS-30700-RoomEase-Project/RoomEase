@@ -54,8 +54,12 @@ function Dashboard() {
           ))}
 
         <div className={styles.quietHoursSection} onClick={handleQuietHoursClick}>
-          <h2>Quiet Hours Settings</h2>
-          <p>Configure quiet hours for your rooms.</p>
+          <img
+            src="https://www.citypng.com/public/uploads/preview/hd-vector-calendar-icon-transparent-background-701751695033013y1f6o6ukoh.png"
+            alt="Calendar Icon"
+            className={styles.calendarIcon} // Styling the calendar icon
+          />
+          <h2>Configure Quiet Hours</h2>
         </div>
       </div>
       <footer className={styles.footer}>
