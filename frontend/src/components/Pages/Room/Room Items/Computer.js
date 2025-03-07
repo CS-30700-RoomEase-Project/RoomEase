@@ -1,8 +1,10 @@
 import React from 'react';
+import RoomSettingsIcon from "./ComputerContent/SettingsIcon/RoomSettingsIcon";
+import InviteIcon from "./ComputerContent/InviteIcon/InviteIcon";
 import { useNavigate } from 'react-router-dom';
 import "./RoomItems.css";
 
-function Computer({ roomId }) {
+function Computer({ handleSettingsClick, handleInviteClick, roomId}) {
   const navigate = useNavigate();
 
   const handleGoToBills = () => {
@@ -15,7 +17,10 @@ function Computer({ roomId }) {
         Bills
       </button>
       <div className="monitor-frame">
-        <div className="monitor-screen"></div>
+        <div className="monitor-screen">
+          <RoomSettingsIcon onClick={handleSettingsClick} />
+          <InviteIcon onClick={handleInviteClick} />
+        </div>
       </div>
       <div className="computer-stand"></div>
       <div className="computer-base"></div>
@@ -24,3 +29,4 @@ function Computer({ roomId }) {
 }
 
 export default Computer;
+

@@ -9,9 +9,16 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    top: 14%;
+    top: 15%;
     left: 5%;
 }
+
+.fridgeContainer:hover {
+    cursor: pointer;
+    scale: 1.1;
+    top: 11%;
+}
+
 .fridgeDoor {
     width: 90%;
     height: 55%;
@@ -101,44 +108,52 @@
 
 /* CSS For the computer Room Item */
 .computer-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    align-self: flex-end;
-    position: relative;    
-    width: 200px;
-    height: 150px;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: flex-end;
+  position: relative;    
+  width: 200px;
+  height: 150px;
+}
 
-  .monitor-frame {
-    width: 90%;
-    height: 90%;
-    background-color: #a9a9a9;
-    border-radius: 5px;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
+.monitor-frame {
+  width: 90%;
+  height: 90%;
+  background-color: #a9a9a9;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
   
-  .monitor-screen {
-    width: 100%;
-    height: 100%;
-    background-color: #7fbfbf;
-    border-radius: 2px;
-  }
-  
-  .computer-stand {
-    width: 40px;
-    height: 30px;
-    background-color: #8c8c8c;
-  }
-  
-  .computer-base {
-    width: 120px;
-    height: 20px;
-    background-color: #8c8c8c;
-    border-radius: 0 0 50% 50%;
-  }
+.monitor-screen {
+  width: 100%;
+  height: 100%;
+  background-color: #7fbfbf;
+  align-items: center;
+  justify-content: space-evenly;
+  border-radius: 2px;
+  display: flex;
+  flex-direction: row;
+}
 
+.computer-stand {
+  width: 40px;
+  height: 30px;
+  background-color: #8c8c8c;
+}
+
+.computer-base {
+  width: 120px;
+  height: 20px;
+  background-color: #8c8c8c;
+  border-radius: 0 0 50% 50%;
+}
+
+.clock:hover {
+  cursor: pointer;
+  scale: 1.1;
+}
   /* 
    NEW: Bills Button 
    Absolutely positioned in .computer-container 
@@ -164,19 +179,19 @@
 
 
 
-  /* CSS for the Clock Room Item */
-  .clock {
-    width: 100px;
-    height: 100px;
-    position: relative;
-    top: -35%;
-    left: 40%;
-    border: 10px solid #333;
-    border-radius: 50%;
-    position: relative;
-    background-color: #f0f0f0;
-  }
-  
+/* CSS for the Clock Room Item */
+.clock {
+  width: 100px;
+  height: 100px;
+  position: relative;
+  top: -35%;
+  left: 40%;
+  border: 10px solid #333;
+  border-radius: 50%;
+  position: relative;
+  background-color: #f0f0f0;
+}
+
   .clock-face {
     width: 100%;
     height: 100%;
@@ -221,6 +236,12 @@
     top: -30%;
     left: -4%;
 }
+
+.bulletinBoard:hover {
+    cursor: pointer;
+    scale: 1.1;
+}
+
 .bulletinBoardFrame {
     width: 100%;
     height: 100%;
@@ -243,8 +264,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    top: 32%;
-    left: 15%;
+    /* top: 32%;
+    left: 15%; */
     border-radius: 50%;
 }
 .trashCanLid {
@@ -258,14 +279,14 @@
 }
 
 .trashCanLidBody {
-    width: 100%;
-    height: 70%;
-    background-color: #696868;
-    position: relative;
+  width: 100%;
+  height: 70%;
+  background-color: #696868;
+  position: relative;
 
-    border-top-left-radius: 50%;
-    border-top-right-radius: 50%;
-    border: 5px solid hsl(0, 0%, 28%);
+  border-top-left-radius: 50%;
+  border-top-right-radius: 50%;
+  border: 5px solid hsl(0, 0%, 28%);
 }
 
 .trashCanLidHandle {
@@ -311,8 +332,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  top: 31%;
-  left: 3%;
+  /* top: 31%;*/
+  left: 35%;
 }
 
 .broomHandle {
@@ -349,4 +370,26 @@
   height: 100%;
   overflow: hidden;
   background-color: #a68e6f;
+}
+
+/* CSS for the trash can and broom Room Item combined */
+.choreItems {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  top: 24%;
+  left: 0;
+  width: 20%;
+  height: 20%;
+}
+
+.choreItems:hover {
+  cursor: pointer;
+  scale: 1.1;
+  top: 21%
+}
+
+.choreItems:hover .trashCanLid {
+  transform: translateY(-10px);  
 }

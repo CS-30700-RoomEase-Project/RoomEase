@@ -1,0 +1,36 @@
+.arrow-container {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 1.5s ease-in-out;
+}
+.arrow-head {
+  width: 0;
+  height: 0;
+  border-right: 40px solid white;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+}
+
+.arrow-body {
+  width: 40%;
+  height: 20%;
+  background-color: white;
+}
+
+.arrow-container:hover {
+  cursor: pointer;
+  scale: 1.1;
+}
+
+.arrow-container:hover .arrow-body {
+  background-color: rgb(170, 169, 169);
+}
+
+.arrow-container:hover .arrow-head {
+  border-right: 40px solid rgb(170, 169, 169);
+  margin-right: -1px; /* Adjust to remove the border gap */
+}

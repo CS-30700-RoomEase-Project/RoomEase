@@ -4,6 +4,7 @@ const Notification = require('./Notification');
 const UserSchema = new mongoose.Schema({
   username: { type: String, unique: false },
   userId: { type: String, unique: true },
+  email: {type: String, unique: true},
   birthday: { type: String, default: '01/01/2000' },
   profilePic: { type: String, default: 'https://www.gravatar.com/avatar/'},
   contactInfo: {type: Number, default: 1111111111},
@@ -14,6 +15,7 @@ const UserSchema = new mongoose.Schema({
   //room Cosmetics
   //notification settings
   chatFilter: { type: Boolean, default: false },
+  invites: { type: Array, default: []}
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);

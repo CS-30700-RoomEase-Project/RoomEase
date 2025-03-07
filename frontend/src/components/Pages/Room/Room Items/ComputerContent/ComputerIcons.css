@@ -1,0 +1,82 @@
+/* CSS for room settings icon on the computer */
+.gear-container {
+    width: 40px;
+    height: 40px;
+    background: tan;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s;
+
+  }
+  
+.gear {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  transform: rotate(0deg);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+  
+/* Rotation animation */
+.gear-container:hover .gear {
+  transform: rotate(180deg);
+}
+  
+/* Container hover effect */
+.gear-container:hover {
+  background: #d2b48c; /* Darker tan */
+  scale: 1.1;
+}
+
+/* CSS for invite icon on the computer */
+.invite-icon {
+  width: 40px;
+  height: 40px;
+  background: tan;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.invite-icon:hover {
+  background: #d2b48c; /* Darker tan */
+  scale: 1.1;
+}
+
+.vertical-plus-line {
+  width: 5px;
+  height: 20px;
+  background: white;
+  border-radius: 2px;
+  position: relative;
+  left: 25%;
+}
+
+.horizontal-plus-line {
+  width: 20px;
+  height: 5px;
+  background: white;
+  border-radius: 2px;
+  position: relative;
+  top: -5%;
+  left: 20%;
+  transform: translate(-50%, 50%);
+}
+
+
+.invite-icon:hover .horizontal-plus-line {
+  background-color: rgb(170, 169, 169);
+  scale: 1.1;
+}
+
+.invite-icon:hover .vertical-plus-line {
+  background-color: rgb(170, 169, 169);
+  scale: 1.1;
+}

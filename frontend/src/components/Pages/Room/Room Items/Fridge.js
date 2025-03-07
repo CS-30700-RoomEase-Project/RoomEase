@@ -13,7 +13,8 @@ function Fridge(props) {
     const [isPopUpOpen, setPopUpOpen] = useState(false);
     
     return (
-        <div className='fridgeContainer' onClick={() => setPopUpOpen(true)} style={{ cursor: 'pointer' }}>
+
+        <div className='fridgeContainer' onClick={() => setPopUpOpen(true)} style={{ cursor: 'pointer' } } title="Grocery List">
             <div className='freezerDoor'>
                 <div className='fridgeHandle'/>
             </div>

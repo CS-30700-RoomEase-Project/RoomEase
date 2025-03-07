@@ -10,7 +10,8 @@ import Room from "./components/Pages/Room/Room";
 import BillsExpenses from "./components/Pages/BillsExpenses";
 import RoomState from "./components/Pages/RoomState/RoomState"; // Import RoomState component
 import Notifications from "./components/Pages/Notifications/Notifications"; //import notifications
-
+import InvitePage from "./components/Pages/InvitePage/InvitePage"; // Import InvitePage component
+import RoomSettings from "./components/Pages/RoomSettings/RoomSettings"; // Import InvitePage component
 
 function App() {
   return (
@@ -36,6 +37,12 @@ function App() {
 
         {/* Room State route */}
         <Route path="/room-state" element={<RoomState />} />
+
+        {/* Invite page route */}
+        <Route path="/room/:roomId/invite" element={<InvitePage />} />
+
+        {/* Room Settings page route */}
+        <Route path="/room/:roomId/settings" element={<RoomSettings />} />
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />

@@ -30,3 +30,83 @@
     color: #f5f5f5;
 }
 
+
+/* CSS for the invite popup */
+.invite-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    width: 100%;
+}
+
+/* Ensure overlay for RoomInvite's popup covers the entire screen */
+.invite-popup-overlay {
+    background: rgba(0, 0, 0, 0.7) !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh !important;
+    width: 100vw !important;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    z-index: 2000 !important; /* Ensure it's above everything */
+}
+
+/* Center modal and content */
+.invite-popup-content {
+    background: #333 !important;
+    width: 350px;
+    max-width: 90%;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    position: relative;
+    animation: fadeIn 0.3s ease-in-out;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup-buttons {
+    display: flex;
+    width: 60%;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.invite-header {
+    width: 100%;
+    text-align: center;
+    font-weight: bold;
+    font-size: 2rem;
+    color: white;
+}
+
+.invite-modal {
+    background: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.accept-button {
+    height: 100px;
+    width: 100px;
+    background: lightgreen;
+    justify-content: center;
+    align-items: center;
+}
+
+.decline-button {
+    height: 100px;
+    width: 100px;
+    background: red;
+    justify-content: center;
+    align-items: center;
+}

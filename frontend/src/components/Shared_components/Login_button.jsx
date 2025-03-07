@@ -8,21 +8,23 @@ const GoogleSignIn = () => {
 
     const [username, setName] = useState('');
     const [userId, setId] = useState('');
+    const [email, setEmail] = useState('');
     const navigate = useNavigate();
 
     const onFailure = (error) => {
         console.error('Login Failed:', error);
     };
 
-    const handleSubmit = async (userName, userId) => {
+    const handleSubmit = async (userName, userId, email) => {
         setName(userName);
         setId(userId);
+        setEmail(email);
     
         // Store user info in localStorage temporarily (before backend response)
         // localStorage.setItem('username', userName);
         localStorage.setItem('userId', userId);
     
-        const userData = { username: userName, userId };
+        const userData = { username: userName, userId, email };
         console.log("Sending request with data:", userData);
         
         try {
@@ -86,8 +88,9 @@ const GoogleSignIn = () => {
     
         const userId = decodedUser.sub;
         const userName = decodedUser.name;
+        const email = decodedUser.email;
     
-        handleSubmit(userName, userId);
+        handleSubmit(userName, userId, email);
     };
 
     return (
