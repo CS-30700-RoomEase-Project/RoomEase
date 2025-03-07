@@ -181,4 +181,42 @@ router.post('/addChore/:roomId', async (req, res) => {
     }
 });
 
+router.post('/checkOverdue/:userId', async (req, res) => {
+    try {
+        const { userId } = req.params;
+
+        // Fetch user and populate rooms along with tasks
+        const user = await User.findOne({ userId }).populate({
+            path: 'rooms'
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        let overdueCount = 0;
+        let tasksChecked = [];
+
+        for (const r of user.rooms) {
+            const room = await Room.findById(r).populate('tasks');
+            for (const task of room.tasks) {
+                // Check if the task is an instance of Chore and overdue
+                tasksChecked.push(task);
+                if (task instanceof Chore && task.dueDate && new Date(task.dueDate) < new Date() && !task.completed && task.order[task.whoseTurn].toString() === user._id.toString()) {
+                    await task.overDueNotification(room._id.toString()); // Call the notification method
+                    overdueCount++;
+                }
+            }
+        }
+
+        res.status(200).json({ message: `Checked overdue chores, ${overdueCount} notifications sent.`, tasksChecked });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+
+
 module.exports = router;
