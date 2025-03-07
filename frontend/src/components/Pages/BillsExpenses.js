@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import NotificationBell from '../Shared_components/NotificationBell/NotificationBell';
 import AvatarButton from '../Shared_components/AvatarButton/AvatarButton';
 import styles from './BillsExpenses.module.css';
 
 const BillsExpenses = () => {
+  const { roomId } = useParams(); // Get roomId from URL
   const navigate = useNavigate();
+  
   const [bills, setBills] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
@@ -31,13 +33,30 @@ const BillsExpenses = () => {
     profilePic: '',
   };
 
-  // Fetch bills on mount
+  // Navigate back to room page
+  const handleBackToRoom = () => {
+    navigate(`/room/${roomId}`);
+  };
+
+  // Fetch bills for the current room on mount (or when roomId changes)
   useEffect(() => {
-    fetch('http://localhost:5001/api/bills')
-      .then((res) => res.json())
-      .then((data) => setBills(data))
-      .catch((err) => console.error(err));
-  }, []);
+    if (roomId) {
+      fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Fetched bills data:", data);
+          if (Array.isArray(data)) {
+            setBills(data);
+          } else if (Array.isArray(data.bills)) {
+            setBills(data.bills);
+          } else {
+            console.error("Unexpected bills response structure", data);
+            setBills([]);
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [roomId]);
 
   // Update new bill form fields
   const handleChange = (e) => {
@@ -75,9 +94,10 @@ const BillsExpenses = () => {
     return new Date(year, month - 1, day);
   };
 
-  // Handle new bill submission (send responsiblePeople array and paymaster)
+  // Handle new bill submission using localized endpoints
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Submitting new bill:", formData);
     const newBill = {
       title: formData.title,
       amount: parseFloat(formData.amount),
@@ -86,15 +106,16 @@ const BillsExpenses = () => {
       paymaster: formData.paymaster
     };
 
-    fetch('http://localhost:5001/api/bills', {
+    fetch(`http://localhost:5001/api/bills/addBill/${roomId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newBill),
     })
       .then((res) => res.json())
       .then((savedBill) => {
+        console.log("Saved bill:", savedBill);
         setBills([...bills, savedBill]);
-        // Reset form including responsible people and paymaster
+        // Reset form
         setFormData({ title: '', amount: '', dueDate: '', responsiblePeople: [], paymaster: '' });
       })
       .catch((err) => console.error(err));
@@ -141,7 +162,7 @@ const BillsExpenses = () => {
     setEditFormData({ ...editFormData, paymaster: userData.username });
   };
 
-  // Handle saving changes for a bill
+  // Handle saving changes for a bill (update using update route)
   const handleEditSubmit = (e) => {
     e.preventDefault();
     if (!selectedBill) return;
@@ -153,7 +174,7 @@ const BillsExpenses = () => {
       paymaster: editFormData.paymaster
     };
 
-    fetch(`http://localhost:5001/api/bills/${selectedBill._id}`, {
+    fetch(`http://localhost:5001/api/bills/updateBill/${selectedBill._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedBill),
@@ -166,10 +187,10 @@ const BillsExpenses = () => {
       .catch((err) => console.error(err));
   };
 
-  // Handle deleting a bill
+  // Handle deleting a bill (delete from room tasks as well)
   const handleDelete = () => {
     if (!selectedBill) return;
-    fetch(`http://localhost:5001/api/bills/${selectedBill._id}`, {
+    fetch(`http://localhost:5001/api/bills/deleteBill/${selectedBill._id}/${roomId}`, {
       method: 'DELETE',
     })
       .then((res) => res.json())
@@ -182,8 +203,11 @@ const BillsExpenses = () => {
 
   return (
     <div className={styles.billsAppContainer}>
-      {/* Top Banner */}
+      {/* Top Banner with Back to Room Button */}
       <div className={styles.billsBanner}>
+        <button onClick={handleBackToRoom} className={styles.backButton}>
+          Back to Room
+        </button>
         <div className={styles.header}>
           <h1>{userData.username}'s Bills & Expenses</h1>
         </div>
@@ -390,27 +414,13 @@ const BillsExpenses = () => {
                 </div>
 
                 <div className={styles.buttonGroup}>
-                  <button
-                    type="submit"
-                    className={styles.saveButton}
-                    style={{ backgroundColor: 'green' }}
-                  >
+                  <button type="submit" className={styles.saveButton} style={{ backgroundColor: 'green' }}>
                     Save
                   </button>
-                  <button
-                    type="button"
-                    className={styles.deleteButton}
-                    style={{ backgroundColor: 'red' }}
-                    onClick={handleDelete}
-                  >
+                  <button type="button" className={styles.deleteButton} style={{ backgroundColor: 'red' }} onClick={handleDelete}>
                     Delete
                   </button>
-                  <button
-                    type="button"
-                    className={styles.cancelButton}
-                    style={{ backgroundColor: 'yellow' }}
-                    onClick={() => setSelectedBill(null)}
-                  >
+                  <button type="button" className={styles.cancelButton} style={{ backgroundColor: 'yellow' }} onClick={() => setSelectedBill(null)}>
                     Cancel
                   </button>
                 </div>
