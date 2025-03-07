@@ -2,8 +2,8 @@
 .billsAppContainer {
   display: flex;
   flex-direction: column;
-  justify-content: top;
-  align-items: left;
+  justify-content: flex-start;
+  align-items: flex-start;
   height: 100vh;
   width: 100%;
   overflow: auto;
@@ -19,7 +19,6 @@
   align-items: center;
   width: 100%;
   padding: 10px;
-  /* Same translucent banner color as your dashboard */
   background: rgba(219, 149, 20, 0.495);
   box-sizing: border-box;
 }
@@ -30,14 +29,19 @@
   text-align: center;
 }
 
-/* Main content area, similar to .dashboardContent */
+/* Main content area */
 .billsContent {
   flex-grow: 1;
   padding: 30px;
   margin: 0 auto;
-  width: 90%;
-  margin-right: 100px;
+  /* The container will take up 80% of the viewport width up to a max of 1200px */
+  width: 80%;
+  max-width: 1200px;
   box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 /* Form styling */
@@ -46,6 +50,14 @@
   flex-direction: column;
   gap: 15px;
   margin-bottom: 20px;
+  /* Let the form fill the container but limit how wide it can grow */
+  width: 100%;
+  max-width: 800px;
+}
+
+.billForm input {
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .formGroup {
@@ -65,7 +77,19 @@
   border: 1px solid #ccc;
 }
 
-/* Submit button style (similar to a typical bootstrap-like button) */
+/* Row layout for input + button fields */
+.formGroupRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.formGroupRow input {
+  flex: 1;
+  box-sizing: border-box;
+}
+
+/* Submit button style */
 .submitButton {
   padding: 10px 20px;
   background-color: #007bff;
@@ -83,6 +107,8 @@
 .billList {
   list-style: none;
   padding: 0;
+  width: 100%;
+  max-width: 800px; /* match or differ from .billForm if you like */
 }
 
 .billItem {
@@ -92,27 +118,31 @@
   border-radius: 4px;
 }
 
+/* Popup overlay */
 .popupOverlay {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5); /* semi-transparent background */
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
 }
 
+/* Popup menu */
 .popupMenu {
   background: white;
   padding: 20px;
   border-radius: 8px;
   width: 90%;
   max-width: 400px;
+  color: #000; /* Ensure text is black */
 }
 
+/* Button group styling */
 .buttonGroup button {
   margin-right: 10px;
   padding: 8px 16px;
@@ -121,3 +151,7 @@
   cursor: pointer;
 }
 
+/* Force popup labels to black */
+.popupMenu .formGroup label {
+  color: #000;
+}

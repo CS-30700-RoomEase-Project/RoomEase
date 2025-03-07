@@ -11,12 +11,11 @@ const BillsExpenses = () => {
     title: '',
     amount: '',
     dueDate: '',
-    // Change responsible from a string to an array of objects
     responsiblePeople: [],
     paymaster: ''
   });
   const [newPerson, setNewPerson] = useState("");
-  
+
   // For pop-up modal editing
   const [selectedBill, setSelectedBill] = useState(null);
   const [editFormData, setEditFormData] = useState({
@@ -42,7 +41,7 @@ const BillsExpenses = () => {
 
   // Update new bill form fields
   const handleChange = (e) => {
-    setFormData({...formData, [e.target.name]: e.target.value});
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   // Update new responsible person input
@@ -52,10 +51,13 @@ const BillsExpenses = () => {
 
   // Add a person to the responsiblePeople array
   const handleAddPerson = () => {
-    if(newPerson.trim() !== ""){
+    if (newPerson.trim() !== "") {
       setFormData({
         ...formData,
-        responsiblePeople: [...formData.responsiblePeople, { name: newPerson.trim(), paid: false }]
+        responsiblePeople: [
+          ...formData.responsiblePeople,
+          { name: newPerson.trim(), paid: false }
+        ]
       });
       setNewPerson("");
     }
@@ -120,13 +122,13 @@ const BillsExpenses = () => {
 
   // Update edit form fields for text inputs
   const handleEditChange = (e) => {
-    setEditFormData({...editFormData, [e.target.name]: e.target.value});
+    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
   };
 
   // Toggle the 'paid' status for a responsible person in edit mode
   const handleTogglePaid = (index) => {
     const updatedPeople = editFormData.responsiblePeople.map((person, idx) => {
-      if(idx === index) {
+      if (idx === index) {
         return { ...person, paid: !person.paid };
       }
       return person;
@@ -158,7 +160,7 @@ const BillsExpenses = () => {
     })
       .then((res) => res.json())
       .then((data) => {
-        setBills(bills.map(bill => bill._id === selectedBill._id ? data : bill));
+        setBills(bills.map((bill) => (bill._id === selectedBill._id ? data : bill)));
         setSelectedBill(null);
       })
       .catch((err) => console.error(err));
@@ -172,7 +174,7 @@ const BillsExpenses = () => {
     })
       .then((res) => res.json())
       .then(() => {
-        setBills(bills.filter(bill => bill._id !== selectedBill._id));
+        setBills(bills.filter((bill) => bill._id !== selectedBill._id));
         setSelectedBill(null);
       })
       .catch((err) => console.error(err));
@@ -231,7 +233,7 @@ const BillsExpenses = () => {
           {/* Responsible People Section */}
           <div className={styles.formGroup}>
             <label htmlFor="newPerson">Add Responsible Person:</label>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className={styles.formGroupRow}>
               <input
                 type="text"
                 id="newPerson"
@@ -255,7 +257,7 @@ const BillsExpenses = () => {
           {/* Paymaster Section */}
           <div className={styles.formGroup}>
             <label htmlFor="paymaster">Paymaster:</label>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className={styles.formGroupRow}>
               <input
                 type="text"
                 id="paymaster"
@@ -355,7 +357,7 @@ const BillsExpenses = () => {
                 <div className={styles.formGroup}>
                   <label>Responsible People:</label>
                   {editFormData.responsiblePeople.map((person, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div key={index} className={styles.formGroupRow}>
                       <span>{person.name}</span>
                       <label>
                         Paid:
@@ -372,7 +374,7 @@ const BillsExpenses = () => {
                 {/* Edit Paymaster Section */}
                 <div className={styles.formGroup}>
                   <label htmlFor="editPaymaster">Paymaster:</label>
-                  <div style={{ display: 'flex', gap: '10px' }}>
+                  <div className={styles.formGroupRow}>
                     <input
                       type="text"
                       id="editPaymaster"
@@ -388,13 +390,27 @@ const BillsExpenses = () => {
                 </div>
 
                 <div className={styles.buttonGroup}>
-                  <button type="submit" className={styles.saveButton} style={{ backgroundColor: 'green' }}>
+                  <button
+                    type="submit"
+                    className={styles.saveButton}
+                    style={{ backgroundColor: 'green' }}
+                  >
                     Save
                   </button>
-                  <button type="button" className={styles.deleteButton} style={{ backgroundColor: 'red' }} onClick={handleDelete}>
+                  <button
+                    type="button"
+                    className={styles.deleteButton}
+                    style={{ backgroundColor: 'red' }}
+                    onClick={handleDelete}
+                  >
                     Delete
                   </button>
-                  <button type="button" className={styles.cancelButton} style={{ backgroundColor: 'yellow' }} onClick={() => setSelectedBill(null)}>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    style={{ backgroundColor: 'yellow' }}
+                    onClick={() => setSelectedBill(null)}
+                  >
                     Cancel
                   </button>
                 </div>
@@ -402,7 +418,6 @@ const BillsExpenses = () => {
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
