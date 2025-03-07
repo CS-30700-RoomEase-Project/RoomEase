@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const RoomState = require("../models/RoomState"); // Import RoomState model
+const RoomState = require("../models/Room"); // Import RoomState model
 const User = require("../models/User");
 const Notification = require("../models/Notification");
 
