@@ -34,17 +34,11 @@ function App() {
         {/* Room page route */}
         <Route path="/room/:roomId" element={<Room />}/>
 
-        {/* Redirect from any other route to the home page (optional) */}
-        <Route path="*" element={<Navigate to="/" />} />
-
-        {/* Grocery page route */}
-        <Route path="/grocery" element={<GroceryPage />} />
-
-        {/* Quiet Hours Settings route */}
-        <Route path="/quiet-hours" element={<QuietHoursSettings />} />
-
         {/* Room State route */}
         <Route path="/room-state" element={<RoomState />} />
+
+        {/* Redirect from any other route to the home page (optional) */}
+        <Route path="*" element={<Navigate to="/" />} />
 
         {/* Bills/Expenses Settings route */}
         <Route path="/bills" element={<BillsExpenses/>} />
