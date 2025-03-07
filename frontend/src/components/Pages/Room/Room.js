@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import './Room.css';
+import style from './Room.module.css';
 import Fridge from './Room Items/Fridge';
 import Desk from './Room Items/Desk';
 import Avatar from '../../Shared_components/AvatarButton/AvatarButton';
@@ -10,6 +10,8 @@ import BulletinBoard from './Room Items/BulletinBoard';
 import TrashCan from './Room Items/TrashCan';
 import Broom from './Room Items/Broom';
 import NotificationButton from '../../Shared_components/NotificationBell/NotificationBell';
+import ExitRoom from './Room Icons/ExitRoom';
+import ChoreItems from './Room Items/ChoreItems';
 
 function Room() {
     const { roomId } = useParams(); // Gets the roomId from the URL
@@ -52,6 +54,15 @@ function Room() {
         fetchRoomData();
     }, [roomId, navigate]);
 
+
+    /* Functions to handle launching the invite page and settings page */
+    const handleInviteClick = () => {
+        navigate(`/room/${roomId}/invite`);
+    };
+
+    const handleSettingsClick = () => {
+        navigate(`/room/${roomId}/settings`);
+    };
     const handleGoToChores = (roomId) => {
         console.log("Navigating to chores with roomId:", roomId); // Debugging
         navigate(`/chores/${roomId}`);
@@ -71,23 +82,22 @@ function Room() {
     if (error) return <div>Error: {error}</div>;
     console.log(roomData);
     return (
-        <div className='appContainer'>
-            <div className='roomBanner'>
-                <h1 className='roomTitle'>{roomData.roomName}</h1>
-                <NotificationButton/>
+        <div className={style.appContainer}>
+            <div className={style.roomBanner}>
+                <ExitRoom onClick={() => navigate('/dashboard')} />
+                <h1 className={style.roomTitle}>{roomData.roomName}</h1>
                 <Avatar />
             </div>
-            <div className={'roomBackground'}>
+            <div className={style.roomBackground}>
                 <Fridge room={roomData}/>
                 <Desk>
-                    <Computer />
+                    <Computer handleInviteClick={handleInviteClick} handleSettingsClick={handleSettingsClick} roomId={roomData._id} />
                 </Desk>
                 <Clock onClick={() => handleGoToState(roomId)}/>
                 <BulletinBoard onClick={() => handleGoToHours(roomId)}/>
-                <TrashCan onClick={() => handleGoToChores(roomId)}/>
-                <Broom onClick={() => handleGoToChores(roomId)}/>
+                <ChoreItems onClick={() => handleGoToChores(roomId)}/>
             </div>
-            <div className={'roomFloor'}/>
+            <div className={style.roomFloor}/>
         </div>
     )
 };
