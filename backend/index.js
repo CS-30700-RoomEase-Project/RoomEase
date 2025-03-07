@@ -10,6 +10,7 @@ const billsRoutes = require('./routes/billsRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const roomRoutes = require('./routes/roomRoutes');
 const roomStateRoutes = require('./routes/stateRoutes'); 
+const hoursRoute = require('./routes/hoursRoute');
 
 // Initialize app after importing dependencies
 const app = express();
@@ -37,6 +38,8 @@ app.use('/api/bills', billsRoutes); // For bills/expenses routes
 app.use('/api/notifications', notificationRoutes); // For notification routes
 app.use('/api/room', roomRoutes); // For room-related routes
 app.use('/api/roomstate', roomStateRoutes);
+app.use('/api/hours', hoursRoute);
+
 
 
 // Test route
