@@ -80,7 +80,7 @@ function Room() {
             <div className={'roomBackground'}>
                 <Fridge room={roomData}/>
                 <Desk>
-                    <Computer />
+                    <Computer roomId={roomData._id} />
                 </Desk>
                 <Clock onClick={() => handleGoToState(roomId)}/>
                 <BulletinBoard onClick={() => handleGoToHours(roomId)}/>
