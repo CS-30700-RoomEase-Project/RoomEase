@@ -1,16 +1,32 @@
-import "./RoomItems.css"
-import React from 'react'
+import React from 'react';
+import RoomSettingsIcon from "./ComputerContent/SettingsIcon/RoomSettingsIcon";
+import InviteIcon from "./ComputerContent/InviteIcon/InviteIcon";
+import { useNavigate } from 'react-router-dom';
+import "./RoomItems.css";
 
-function Computer() {
+function Computer({ handleSettingsClick, handleInviteClick, roomId}) {
+  const navigate = useNavigate();
+
+  const handleGoToBills = () => {
+    navigate(`/room/${roomId}/bills`);
+  };
+
   return (
     <div className="computer-container">
+      <button className="bills-button" onClick={handleGoToBills}>
+        Bills
+      </button>
       <div className="monitor-frame">
-        <div className="monitor-screen"></div>
+        <div className="monitor-screen">
+          <RoomSettingsIcon onClick={handleSettingsClick} />
+          <InviteIcon onClick={handleInviteClick} />
+        </div>
       </div>
       <div className="computer-stand"></div>
       <div className="computer-base"></div>
     </div>
-  )
+  );
 }
 
-export default Computer
+export default Computer;
+

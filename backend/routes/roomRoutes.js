@@ -50,7 +50,7 @@ router.get('/getRoom', async( req, res) => {
         
         // Check if the user is in the room, send the data if they are
         if (room.roomMembers.includes(userId)) {
-            return res.status(200).json({ message: "User is in the room", room });
+            return res.status(200).json({ message: "User is in the room", room: room });
         } else {
             console.log(room.roomMembers);
             return res.status(404).json({ message: "Access Denied: User is not a member of this room" });

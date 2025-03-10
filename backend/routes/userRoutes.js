@@ -7,13 +7,16 @@ const fs = require('fs');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-    const { username, userId } = req.body;
+    const { username, userId, email } = req.body;
 
-    console.log("Received data:", { username, userId }); // Add this log for debugging
+    console.log("Received data:", { username, userId, email }); // Add this log for debugging
 
     try {
         let user = await User.findOne({ userId });
         if (user) {
+            if (!user.email) { 
+                user.email = email; // Give the user an email if it wasn't given before
+            }
 
             //add notifications to the database if they aren't there yet
             if (user.notifications.length === 0) {
@@ -24,6 +27,7 @@ router.post('/register', async (req, res) => {
             const userData = {
                 username: user.username,
                 userId: user.userId,
+                email: user.email,
                 birthday: user.birthday,
                 profilePic: user.profilePic,
                 contactInfo: user.contactInfo,
@@ -34,18 +38,20 @@ router.post('/register', async (req, res) => {
                 //room Cosmetics
                 //notification settings
                 chatFilter: user.chatFilter,
+                invites: user.invites
             // Add other fields as necessary
             };
             console.log("User data sent in response:", userData);
             return res.status(200).json({ message: "User already exists", userData });
         }
 
-        user = new User({ username, userId });
+        user = new User({ username, userId, email });
         await user.save();
         console.log("User saved to MongoDB:", user);
         const userData = {
             username: user.username,
             userId: user.userId,
+            email: user.email,
             profilePic: user.profilePic,
             birthday: user.birthday,
             contactInfo: user.contactInfo,
@@ -56,6 +62,7 @@ router.post('/register', async (req, res) => {
             //room Cosmetics
             //notification settings
             chatFilter: user.chatFilter,
+            invites: user.invites
         // Add other fields as necessary
         };
         res.status(200).json({ message: "User registered successfully", userData });
@@ -67,15 +74,16 @@ router.post('/register', async (req, res) => {
 
 router.get('/getUser', async (req, res) => {
     const { userId } = req.query;
+    console.log(userId);
     try {
         let user = await User.findOne({ userId });
-        console.log("User found:", user);
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
         const userData = {
             username: user.username,
             userId: user.userId,
+            email: user.email,
             profilePic: user.profilePic,
             birthday: user.birthday,
             contactInfo: user.contactInfo,
@@ -86,9 +94,10 @@ router.get('/getUser', async (req, res) => {
             //room Cosmetics
             //notification settings
             chatFilter: user.chatFilter,
+            invites: user.invites
         };
-        console.log("User data sent in response:", userData);
-        return res.status(200).json({ message: "User data found", userData });
+        // console.log("User data sent in response:", userData);
+        return res.status(200).json({ message: "User data found", user: userData });
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
     }

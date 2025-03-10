@@ -1,22 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import NotificationBell from '../Shared_components/NotificationBell/NotificationBell';
 import AvatarButton from '../Shared_components/AvatarButton/AvatarButton';
 import styles from './BillsExpenses.module.css';
 
 const BillsExpenses = () => {
+  const { roomId } = useParams(); // Get roomId from URL
   const navigate = useNavigate();
+  
   const [bills, setBills] = useState([]);
   const [formData, setFormData] = useState({
     title: '',
     amount: '',
     dueDate: '',
-    // Change responsible from a string to an array of objects
     responsiblePeople: [],
     paymaster: ''
   });
   const [newPerson, setNewPerson] = useState("");
-  
+
   // For pop-up modal editing
   const [selectedBill, setSelectedBill] = useState(null);
   const [editFormData, setEditFormData] = useState({
@@ -32,17 +33,34 @@ const BillsExpenses = () => {
     profilePic: '',
   };
 
-  // Fetch bills on mount
+  // Navigate back to room page
+  const handleBackToRoom = () => {
+    navigate(`/room/${roomId}`);
+  };
+
+  // Fetch bills for the current room on mount (or when roomId changes)
   useEffect(() => {
-    fetch('http://localhost:5001/api/bills')
-      .then((res) => res.json())
-      .then((data) => setBills(data))
-      .catch((err) => console.error(err));
-  }, []);
+    if (roomId) {
+      fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Fetched bills data:", data);
+          if (Array.isArray(data)) {
+            setBills(data);
+          } else if (Array.isArray(data.bills)) {
+            setBills(data.bills);
+          } else {
+            console.error("Unexpected bills response structure", data);
+            setBills([]);
+          }
+        })
+        .catch((err) => console.error(err));
+    }
+  }, [roomId]);
 
   // Update new bill form fields
   const handleChange = (e) => {
-    setFormData({...formData, [e.target.name]: e.target.value});
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   // Update new responsible person input
@@ -52,10 +70,13 @@ const BillsExpenses = () => {
 
   // Add a person to the responsiblePeople array
   const handleAddPerson = () => {
-    if(newPerson.trim() !== ""){
+    if (newPerson.trim() !== "") {
       setFormData({
         ...formData,
-        responsiblePeople: [...formData.responsiblePeople, { name: newPerson.trim(), paid: false }]
+        responsiblePeople: [
+          ...formData.responsiblePeople,
+          { name: newPerson.trim(), paid: false }
+        ]
       });
       setNewPerson("");
     }
@@ -73,9 +94,10 @@ const BillsExpenses = () => {
     return new Date(year, month - 1, day);
   };
 
-  // Handle new bill submission (send responsiblePeople array and paymaster)
+  // Handle new bill submission using localized endpoints
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log("Submitting new bill:", formData);
     const newBill = {
       title: formData.title,
       amount: parseFloat(formData.amount),
@@ -84,15 +106,16 @@ const BillsExpenses = () => {
       paymaster: formData.paymaster
     };
 
-    fetch('http://localhost:5001/api/bills', {
+    fetch(`http://localhost:5001/api/bills/addBill/${roomId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newBill),
     })
       .then((res) => res.json())
       .then((savedBill) => {
+        console.log("Saved bill:", savedBill);
         setBills([...bills, savedBill]);
-        // Reset form including responsible people and paymaster
+        // Reset form
         setFormData({ title: '', amount: '', dueDate: '', responsiblePeople: [], paymaster: '' });
       })
       .catch((err) => console.error(err));
@@ -120,13 +143,13 @@ const BillsExpenses = () => {
 
   // Update edit form fields for text inputs
   const handleEditChange = (e) => {
-    setEditFormData({...editFormData, [e.target.name]: e.target.value});
+    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
   };
 
   // Toggle the 'paid' status for a responsible person in edit mode
   const handleTogglePaid = (index) => {
     const updatedPeople = editFormData.responsiblePeople.map((person, idx) => {
-      if(idx === index) {
+      if (idx === index) {
         return { ...person, paid: !person.paid };
       }
       return person;
@@ -139,7 +162,7 @@ const BillsExpenses = () => {
     setEditFormData({ ...editFormData, paymaster: userData.username });
   };
 
-  // Handle saving changes for a bill
+  // Handle saving changes for a bill (update using update route)
   const handleEditSubmit = (e) => {
     e.preventDefault();
     if (!selectedBill) return;
@@ -151,28 +174,28 @@ const BillsExpenses = () => {
       paymaster: editFormData.paymaster
     };
 
-    fetch(`http://localhost:5001/api/bills/${selectedBill._id}`, {
+    fetch(`http://localhost:5001/api/bills/updateBill/${selectedBill._id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedBill),
     })
       .then((res) => res.json())
       .then((data) => {
-        setBills(bills.map(bill => bill._id === selectedBill._id ? data : bill));
+        setBills(bills.map((bill) => (bill._id === selectedBill._id ? data : bill)));
         setSelectedBill(null);
       })
       .catch((err) => console.error(err));
   };
 
-  // Handle deleting a bill
+  // Handle deleting a bill (delete from room tasks as well)
   const handleDelete = () => {
     if (!selectedBill) return;
-    fetch(`http://localhost:5001/api/bills/${selectedBill._id}`, {
+    fetch(`http://localhost:5001/api/bills/deleteBill/${selectedBill._id}/${roomId}`, {
       method: 'DELETE',
     })
       .then((res) => res.json())
       .then(() => {
-        setBills(bills.filter(bill => bill._id !== selectedBill._id));
+        setBills(bills.filter((bill) => bill._id !== selectedBill._id));
         setSelectedBill(null);
       })
       .catch((err) => console.error(err));
@@ -180,8 +203,11 @@ const BillsExpenses = () => {
 
   return (
     <div className={styles.billsAppContainer}>
-      {/* Top Banner */}
+      {/* Top Banner with Back to Room Button */}
       <div className={styles.billsBanner}>
+        <button onClick={handleBackToRoom} className={styles.backButton}>
+          Back to Room
+        </button>
         <div className={styles.header}>
           <h1>{userData.username}'s Bills & Expenses</h1>
         </div>
@@ -231,7 +257,7 @@ const BillsExpenses = () => {
           {/* Responsible People Section */}
           <div className={styles.formGroup}>
             <label htmlFor="newPerson">Add Responsible Person:</label>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className={styles.formGroupRow}>
               <input
                 type="text"
                 id="newPerson"
@@ -255,7 +281,7 @@ const BillsExpenses = () => {
           {/* Paymaster Section */}
           <div className={styles.formGroup}>
             <label htmlFor="paymaster">Paymaster:</label>
-            <div style={{ display: 'flex', gap: '10px' }}>
+            <div className={styles.formGroupRow}>
               <input
                 type="text"
                 id="paymaster"
@@ -355,7 +381,7 @@ const BillsExpenses = () => {
                 <div className={styles.formGroup}>
                   <label>Responsible People:</label>
                   {editFormData.responsiblePeople.map((person, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div key={index} className={styles.formGroupRow}>
                       <span>{person.name}</span>
                       <label>
                         Paid:
@@ -372,7 +398,7 @@ const BillsExpenses = () => {
                 {/* Edit Paymaster Section */}
                 <div className={styles.formGroup}>
                   <label htmlFor="editPaymaster">Paymaster:</label>
-                  <div style={{ display: 'flex', gap: '10px' }}>
+                  <div className={styles.formGroupRow}>
                     <input
                       type="text"
                       id="editPaymaster"
@@ -402,7 +428,6 @@ const BillsExpenses = () => {
             </div>
           </div>
         )}
-
       </div>
     </div>
   );

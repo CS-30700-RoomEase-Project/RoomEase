@@ -9,6 +9,7 @@ const updateProfileRoutes = require('./routes/updateProfileRoutes');
 const billsRoutes = require('./routes/billsRoutes'); 
 const notificationRoutes = require('./routes/notificationRoutes');
 const roomRoutes = require('./routes/roomRoutes');
+const inviteRoutes = require('./routes/inviteRoutes');
 const roomStateRoutes = require('./routes/stateRoutes'); 
 const quietHoursRoutes = require('./routes/quietHoursRoutes'); 
 
@@ -38,9 +39,9 @@ app.use('/api/users/profile', updateProfileRoutes); // For profile update routes
 app.use('/api/bills', billsRoutes); // For bills/expenses routes
 app.use('/api/notifications', notificationRoutes); // For notification routes
 app.use('/api/room', roomRoutes); // For room-related routes
+app.use('/api/invite', inviteRoutes); // For invite related routes
 app.use('/api/roomstate', roomStateRoutes);
 app.use('/api/quiethours', quietHoursRoutes);
-
 
 // Test route
 app.get("/", (req, res) => {
