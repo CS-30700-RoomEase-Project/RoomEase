@@ -30,6 +30,17 @@ html, body {
     box-sizing: border-box;
     flex-direction: row;
 }
+.roomBannerMini {
+    display: flex;
+    justify-content: space-between; /* Spreads items apart */
+    align-items: center;  /* Centers items vertically */
+    width:  25%;
+    height: 15%;
+    padding: 10px;
+    background: black; 
+    box-sizing: border-box;
+    flex-direction: row;
+}
 
 .roomTitle {
     font-size: 2rem;
