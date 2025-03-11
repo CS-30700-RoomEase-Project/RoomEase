@@ -4,8 +4,8 @@ import AvatarButton from "../Shared_components/AvatarButton/AvatarButton";
 import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
 import RoomCreationDoor from "../Shared_components/RoomDoors/RoomCreationDoor.js";
 import RoomDoor from "../Shared_components/RoomDoors/RoomDoor.js";
-import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 import RoomInvite from "../Shared_components/RoomDoors/RoomInvite.js";
+import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 
 /**
  * @returns Dashboard component
