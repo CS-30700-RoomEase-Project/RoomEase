@@ -125,4 +125,23 @@
   .content {
     border: 1px solid rgba(0, 0, 0, 0.1);
   }
+ 
+  .chat-filter-toggle {
+    cursor: pointer;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 10px;
+  }
+  
+  .chat-filter-toggle.enabled {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .chat-filter-toggle.disabled {
+    background-color: #f44336;
+    color: white;
+  }
   
