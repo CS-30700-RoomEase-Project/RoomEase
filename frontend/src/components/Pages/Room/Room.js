@@ -12,6 +12,8 @@ import Broom from './Room Items/Broom';
 import NotificationButton from '../../Shared_components/NotificationBell/NotificationBell';
 import ExitRoom from './Room Icons/ExitRoom';
 import ChoreItems from './Room Items/ChoreItems';
+import { Table } from 'lucide-react';
+
 
 function Room() {
     const { roomId } = useParams(); // Gets the roomId from the URL
@@ -63,6 +65,7 @@ function Room() {
     const handleSettingsClick = () => {
         navigate(`/room/${roomId}/settings`);
     };
+
     const handleGoToChores = (roomId) => {
         console.log("Navigating to chores with roomId:", roomId); // Debugging
         navigate(`/chores/${roomId}`);
@@ -76,6 +79,11 @@ function Room() {
     const handleGoToState = (roomId) => {
         console.log("Navigating to state with roomId:", roomId); // Debugging
         navigate(`/room-state/`);
+    }
+
+    const handleGoToDisputes = (roomId) => {
+        console.log("Navigating to disputes with roomId:", roomId); // Debugging
+        navigate(`/disputes/`);
     }
 
     if (loading) return <div>Loading...</div>;
@@ -96,6 +104,8 @@ function Room() {
                 <Clock onClick={() => handleGoToState(roomId)}/>
                 <BulletinBoard onClick={() => handleGoToHours(roomId)}/>
                 <ChoreItems onClick={() => handleGoToChores(roomId)}/>
+                
+                {/* <Gavel onClick = {() => handleGoToDisputes(roomId)}/> */}
             </div>
             <div className={style.roomFloor}/>
         </div>
