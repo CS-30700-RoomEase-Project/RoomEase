@@ -21,7 +21,11 @@ router.post("/updateProfile", async (req, res) => {
         user.profilePic = profilePic || user.profilePic;
         user.contactInfo = contactInfo || user.contactInfo;
         user.totalPoints = totalPoints || user.totalPoints;
-        user.chatFilter = chatFilter || user.chatFilter;
+        
+        // Ensure chatFilter is updated as a boolean
+        if (chatFilter !== undefined) {
+            user.chatFilter = chatFilter === true || chatFilter === 'true';  // Ensure it's a boolean
+        }
 
         // Save the updated user data to the database
         await user.save();
