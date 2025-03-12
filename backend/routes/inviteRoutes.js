@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const Room = require('../models/Room');
 const Invite = require('../models/Invite');
+const Notification = require('../models/Notification');
 const mongoose = require('mongoose');
 
 const router = express.Router();
@@ -57,6 +58,43 @@ router.post('/sendInvite', async (req, res) => {
         console.log("Invite recieved by reciever");
 
         console.log("Invite successfully sent!");
+
+        // Notify the reciever of the sent invite
+        const recieverNotificationDesc = sender.username + " sent you an invite to join " + room.roomName;
+        const recieverNotification = new Notification({
+            usersNotified: reciever._id,
+            description: recieverNotificationDesc,
+            pageID: `/Dashboard`,
+            notificationType: "Invite",
+            origin: sender._id
+        });
+    
+        await recieverNotification.save();
+        await recieverNotification.propagateNotification();
+
+        // Room members to notify
+        let roomMembers = [];
+        for (let i of room.roomMembers) {
+            if (i !== sender.userId) {
+                let curr = await User.findOne({ userId: i });
+                roomMembers.push(curr._id);
+            }
+        }
+
+        // Notify all room members of the invite
+        const memberNotificationDesc = sender.username + " sent " +reciever.username + " an invite to join " + room.roomName;
+        const memeberNotification = new Notification({
+            usersNotified: roomMembers,
+            description: memberNotificationDesc,
+            pageID: `/room/${roomId}/invite`,
+            origin: sender._id
+        })
+
+        await memeberNotification.save();
+        await memeberNotification.propagateNotification();
+
+
+        // Notify the room members of the sent invite
         res.status(200).json({ message: "Invite successfully sent!"});
     } 
     catch (error) {
@@ -119,6 +157,28 @@ router.post('/acceptInvite', async( req, res) => {
 
         await Invite.deleteOne({ _id: invite._id });
 
+        console.log("b");
+        // Room members to notify
+        let roomMembers = [];
+        for (let i of room.roomMembers) {
+            if (i != user.userId) {
+                let curr = await User.findOne({ userId: i });
+                roomMembers.push(curr._id);
+            }
+        }
+        console.log("b2");
+        // Notify all room members of the invite
+        const memberNotificationDesc = user.username + " accepted their invite to join " + room.roomName + "!";
+        const memeberNotification = new Notification({
+            usersNotified: roomMembers,
+            description: memberNotificationDesc,
+            pageID: `/room/${room._id}`,
+            origin: user._id
+        })
+
+        await memeberNotification.save();
+        await memeberNotification.propagateNotification();
+
         console.log("Invite successfully accepted!");
         user = await User.findOne({ userId: userId });
         console.log(user);
@@ -165,6 +225,40 @@ router.delete ('/deleteInvite', async( req, res ) => {
         await room.save();
 
         await Invite.deleteOne({_id: invite._id});
+
+
+        // Now handle sending notifications based on if this was a declination/revoking of an invite
+        if (reciever.userId === deleter.userId) { // Invite declined
+            // Room members to notify
+            let roomMembers = [];
+            for (let i of room.roomMembers) {
+                let curr = await User.findOne({ userId: i });
+                roomMembers.push(curr._id);
+            }
+
+            // Notify all room members of the invite
+            const memberNotificationDesc = deleter.username + " rejected their invitation to join " + room.roomName;
+            const memeberNotification = new Notification({
+                usersNotified: roomMembers,
+                description: memberNotificationDesc,
+                pageID: `/room/${room._id}/invite`,
+                origin: deleter._id
+            })
+
+            await memeberNotification.save();
+            await memeberNotification.propagateNotification();
+        } else { // Invite revoked 
+            const revokedNotifDesc = deleter.username + " revoked your invitation to join " + room.roomName;
+            const revokedNotif = new Notification({
+                usersNotified: reciever._id,
+                description: revokedNotifDesc,
+                pageID: `/Dashboard`,
+                origin: deleter._id
+            })
+
+            await revokedNotif.save();
+            await revokedNotif.propagateNotification();
+        }
 
         console.log("Invite successfully deleted!");
         console.log(deleter);
