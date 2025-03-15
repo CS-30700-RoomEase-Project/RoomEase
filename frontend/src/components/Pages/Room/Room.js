@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import style from './Room.module.css';
-import Fridge from './Room Items/Fridge';
-import Desk from './Room Items/Desk';
 import Avatar from '../../Shared_components/AvatarButton/AvatarButton';
-import Computer from './Room Items/Computer';
-import Clock from './Room Items/Clock';
-import BulletinBoard from './Room Items/BulletinBoard';
-import TrashCan from './Room Items/TrashCan';
-import Broom from './Room Items/Broom';
-import NotificationButton from '../../Shared_components/NotificationBell/NotificationBell';
+import GroupChat from '../../Shared_components/Messages/GroupChat';
 import ExitRoom from './Room Icons/ExitRoom';
+import BulletinBoard from './Room Items/BulletinBoard';
 import ChoreItems from './Room Items/ChoreItems';
-
+import Clock from './Room Items/Clock';
+import Computer from './Room Items/Computer';
+import Desk from './Room Items/Desk';
+import Fridge from './Room Items/Fridge';
+import style from './Room.module.css';
 function Room() {
     const { roomId } = useParams(); // Gets the roomId from the URL
 
@@ -21,10 +18,12 @@ function Room() {
     const [roomData, setRoomData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
+    const [username, setusername] = useState(null);
     useEffect(() => {   
         const userData = JSON.parse(localStorage.getItem('userData'));
+        setusername(userData.username);
         console.log(userData);
+
 
         if (!userData?.userId) {
             navigate('/login'); // Redirect if no user data
@@ -86,8 +85,14 @@ function Room() {
             <div className={style.roomBanner}>
                 <ExitRoom onClick={() => navigate('/dashboard')} />
                 <h1 className={style.roomTitle}>{roomData.roomName}</h1>
-                <Avatar />
+                {/* <Message onClick={() => handleGoToState(roomId)/> */}
+                <div className={style.roomBannerMini}>
+                    <GroupChat roomId={roomId} userName={username}/>
+                    <Avatar />
+                </div> 
             </div>
+            
+
             <div className={style.roomBackground}>
                 <Fridge room={roomData}/>
                 <Desk>
