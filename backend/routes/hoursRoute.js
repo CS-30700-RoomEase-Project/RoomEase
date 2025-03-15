@@ -1,9 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const RoomState = require("../models/RoomState"); // Ensure this is the correct model
+const RoomState = require("../models/State"); // Ensure this is the correct model
 const User = require("../models/User");
 const Notification = require("../models/Notification");
-const moment = require("moment"); // To handle date calculations and formatting
 
 // POST: Add or change quiet hours and notify users
 router.post("/setQuietHours", async (req, res) => {
