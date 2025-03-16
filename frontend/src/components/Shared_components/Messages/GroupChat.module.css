@@ -243,8 +243,8 @@
   
   /* Close button inside the popup */
   .closeButton {
-    background-color: #ff3a3a; /* Changed from transparent to red */
-    color: white; /* Changed from red to white for better contrast */
+    background-color: #1e1e1e; /* Changed from transparent to red */
+    color: #ff3a3a; /* Changed from red to white for better contrast */
     border: none;
     border-radius: 50%;
     width: 36px;
@@ -254,8 +254,8 @@
     justify-content: center;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-weight: bold; /* Make the font thicker */
   }
-  
   .closeButton:hover {
     background-color: #e00000; /* Darker red on hover */
     color: white; /* Keep text white on hover */
