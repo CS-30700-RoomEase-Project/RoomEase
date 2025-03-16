@@ -72,7 +72,7 @@ import styles from "./GroupChat.module.css";
 
 const socket = io("http://localhost:5001");
 
-const slurs = ["fuck", "shit", "damn", "cunt", "retard"]; 
+const slurs = ["fuck", "shit", "damn", "cunt", "retard", "curry muncher", "ass"]; 
 
 const Messages = ({ roomId }) => {
     const [messages, setMessages] = useState([]);
@@ -116,11 +116,13 @@ const Messages = ({ roomId }) => {
         if (!message || slurs.length === 0) return message;
 
         let sanitizedMessage = message;
-        slurs.forEach((slur) => {
-            const regex = new RegExp(`\\b${slur}\\b`, 'gi'); // Create a case-insensitive regex to match whole words
-            sanitizedMessage = sanitizedMessage.replace(regex, "****");
-        });
-
+        let userData = JSON.parse(localStorage.getItem("userData")) || {};
+        if (userData.chatFilter) {
+            slurs.forEach((slur) => {
+                const regex = new RegExp(`\\b${slur}\\b`, 'gi'); // Create a case-insensitive regex to match whole words
+                sanitizedMessage = sanitizedMessage.replace(regex, "****");
+            });
+        }
         return sanitizedMessage;
     };
 
