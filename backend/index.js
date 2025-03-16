@@ -1,55 +1,78 @@
 const express = require("express");
 const cors = require("cors");
-require('dotenv').config();
-const mongoose = require('mongoose');
-const userRoutes = require('./routes/userRoutes');
-const choreRoutes = require('./routes/choreRoutes');
-const groceryRoutes = require('./routes/groceryRoutes');
-const updateProfileRoutes = require('./routes/updateProfileRoutes');
-const billsRoutes = require('./routes/billsRoutes'); 
-const notificationRoutes = require('./routes/notificationRoutes');
-const roomRoutes = require('./routes/roomRoutes');
-const inviteRoutes = require('./routes/inviteRoutes');
-const roomStateRoutes = require('./routes/stateRoutes'); 
-const quietHoursRoutes = require('./routes/quietHoursRoutes'); 
+require("dotenv").config();
+const mongoose = require("mongoose");
+const http = require("http");
+const { Server } = require("socket.io");
 
-// Initialize app after importing dependencies
+const userRoutes = require("./routes/userRoutes");
+const choreRoutes = require("./routes/choreRoutes");
+const groceryRoutes = require("./routes/groceryRoutes");
+const updateProfileRoutes = require("./routes/updateProfileRoutes");
+const billsRoutes = require("./routes/billsRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
+const roomRoutes = require("./routes/roomRoutes");
+const inviteRoutes = require("./routes/inviteRoutes");
+const roomStateRoutes = require("./routes/stateRoutes");
+
+// Initialize app and HTTP server
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000", // Adjust for your frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  },
+});
 
 // MongoDB connection
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.error('MongoDB Connection Error:', err));
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB Connected"))
+  .catch((err) => console.error("MongoDB Connection Error:", err));
 
-// Middlewares and routes
+// Middleware
 app.use(cors());
 app.use(express.json());
-app.use(cors({
-  origin: 'http://localhost:3000', // or your frontend domain
-  methods: ['GET', 'POST'],
-  allowedHeaders: ['Content-Type']
-}));
 
-app.use('/api/chores', choreRoutes);
-app.use('/api/grocery', groceryRoutes);
+// Routes
+app.use("/api/chores", choreRoutes);
+app.use("/api/grocery", groceryRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/users/profile", updateProfileRoutes);
+app.use("/api/bills", billsRoutes);
+app.use("/api/notifications", notificationRoutes);
+app.use("/api/room", roomRoutes);
+app.use("/api/invite", inviteRoutes);
+app.use("/api/roomstate", roomStateRoutes);
 
-// Use different routes to avoid conflict
-app.use('/api/users', userRoutes); // For user-related routes
-app.use('/api/users/profile', updateProfileRoutes); // For profile update routes
-app.use('/api/bills', billsRoutes); // For bills/expenses routes
-app.use('/api/notifications', notificationRoutes); // For notification routes
-app.use('/api/room', roomRoutes); // For room-related routes
-app.use('/api/invite', inviteRoutes); // For invite related routes
-app.use('/api/roomstate', roomStateRoutes);
-app.use('/api/quiethours', quietHoursRoutes);
+// Import and pass Socket.IO to group chat routes
+const groupChatRoutes = require("./routes/groupChatRoutes")(io);
+app.use("/api/groupchat", groupChatRoutes);
+
+// Socket.IO Events
+io.on("connection", (socket) => {
+  console.log("A user connected:", socket.id);
+
+  // Join a specific room
+  socket.on("joinRoom", (roomId) => {
+    socket.join(roomId);
+    console.log(`User ${socket.id} joined room: ${roomId}`);
+  });
+
+  // Handle user disconnection
+  socket.on("disconnect", () => {
+    console.log(`User ${socket.id} disconnected`);
+  });
+});
 
 // Test route
 app.get("/", (req, res) => {
   res.send("Express server is running");
 });
 
-// Start server after app is fully initialized
+// Start server
 const PORT = process.env.PORT || 5001;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

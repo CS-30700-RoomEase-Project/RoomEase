@@ -4,8 +4,8 @@ import AvatarButton from "../Shared_components/AvatarButton/AvatarButton";
 import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
 import RoomCreationDoor from "../Shared_components/RoomDoors/RoomCreationDoor.js";
 import RoomDoor from "../Shared_components/RoomDoors/RoomDoor.js";
-import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 import RoomInvite from "../Shared_components/RoomDoors/RoomInvite.js";
+import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 
 /**
  * @returns Dashboard component
@@ -60,7 +60,6 @@ function Dashboard() {
     try {
         console.log(invite._id);
         console.log(invite);
-        console.log("iffjsof13231312312");
         const response = await fetch("http://localhost:5001/api/invite/deleteInvite", {
             method: "DELETE",  // POST method to send data
             headers: { "Content-Type": "application/json" },
@@ -93,40 +92,60 @@ function Dashboard() {
         <div className={styles.header}>
           <h1>{userData.username ? `${userData.username}'s Rooms` : "Your Rooms"}</h1>
         </div>
-        <NotificationBell />
-        <AvatarButton />
+        <div className={styles.headerActions}>
+          <NotificationBell />
+          <AvatarButton />
+        </div>
       </div>
+      
       <div className={styles.dashboardContent}>
-        <RoomCreationDoor />
-        <RoomDoor roomName="Master Room" />
+        <div className={styles.contentHeading}>
+          <h2>Your Spaces</h2>
+          <div className={styles.contentDivider}></div>
+        </div>
+        
+        <div className={styles.roomsGrid}>
+          <div className={styles.roomWrapper}>
+            <RoomCreationDoor />
+          </div>
+          
+          <div className={styles.roomWrapper}>
+            <RoomDoor roomName="Master Room" />
+          </div>
 
-        {/* Ensure userData.rooms exists and is an array */}
-        {Array.isArray(userData.rooms) &&
-          userData.rooms.map((room) => (
-            <RoomDoor
-              key={room._id}
-              roomName={room.roomName}
-              onClick={() => getRoom(room._id)}
-            />
-          ))}
+          {/* Ensure userData.rooms exists and is an array */}
+          {Array.isArray(userData.rooms) &&
+            userData.rooms.map((room) => (
+              <div key={room._id} className={styles.roomWrapper}>
+                <RoomDoor
+                  roomName={room.roomName}
+                  onClick={() => getRoom(room._id)}
+                />
+              </div>
+            ))}
 
-        {/* Show the Invite Doors */}
-        {Array.isArray(userData.invites) &&
-          userData.invites.map((invite) => (
-            <RoomInvite
-              key={invite._id}
-              roomName={invite.roomName}
-              accept={() => acceptInvite({invite})}
-              decline={() => declineInvite({invite})}
-            />
-          ))}
+          {/* Show the Invite Doors */}
+          {Array.isArray(userData.invites) &&
+            userData.invites.map((invite) => (
+              <div key={invite._id} className={styles.roomWrapper}>
+                <RoomInvite
+                  roomName={invite.roomName}
+                  accept={() => acceptInvite({invite})}
+                  decline={() => declineInvite({invite})}
+                />
+              </div>
+            ))}
+        </div>
       </div>
+      
       <footer className={styles.footer}>
-        <p>© 2025 RoomEase. All rights reserved.</p>
-        <p>
-          <a href="/privacy-policy" className={styles.footerLink}>Privacy Policy</a> |{" "}
-          <a href="/terms-of-service" className={styles.footerLink}>Terms of Service</a>
-        </p>
+        <div className={styles.footerContent}>
+          <p>© 2025 RoomEase. All rights reserved.</p>
+          <p>
+            <a href="/privacy-policy" className={styles.footerLink}>Privacy Policy</a> |{" "}
+            <a href="/terms-of-service" className={styles.footerLink}>Terms of Service</a>
+          </p>
+        </div>
       </footer>
     </div>
   );

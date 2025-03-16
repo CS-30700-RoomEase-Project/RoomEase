@@ -1,24 +1,25 @@
 const mongoose = require('mongoose');
-const Task = require('./Tasks');
-const User = require('./User');
 
 const RoomSchema = new mongoose.Schema({
-    roomName: { type: String, required: true }, // roomName [String]
-    groupPhoto: { type: String, default: ''}, // image
-    settings: [{ type: Boolean }], // boolean array
-    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task', default: [] }], // List of Task objects
-    roomStatus: { type: String, default: 'Available' }, // roomStatus (clock) [String]
-    groupChatID: { type: Number, default: '' }, // groupChatID [Int]
-    roomMembers: [{ type: String, default: [] }], // List of User ids
-    monthlyRatings: [{ type: String, default: [] }], // array of strings
-    points: [{ type: Number, default: [] }], // List of ints
-    houseRules: [{ type: String, default: [] }], // strings
-    completedTasks: [], // list
-    bulletinNotes: [{ type: Array, default: [] }], // list of Strings
-    bulletinPhotos: [{ type: Array, default: [] }], // list of URLs
-    outGoingInvites: { type: Array, default: [] }, // list of invites
-    quietHours: [{ type: Array, default: []}] // list of tuples
+    roomName: { type: String, required: true },
+    groupPhoto: { type: String, default: '' },
+    settings: [{ type: Boolean }],
+    tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task', default: [] }],
+    roomStatus: { type: String, default: 'Available' },
+    groupChat: [{
+        senderId: { type: String, required: true }, // User ID (as string)
+        message: { type: String, required: true },
+        timestamp: { type: Date, default: Date.now }
+    }],
+    roomMembers: [{ type: String, default: [] }],
+    monthlyRatings: [{ type: String, default: [] }],
+    points: [{ type: Number, default: [] }],
+    houseRules: [{ type: String, default: [] }],
+    completedTasks: [],
+    bulletinNotes: [{ type: Array, default: [] }],
+    bulletinPhotos: [{ type: Array, default: [] }],
+    outGoingInvites: { type: Array, default: [] },
+    quietHours: [{ type: Array, default: [] }]
 }, { timestamps: true });
 
-// Define the Room model
 module.exports = mongoose.model('Room', RoomSchema);
