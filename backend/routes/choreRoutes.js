@@ -30,31 +30,22 @@ router.put('/markComplete/:id/:roomId', async (req, res) => {
 //route to update a chore by id
 router.put('/updateChore/:id', async (req, res) => {
     console.log("Updating chore");
+    const { id } = req.params;
+    console.log(id);
 
-    const { name, description, id, turns, firstTurn, dueDate, frequency } = req.body;
+    const { name, description, turns, firstTurn, dueDate, recurrenceDays } = req.body;
 
     try {
-        // Convert user names to ObjectIds
-        const users = await Promise.all(
-            turns.map(async (name) => await User.findOne({ username: name }).select('_id'))
-        );
-        const firstUser = await User.findOne({ username: firstTurn }).select('_id');
-
-        if (!users.length || !firstUser) {
-            console.log("Invalid users provided");
-            return res.status(400).json({ error: "Invalid users provided" });
-        }
-
         // Find and update the chore
         const updatedChore = await Chore.findByIdAndUpdate(
             id,
             { 
                 choreName: name, 
                 description: description, 
-                order: users, 
-                whoseTurn: users.findIndex(user => user._id.toString() === firstUser._id.toString()),
+                order: turns, 
+                whoseTurn: firstTurn,
                 dueDate, // Directly storing the ISO-formatted due date
-                recurringDays: frequency || 0 // Default to non-recurring if not provided
+                recurringDays: recurrenceDays || 0 // Default to non-recurring if not provided
             },
             { new: true } // Return the updated document
         );
@@ -129,16 +120,6 @@ router.post('/addChore/:roomId', async (req, res) => {
         console.log("recurrenceDays");
         console.log(recurrenceDays);
 
-        // Convert user names to ObjectIds
-        const users = await Promise.all(
-            turns.map(async (name) => await User.findOne({ username: name }).select('_id'))
-        );
-        const firstUser = await User.findOne({ username: firstTurn }).select('_id');
-
-        if (!users.length || !firstUser) {
-            return res.status(400).json({ error: "Invalid users provided" });
-        }
-
         // Ensure dueDate is a valid Date object
         const parsedDueDate = dueDate ? new Date(dueDate) : null;
         if (parsedDueDate && isNaN(parsedDueDate.getTime())) {
@@ -147,11 +128,11 @@ router.post('/addChore/:roomId', async (req, res) => {
 
         const newChore = new Chore({
             taskId: Math.floor(Math.random() * 1000000),
-            creatorId: users[0]._id,
+            creatorId: turns[0],
             choreName: name,
-            order: users.map(user => user._id),
+            order: turns,
             description: description,
-            whoseTurn: users.findIndex(user => user._id.toString() === firstUser._id.toString()),
+            whoseTurn: firstTurn,
             dueDate: parsedDueDate,
             recurringDays: recurrenceDays || 0, // Default to non-recurring if not provided
             isComplete: false // Initialize as not completed
