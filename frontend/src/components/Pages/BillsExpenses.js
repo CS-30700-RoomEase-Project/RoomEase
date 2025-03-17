@@ -9,7 +9,7 @@ const BillsExpenses = () => {
   const navigate = useNavigate();
 
   const [bills, setBills] = useState([]);
-  const [roomUsers, setRoomUsers] = useState([]); // Roommates in the current room
+  const [roomUsers, setRoomUsers] = useState([]); // List of roommates
 
   const [formData, setFormData] = useState({
     title: '',
@@ -35,7 +35,7 @@ const BillsExpenses = () => {
     frequency: '',
     customFrequency: ''
   });
-
+  
   // Dropdown toggles for responsible people in add and edit forms
   const [respDropdownOpen, setRespDropdownOpen] = useState(false);
   const [editRespDropdownOpen, setEditRespDropdownOpen] = useState(false);
@@ -68,20 +68,30 @@ const BillsExpenses = () => {
 
   // Fetch room users (roommates) from the room endpoint
   useEffect(() => {
-    if (roomId && userData.userId) {
-      fetch(`http://localhost:5001/api/room/getRoom?roomId=${roomId}&userId=${userData.userId}`)
+    if (roomId) {
+      fetch(`http://localhost:5001/api/room/getRoom?roomId=${roomId}`)
         .then((res) => res.json())
         .then((data) => {
-          // Adjust this based on how your room data returns the user list.
-          if (data && data.room && data.room.users) {
+          console.log("Fetched room data:", data);
+          // Check if the room endpoint returns users directly...
+          if (data && data.room && data.room.users && Array.isArray(data.room.users)) {
             setRoomUsers(data.room.users);
+          }
+          // ...or if it returns an array of usernames (like "turns")
+          else if (data && data.room && data.room.turns && Array.isArray(data.room.turns)) {
+            // Map the usernames to objects with _id and username.
+            const users = data.room.turns.map((username) => ({
+              _id: username, // if you don't have a unique id, use the username
+              username
+            }));
+            setRoomUsers(users);
           } else {
             console.error("Room users not found in response", data);
           }
         })
         .catch((err) => console.error(err));
     }
-  }, [roomId, userData.userId]);
+  }, [roomId]);
 
   // Update new bill form fields
   const handleChange = (e) => {
@@ -107,12 +117,12 @@ const BillsExpenses = () => {
     }
   };
 
-  // Set the paymaster field to the current user (for add form)
+  // Set paymaster to current user (for add form)
   const handleSetMeAsPaymaster = () => {
     setFormData({ ...formData, paymaster: userData.username });
   };
 
-  // Helper: Parse date string (YYYY-MM-DD) into a Date object
+  // Helper: Parse date string into a Date object
   const parseDueDate = (dateString) => {
     if (!dateString) return null;
     const [year, month, day] = dateString.split('-');
@@ -131,9 +141,10 @@ const BillsExpenses = () => {
       paymaster: formData.paymaster,
       isRecurring: formData.isRecurring,
       frequency: formData.isRecurring ? formData.frequency : null,
-      customFrequency: formData.isRecurring && formData.frequency === 'custom'
-        ? parseInt(formData.customFrequency)
-        : null
+      customFrequency:
+        formData.isRecurring && formData.frequency === 'custom'
+          ? parseInt(formData.customFrequency)
+          : null
     };
 
     fetch(`http://localhost:5001/api/bills/addBill/${roomId}`, {
@@ -217,9 +228,10 @@ const BillsExpenses = () => {
       paymaster: editFormData.paymaster,
       isRecurring: editFormData.isRecurring,
       frequency: editFormData.isRecurring ? editFormData.frequency : null,
-      customFrequency: editFormData.isRecurring && editFormData.frequency === 'custom'
-        ? parseInt(editFormData.customFrequency)
-        : null,
+      customFrequency:
+        editFormData.isRecurring && editFormData.frequency === 'custom'
+          ? parseInt(editFormData.customFrequency)
+          : null,
       isAmountPending: parsedAmount > 0 ? false : true
     };
 
