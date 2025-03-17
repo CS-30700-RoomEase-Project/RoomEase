@@ -14,15 +14,14 @@ function GroceryItem(props) {
   const costRef = useRef(null);
   const quantityRef = useRef(null);
 
-  // Update cost state when item.cost changes
+  // On component mount or when item.cost changes, update the cost state
   useEffect(() => {
     if (item.cost !== undefined && item.cost !== null) {
       setCost(item.cost);
     }
   }, [item.cost]);
 
-  const togglePurchased = (e) => {
-    e.stopPropagation();
+  const togglePurchased = () => {
     const updatedItems = [...items];
     updatedItems[index].purchased = !updatedItems[index].purchased;
     const userId = localStorage.getItem("userId");
@@ -42,8 +41,7 @@ function GroceryItem(props) {
     }
   };
 
-  const removeItem = (e) => {
-    e.stopPropagation();
+  const removeItem = () => {
     const updatedItems = items.filter((_, i) => i !== index);
     setItems(updatedItems);
     CallService(
@@ -53,32 +51,32 @@ function GroceryItem(props) {
     );
   };
 
-  const requestItem = (e) => {
-    e.stopPropagation();
+  const requestItem = () => {
+    console.log("Requesting item: " + item.itemName);
     const userId = localStorage.getItem("userId");
     CallService(
       "grocery/request/" + room._id + "/" + item._id,
-      { description: `Requesting ${item.itemName}`, userId: userId },
+      {
+        description: `Requesting ${item.itemName}`,
+        userId: userId,
+      },
       editResponseHandler
     );
   };
 
-  const startEditing = (e) => {
-    e.stopPropagation();
+  const startEditing = () => {
     setEditIndex(index);
     setEditName(item.itemName);
     setEditQuantity(item.quantity);
   };
 
-  const cancelEdit = (e) => {
-    e.stopPropagation();
+  const cancelEdit = () => {
     setEditIndex(null);
     setEditName("");
     setEditQuantity(1);
   };
 
-  const saveEdit = (e) => {
-    e.stopPropagation();
+  const saveEdit = () => {
     if (editName.trim() !== "" && editQuantity > 0 && editQuantity <= 999) {
       const updatedItems = [...items];
       updatedItems[index] = {
@@ -89,7 +87,7 @@ function GroceryItem(props) {
       const updatedItem = updatedItems[index];
       CallService("grocery/update", updatedItem, editResponseHandler);
       setItems(updatedItems);
-      cancelEdit(e);
+      cancelEdit();
     }
   };
 
@@ -99,10 +97,13 @@ function GroceryItem(props) {
     const updatedItem = { 
       ...item, 
       cost,        
-      amountOwed  
+      amountOwed
     };
 
+    console.log("Saving updated item:", updatedItem);
+
     CallService("grocery/update", updatedItem, (data) => {
+      console.log("Update response:", data);
       const updatedItems = [...items];
       updatedItems[index] = data || updatedItem;
       setItems(updatedItems);
@@ -115,8 +116,7 @@ function GroceryItem(props) {
     setItems(newItems);
   };
 
-  const togglePaid = (e) => {
-    e.stopPropagation();
+  const togglePaid = () => {
     const updatedItems = [...items];
     updatedItems[index].paid = !updatedItems[index].paid;
     setItems(updatedItems);
@@ -138,15 +138,15 @@ function GroceryItem(props) {
     return usernames + shareText;
   };
 
-  // Handle comment submission (for now, simply log the comment)
-  const handleSubmitComment = () => {
+  // Handle comment submission
+  const handleSubmitComment = (e) => {
+    e.stopPropagation();
     console.log("Comment for item", item.itemName, ":", comment);
-    // Optionally, call a backend service to save the comment.
     setComment("");
     setCommentPopup(false);
   };
 
-  // Clicking anywhere on the entire container (unless a button stops propagation)
+  // When the entire grocery item container is clicked, open the comment popup (if not editing)
   const handleContainerClick = () => {
     if (editIndex === null) {
       setCommentPopup(true);
@@ -156,13 +156,15 @@ function GroceryItem(props) {
   return (
     <div className={styles.groceryItemContainer} onClick={handleContainerClick}>
       {/* Purchase Button */}
-      <button onClick={togglePurchased} className={styles.purchaseCheckbox}>
+      <button onClick={(e) => { e.stopPropagation(); togglePurchased(); }} className={styles.purchaseCheckbox}>
         {item.purchased && <span className={styles.checked}>✔</span>}
       </button>
-
-      <div className={styles.groceryItemContent} style={{ textDecoration: item.purchased ? "line-through" : "none" }}>
+      <div
+        className={styles.groceryItemContent}
+        style={{ textDecoration: item.purchased ? "line-through" : "none" }}
+      >
         {editIndex === index ? (
-          <div className={styles.editContainer}>
+          <div className={styles.editContainer} onClick={(e) => e.stopPropagation()}>
             <input
               type="text"
               value={editName}
@@ -194,38 +196,35 @@ function GroceryItem(props) {
           </>
         )}
       </div>
-
-      <div className={styles.groceryItemButtons}>
+      <div className={styles.groceryItemButtons} onClick={(e) => e.stopPropagation()}>
         {editIndex === index ? (
           <>
-            <button onClick={saveEdit} className={`${styles.Button} ${styles.saveButton}`}>
+            <button onClick={(e) => saveEdit(e)} className={`${styles.Button} ${styles.saveButton}`}>
               Save
             </button>
-            <button onClick={cancelEdit} className={`${styles.Button} ${styles.cancelButton}`}>
+            <button onClick={(e) => cancelEdit(e)} className={`${styles.Button} ${styles.cancelButton}`}>
               Cancel
             </button>
           </>
         ) : (
           <>
-            <button onClick={startEditing} className={`${styles.Button} ${styles.editButton}`}>
+            <button onClick={(e) => startEditing(e)} className={`${styles.Button} ${styles.editButton}`}>
               Edit
             </button>
-            <button onClick={removeItem} className={`${styles.Button} ${styles.removeButton}`}>
+            <button onClick={(e) => removeItem(e)} className={`${styles.Button} ${styles.removeButton}`}>
               Remove
             </button>
-            <button onClick={requestItem} className={`${styles.Button} ${styles.requestButton}`}>
+            <button onClick={(e) => requestItem(e)} className={`${styles.Button} ${styles.requestButton}`}>
               Request Item
             </button>
           </>
         )}
       </div>
-
-      <div className={styles.requestersTooltip}>
+      <div className={styles.requestersTooltip} onClick={(e) => e.stopPropagation()}>
         Requesters: {renderRequesters()}
       </div>
-
       {item.purchased && (
-        <div className={styles.insertBox}>
+        <div className={styles.insertBox} onClick={(e) => e.stopPropagation()}>
           <input
             type="number"
             value={cost}
@@ -243,14 +242,13 @@ function GroceryItem(props) {
             <input
               type="checkbox"
               checked={item.paid || false}
-              onChange={togglePaid}
+              onChange={(e) => togglePaid(e)}
             />{" "}
             Payment Fulfilled
           </label>
         </div>
       )}
 
-      {/* Comment Popup Modal */}
       {commentPopup && (
         <div className={styles.commentOverlay} onClick={(e) => e.stopPropagation()}>
           <div className={styles.commentModal}>
