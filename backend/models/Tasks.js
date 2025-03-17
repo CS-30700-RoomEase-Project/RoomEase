@@ -297,7 +297,12 @@ const billSchema = new mongoose.Schema({
       name: { type: String, required: true },
       paid: { type: Boolean, default: false }
     }],
-    paymaster: { type: String, default: "" }
+    paymaster: { type: String, default: "" },
+    // Recurring fields:
+    isRecurring: { type: Boolean, default: false },
+    frequency: { type: String, enum: ['daily', 'weekly', 'biweekly', 'monthly', 'custom'], default: null },
+    customFrequency: { type: Number, default: null },
+    isAmountPending: { type: Boolean, default: false }
 });
 
 billSchema.methods.getFormattedDueDate = function() {
@@ -307,6 +312,42 @@ billSchema.methods.getFormattedDueDate = function() {
 billSchema.methods.getResponsible = function() {
     return this.responsible;
 };
+
+billSchema.methods.markAsPaid = async function() {
+    // Mark all responsible as paid:
+    this.responsible = this.responsible.map(person => ({ ...person, paid: true }));
+    
+    if (this.isRecurring) {
+      let daysToAdd = 0;
+      switch (this.frequency) {
+        case 'daily':
+          daysToAdd = 1;
+          break;
+        case 'weekly':
+          daysToAdd = 7;
+          break;
+        case 'biweekly':
+          daysToAdd = 14;
+          break;
+        case 'monthly':
+          daysToAdd = 30;
+          break;
+        case 'custom':
+          daysToAdd = this.customFrequency || 0;
+          break;
+        default:
+          daysToAdd = 0;
+      }
+      if (daysToAdd > 0 && this.dueDate) {
+        this.dueDate = new Date(this.dueDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+      }
+      // For recurring bills, reset amount to 0 and mark as pending:
+      this.amount = 0;
+      this.isAmountPending = true;
+    }
+    return this.save();
+};
+
 
 const Bill = Task.discriminator('Bill', billSchema);
 

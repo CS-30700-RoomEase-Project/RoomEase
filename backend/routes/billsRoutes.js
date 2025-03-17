@@ -10,12 +10,10 @@ const Room = require('../models/Room');
 router.get('/getBills/:roomId', async (req, res) => {
   try {
     const { roomId } = req.params;
-    // Find the room to get its tasks array
     const room = await Room.findById(roomId).select('tasks');
     if (!room) {
       return res.status(404).json({ message: "Room not found." });
     }
-    // Find only the tasks in the room's tasks array that are type 'Bill'
     const bills = await Task.find({ _id: { $in: room.tasks }, type: 'Bill' });
     res.json(bills.length ? bills : []);
   } catch (error) {
@@ -31,19 +29,21 @@ router.get('/getBills/:roomId', async (req, res) => {
 router.post('/addBill/:roomId', async (req, res) => {
   try {
     const { roomId } = req.params;
-    const { title, amount, dueDate, responsible, paymaster } = req.body;
+    const { title, amount, dueDate, responsible, paymaster, isRecurring, frequency, customFrequency } = req.body;
 
-    // Create a new Bill
     const newBill = new Bill({
       title,
       amount,
       dueDate,
       responsible,
-      paymaster
+      paymaster,
+      isRecurring,
+      frequency,
+      customFrequency,
+      isAmountPending: false
     });
     await newBill.save();
 
-    // Push the new Bill's ID into the room's tasks array
     const updatedRoom = await Room.findByIdAndUpdate(
       roomId,
       { $push: { tasks: newBill._id } },
@@ -78,22 +78,36 @@ router.put('/updateBill/:billId', async (req, res) => {
 });
 
 /**
+ * PUT mark a bill as paid (for recurring bills)
+ * PUT /api/bills/markAsPaid/:billId
+ */
+router.put('/markAsPaid/:billId', async (req, res) => {
+  try {
+    const { billId } = req.params;
+    const bill = await Bill.findById(billId);
+    if (!bill) {
+      return res.status(404).json({ error: 'Bill not found' });
+    }
+    const updatedBill = await bill.markAsPaid();
+    res.json(updatedBill);
+  } catch (error) {
+    console.error("Error marking bill as paid:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+/**
  * DELETE a bill (also remove from room's tasks array)
  * DELETE /api/bills/deleteBill/:billId/:roomId
  */
 router.delete('/deleteBill/:billId/:roomId', async (req, res) => {
   try {
     const { billId, roomId } = req.params;
-
-    // Delete the bill
     const deletedBill = await Bill.findByIdAndDelete(billId);
     if (!deletedBill) {
       return res.status(404).json({ error: 'Bill not found' });
     }
-
-    // Remove the bill ID from the room's tasks array
     await Room.findByIdAndUpdate(roomId, { $pull: { tasks: billId } });
-
     res.json({ message: 'Bill deleted successfully' });
   } catch (error) {
     console.error('Error deleting bill:', error);
