@@ -9,6 +9,9 @@ import Clock from './Room Items/Clock';
 import Computer from './Room Items/Computer';
 import Desk from './Room Items/Desk';
 import Fridge from './Room Items/Fridge';
+import Gavel from './Room Items/Gavel';
+import GavelPad from './Room Items/GavelPad';
+
 import style from './Room.module.css';
 function Room() {
     const { roomId } = useParams(); // Gets the roomId from the URL
@@ -103,12 +106,11 @@ function Room() {
                 <Fridge room={roomData}/>
                 <Desk>
                     <Computer handleInviteClick={handleInviteClick} handleSettingsClick={handleSettingsClick} roomId={roomData._id} />
+                    <Gavel onClick={() => handleGoToDisputes(roomId)} />
                 </Desk>
                 <Clock onClick={() => handleGoToState(roomId)}/>
                 <BulletinBoard onClick={() => handleGoToHours(roomId)}/>
                 <ChoreItems onClick={() => handleGoToChores(roomId)}/>
-                
-                {/* <Gavel onClick = {() => handleGoToDisputes(roomId)}/> */}
             </div>
             <div className={style.roomFloor}/>
         </div>

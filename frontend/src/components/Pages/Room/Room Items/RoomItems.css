@@ -52,7 +52,7 @@
     position: relative;
     top: 19%;
     left: 25%;
-    width: 350px;
+    width: 500px;
     height: 350px;
 }
 
@@ -180,6 +180,8 @@
 
 
 /* CSS for the Clock Room Item */
+
+/* OLD
 .clock {
   width: 100px;
   height: 100px;
@@ -190,43 +192,92 @@
   border-radius: 50%;
   position: relative;
   background-color: #f0f0f0;
+} */
+
+.clock {
+  width: 100px;
+  height: 100px;
+  border: 5px solid black;
+  border-radius: 50%;
+  position: relative;
+  background-color: #f0f0f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: -35%;
+  left: 40%;
 }
 
-  .clock-face {
-    width: 100%;
-    height: 100%;
-    position: relative;
-  }
+.clock-face {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/*
+OLD
+.hour-hand {
+  width: 30%;
+  left: 20%;
+  position: relative;
+  top: 47%;
+  left: 50%;
+  height: 5%;
+  background-color: #333;
+}
+
+.minute-hand {
+  height: 40%;
+  position: relative;
+  width: 5%;
+  left: 47%;
+  top: 3%;
+  background-color: #333;
+} */
   
-  .hour-hand {
-    width: 30%;
-    left: 20%;
-    position: relative;
-    top: 47%;
-    left: 50%;
-    height: 5%;
-    background-color: #333;
-  }
-  
-  .minute-hand {
-    height: 40%;
-    position: relative;
-    width: 5%;
-    left: 47%;
-    top: 3%;
-    background-color: #333;
-  }
-  
-  .center-point {
-    width: 15px;
-    height: 15px;
-    background: #333;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-  }
+/* NEW */
+.hour-hand,
+.minute-hand {
+  position: absolute;
+  bottom: 50%;
+  left: 50%;
+  transform-origin: bottom;
+  background: black;
+  border-radius: 5px;
+}
+
+.hour-hand {
+  width: 6px;
+  height: 30px;
+}
+
+.minute-hand {
+  width: 4px;
+  height: 40px;
+}
+
+/* OLD
+.center-point {
+  width: 15px;
+  height: 15px;
+  background: #333;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+} */
+
+.center-point {
+  width: 8px;
+  height: 8px;
+  background: black;
+  border-radius: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
 /* CSS for the bulletin board Room Item */
 .bulletinBoard {
@@ -392,4 +443,76 @@
 
 .choreItems:hover .trashCanLid {
   transform: translateY(-10px);  
+}
+
+.gavel-pad-container {
+  position: absolute;
+  bottom: 0px; /* Moves the whole pad down */
+  left: 85%; /* Moves the whole pad to the right */
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Top (largest) layer */
+.gavel-pad-layer1 {
+  width: 80px;
+  height: 8px;
+  background-color: #8d6e63;
+  border-radius: 10px;
+  margin-top: -2px; /* Fine-tune spacing */
+}
+
+/* Middle layer */
+.gavel-pad-layer2 {
+  width: 70px;
+  height: 8px;
+  background-color: #FFD700;
+  border-radius: 8px;
+  margin-top: -3px;
+}
+
+/* Bottom layer */
+.gavel-pad-layer3 {
+  width: 60px;
+  height: 8px;
+  background-color: #8d6e63;
+  border-radius: 6px;
+  margin-top: -3px;
+}
+
+.gavel-container {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+}
+
+.gavel-head {
+  width: 20px;
+  height: 50px; /* Adjust height for handle size */
+  bottom: 15%;
+  background-color: #8B4513; /* Brown color for handle */
+  border-radius: 5px;
+  border: 1px solid #FFD700; /* Gold border */
+
+  position: absolute;
+  z-index: 1; /* Ensure the handle is on top of the head */
+  
+  /* Move the handle to the right */
+  left: 50%; /* This moves it to the center horizontally */
+  transform: translateX(250%); /* Fine-tune the centering by moving it to the right */
+}
+
+.gavel-handle {
+  width: 80px; /* Longer rectangle for the head */
+  height: 10px; /* Height for the head */
+  background-color: #8B4516; /* Light gray color for the head */
+  border-radius: 5px; /* Curved corners for the head */
+  border: 1px solid #FFD700; /* Gold border */
+  position: absolute;
+  bottom: 25%; /* Positioning relative to the handle */
+  left: 100%; /* Move the head to the center horizontally */
+  transform: translateX(80%); /* Center it properly */
 }
