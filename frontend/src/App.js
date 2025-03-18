@@ -12,6 +12,7 @@ import RoomState from "./components/Pages/RoomState/RoomState"; // Import RoomSt
 import Notifications from "./components/Pages/Notifications/Notifications"; //import notifications
 import InvitePage from "./components/Pages/InvitePage/InvitePage"; // Import InvitePage component
 import RoomSettings from "./components/Pages/RoomSettings/RoomSettings"; // Import InvitePage component
+import Disputes from "./components/Pages/Disputes/Disputes";
 
 function App() {
   return (
@@ -31,6 +32,9 @@ function App() {
 
         {/* Quiet Hours Settings route */}
         <Route path="/quiet-hours" element={<QuietHoursSettings />} />
+        
+        {/* Disputes route */}
+        <Route path="/disputes" element={<Disputes />} />
 
         {/* Room page route */}
         <Route path="/room/:roomId" element={<Room />}/>
