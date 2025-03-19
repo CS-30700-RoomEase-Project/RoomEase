@@ -13,7 +13,7 @@ function GroceryPage({room}) {
 
   const addItem = () => {
     if (input.trim() !== "" && quantity > 0 && quantity <= 999) {
-      CallService("grocery/add/" + room._id, {itemName: input, quantity: quantity, description: "test"}, itemResponseHandler);
+      CallService("grocery/add/" + room._id, {itemName: input, quantity: quantity}, itemResponseHandler);
     }
   };
 
@@ -77,7 +77,7 @@ useEffect(() => {
           <h3 className={styles.title}>Items</h3>
           {items.map((item, index) => (
             <li key={index} className={styles.groceryItem}>
-              <GroceryItem items={items} setItems={setItems} index={index} item={item} room={room}/>
+              <GroceryItem items={items} setItems={setItems} index={index} item={item} description={item.description} room={room}/>
             </li>
           ))}
         </ul>

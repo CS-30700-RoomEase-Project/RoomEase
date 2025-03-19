@@ -9,8 +9,9 @@ function GroceryItem(props) {
   const [cost, setCost] = useState(0);
   const [commentPopup, setCommentPopup] = useState(false);
   const [comment, setComment] = useState("");
+  const [tempComment, setTempComment] = useState("");
 
-  const { items, setItems, index, item, room } = props;
+  const { items, setItems, index, item, description, room } = props;
   const costRef = useRef(null);
   const quantityRef = useRef(null);
 
@@ -24,6 +25,7 @@ function GroceryItem(props) {
   const togglePurchased = () => {
     const updatedItems = [...items];
     updatedItems[index].purchased = !updatedItems[index].purchased;
+    updatedItems[index].description = comment;
     const userId = localStorage.getItem("userId");
     setItems(updatedItems);
     saveItem();
@@ -57,7 +59,6 @@ function GroceryItem(props) {
     CallService(
       "grocery/request/" + room._id + "/" + item._id,
       {
-        description: `Requesting ${item.itemName}`,
         userId: userId,
       },
       editResponseHandler
@@ -94,16 +95,15 @@ function GroceryItem(props) {
   const saveItem = () => {
     const requesterCount = item.requesters ? item.requesters.length : 0;
     const amountOwed = requesterCount > 0 ? cost / requesterCount : 0;
+    const description = tempComment;
     const updatedItem = { 
       ...item, 
       cost,        
-      amountOwed
+      amountOwed,
+      description
     };
 
-    console.log("Saving updated item:", updatedItem);
-
     CallService("grocery/update", updatedItem, (data) => {
-      console.log("Update response:", data);
       const updatedItems = [...items];
       updatedItems[index] = data || updatedItem;
       setItems(updatedItems);
@@ -140,16 +140,22 @@ function GroceryItem(props) {
 
   // Handle comment submission
   const handleSubmitComment = (e) => {
+    setComment(tempComment);
     e.stopPropagation();
-    console.log("Comment for item", item.itemName, ":", comment);
-    setComment("");
+    saveItem();
     setCommentPopup(false);
   };
+
+  const handleCancelComment = (e) => {
+    e.stopPropagation();
+    setCommentPopup(false);
+  }
 
   // When the entire grocery item container is clicked, open the comment popup (if not editing)
   const handleContainerClick = () => {
     if (editIndex === null) {
       setCommentPopup(true);
+      setTempComment(description);
     }
   };
 
@@ -252,26 +258,27 @@ function GroceryItem(props) {
         </div>
       )}
 
-      {commentPopup && (
-        <div className={styles.commentOverlay} onClick={(e) => e.stopPropagation()}>
-          <div className={styles.commentModal}>
-            <h3>Comment on {item.itemName}</h3>
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              placeholder="Type your comment here..."
-            />
-            <div className={styles.modalButtons}>
-              <button onClick={handleSubmitComment} className={styles.Button}>
-                Submit
-              </button>
-              <button onClick={() => setCommentPopup(false)} className={styles.Button}>
-                Close
-              </button>
+        {commentPopup && (
+          <div className={styles.commentOverlay} onClick={handleCancelComment}>
+            <div className={styles.commentModal} onClick={(e) => e.stopPropagation()}>
+              <h3>Comment on {item.itemName}</h3>
+              <textarea
+                value={tempComment}
+                onChange={(e) => setTempComment(e.target.value)}
+                placeholder="Type your comment here..."
+                maxLength={1000}
+              />
+              <div className={styles.modalButtons}>
+                <button onClick={handleSubmitComment} className={styles.Button}>
+                  Submit
+                </button>
+                <button onClick={handleCancelComment} className={styles.Button}>
+                  Close
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
     </div>
   );
 }
