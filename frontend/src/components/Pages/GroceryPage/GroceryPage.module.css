@@ -49,27 +49,35 @@
   justify-content: center;
   gap: 10px;
   margin-bottom: 20px;
+  width: 500px;
+  margin: 0 auto;
 }
 
 /* Text Input */
 .inputBox {
-  width: 60%;
+  flex: 0 0 170px;
+  height: 10px;
   padding: 10px;
   border-radius: 5px;
-  border: none;
-  outline: none;
   font-size: 1rem;
   background: rgba(255, 255, 255, 0.1);
   color: white;
 }
 
+.inputBox:focus {
+  border-color: #8b5cf6 !important;
+}
+
+.quantityBox:focus {
+  border-color: #8b5cf6 !important;
+}
+
 /* Quantity Input */
 .quantityBox {
-  width: 20%;
+  flex: 0 0 70px;
+  height: 10px;
   padding: 10px;
   border-radius: 5px;
-  border: none;
-  outline: none;
   font-size: 1rem;
   background: rgba(255, 255, 255, 0.1);
   color: white;
@@ -77,7 +85,7 @@
 
 /* Button Styling */
 .Button {
-  padding: 10px 20px;
+  padding: 8px 10px;
   font-size: 1rem;
   font-weight: 600;
   background: linear-gradient(135deg, #8b5cf6, #6366f1);
@@ -85,12 +93,11 @@
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  box-shadow: 0 10px 15px -3px rgba(139, 92, 246, 0.3), 0 4px 6px -2px rgba(139, 92, 246, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .Button:hover {
-  transform: translateY(-5px);
+  transform: translateY(-2px);
   box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.4), 0 10px 10px -5px rgba(139, 92, 246, 0.3);
 }
 
@@ -103,22 +110,49 @@
   overflow-y: auto;
 }
 
-/* Grocery Item styling */
-.groceryItem {
-  background: rgba(255, 255, 255, 0.1);
+.groceryItemContainer {
   padding: 10px;
   margin: 8px 110px;
   border-radius: 5px;
-  color: #e2e8f0;
   display: flex;
   align-items: center;
   position: relative;
 }
 
-/* 
-  The container for action buttons is positioned absolutely,
-  so it does not affect the size of the groceryItem.
-*/
+.groceryItem:hover {
+  top: -4px;
+  background-color: rgba(99, 102, 241, 0.3);
+}
+
+.groceryItemC {
+  flex: 1;
+}
+
+/* Grocery Item styling */
+.groceryItem {
+  top: 0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  margin: 8px 110px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: top .2s ease, box-shadow .2s ease;
+}
+
+.groceryItemText {
+  position: relative;
+  left: -110px;
+  top: -13px;
+}
+
+.requestersText {
+  position: absolute;
+  left: 20px;
+  bottom: 15px;
+}
+
 .groceryItemButtons {
   position: absolute;
   top: 50%;
@@ -152,40 +186,79 @@
 .editContainer {
   display: flex;
   gap: 10px;
-  margin-right: 120px;
+  width: 300px;
 }
 
+.editQuantityInput:focus {
+  border-color: #8b5cf6 !important;
+}
+
+.editInput:focus {
+  border-color: #8b5cf6 !important;
+}
 /* Edit inputs styling */
-.editInput,
+.editInput{
+  flex: 0 0 160px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
 .editQuantityInput {
-  padding: 5px;
-  border-radius: 5px;
-  border: none;
-  outline: none;
-  font-size: 1rem;
+  flex: 0 0 50px;
+  height: 1px;
   background: rgba(255, 255, 255, 0.1);
   color: white;
 }
 
-/* Save and Cancel buttons */
-.saveButton {
-  background: #2ecc71;
+.editButtons {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  display: none;
+  gap: 5px;
+}
+
+.editButtons button {
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.875rem;
 }
 
 .saveButton:hover {
-  background: #27ae60;
-}
-
-.cancelButton {
-  background: #e74c3c;
+  box-shadow: 0 15px 30px -5px #1e9750, 0 10px 10px -5px #0f6c36;
 }
 
 .cancelButton:hover {
-  background: #c0392b;
+  box-shadow: 0 15px 30px -5px #7e1c11, 0 10px 10px -5px #7e1c11;
 }
 
-/* Insert box (if needed) */
-.insertBox {
+.groceryItem:hover .editButtons {
+  display: flex;
+}
+
+.saveButton {
+  background: linear-gradient(135deg, #2ecc71, #1a9a4f);
+}
+
+.saveButton:hover {
+  
+  background: linear-gradient(135deg, #27ae60, #0e6632);
+}
+
+.cancelButton {
+  
+  background: linear-gradient(135deg, #e74c3c, #7e1c11);
+}
+
+.cancelButton:hover {
+  background: linear-gradient(135deg, #ae2819, #7b2015);
+}
+
+.totalCostBox {
   position: absolute;
   left: 100%;
   width: 50px;
@@ -203,19 +276,7 @@
   display: flex;
   align-items: center;
   position: relative;
-  margin: 8px 75px; /* keep the same margins as before */
-}
-
-/* Main grocery item box (content) */
-.groceryItem {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 10px 10px 10px 0; /* remove left padding so checkbox sits outside */
-  border-radius: 5px;
-  color: #e2e8f0;
-  flex: 1; /* take available width */
-  position: relative;
-  display: flex;
-  align-items: center;
+  margin: 8px 75px;
 }
 
 /* The themed purchase checkbox styling */
@@ -229,9 +290,9 @@
   padding: 0;      /* Reset default padding */
   margin: 0;       /* Reset default margin */
   line-height: 0;  /* Reset line-height if necessary */
-  position: relative;
-  left: -125px;
-  top: 25px;
+  position: absolute;
+  left: -40px;
+  top: 30px;
 }
 
 .checked {
@@ -248,6 +309,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+  border-radius: 5px;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
@@ -290,7 +352,4 @@
   cursor: pointer;
 }
 
-.groceryItemBox {
-  cursor: pointer;
-}
 

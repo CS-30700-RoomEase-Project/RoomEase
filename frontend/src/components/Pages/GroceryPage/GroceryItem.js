@@ -154,15 +154,17 @@ function GroceryItem(props) {
   };
 
   return (
-    <div className={styles.groceryItemContainer} onClick={handleContainerClick}>
+    <div className={styles.groceryItemC} onClick={handleContainerClick}>
+      
       {/* Purchase Button */}
       <button onClick={(e) => { e.stopPropagation(); togglePurchased(); }} className={styles.purchaseCheckbox}>
         {item.purchased && <span className={styles.checked}>✔</span>}
       </button>
       <div
-        className={styles.groceryItemContent}
+        className={styles.groceryItemContainer}
         style={{ textDecoration: item.purchased ? "line-through" : "none" }}
       >
+        <div className={styles.groceryItemText}>
         {editIndex === index ? (
           <div className={styles.editContainer} onClick={(e) => e.stopPropagation()}>
             <input
@@ -191,12 +193,13 @@ function GroceryItem(props) {
           </div>
         ) : (
           <>
-            {item.itemName} -{" "}
+            {item.itemName} - {" "}
             <span className={styles.quantityText}>{item.quantity}</span>
           </>
         )}
+        </div>
       </div>
-      <div className={styles.groceryItemButtons} onClick={(e) => e.stopPropagation()}>
+      <div className={editIndex === index ? styles.editButtons : styles.groceryItemButtons} onClick={(e) => e.stopPropagation()}>
         {editIndex === index ? (
           <>
             <button onClick={(e) => saveEdit(e)} className={`${styles.Button} ${styles.saveButton}`}>
@@ -220,11 +223,11 @@ function GroceryItem(props) {
           </>
         )}
       </div>
-      <div className={styles.requestersTooltip} onClick={(e) => e.stopPropagation()}>
+      <div className={styles.requestersText} onClick={(e) => e.stopPropagation()}>
         Requesters: {renderRequesters()}
       </div>
       {item.purchased && (
-        <div className={styles.insertBox} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.totalCostBox} onClick={(e) => e.stopPropagation()}>
           <input
             type="number"
             value={cost}

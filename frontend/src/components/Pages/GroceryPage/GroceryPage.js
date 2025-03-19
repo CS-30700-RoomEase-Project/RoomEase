@@ -7,6 +7,7 @@ function GroceryPage({room}) {
   const [items, setItems] = useState([]);
   const [input, setInput] = useState("");
   const [quantity, setQuantity] = useState(1);
+  const [isGroceryListOpen, setGroceryListOpen] = useState(true);
 
   const quantityRef = useRef(null);
 
@@ -23,15 +24,18 @@ function GroceryPage({room}) {
   };
 
 const itemResponseHandler = (data) => {
-      setItems([...items, data ]);
+      setItems([data, ...items]);
       setInput("");
       setQuantity(1);
 }
 
 // Fetch groceryList
-  useEffect(() => {
-    CallService("grocery/getList/" + room._id, {}, setItems);
-  }, []);
+useEffect(() => {
+  CallService("grocery/getList/" + room._id, {}, (data) => {
+    // Reverse the fetched items so that the newest are first
+    setItems(data.reverse());
+  });
+}, []);
 
   return (
     <div className={styles.appContainer}>
