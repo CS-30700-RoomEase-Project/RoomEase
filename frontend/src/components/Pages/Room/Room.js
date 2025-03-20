@@ -9,6 +9,9 @@ import Clock from './Room Items/Clock';
 import Computer from './Room Items/Computer';
 import Desk from './Room Items/Desk';
 import Fridge from './Room Items/Fridge';
+import Gavel from './Room Items/Gavel';
+import GavelPad from './Room Items/GavelPad';
+
 import style from './Room.module.css';
 function Room() {
     const { roomId } = useParams(); // Gets the roomId from the URL
@@ -62,6 +65,7 @@ function Room() {
     const handleSettingsClick = () => {
         navigate(`/room/${roomId}/settings`);
     };
+
     const handleGoToChores = (roomId) => {
         console.log("Navigating to chores with roomId:", roomId); // Debugging
         navigate(`/chores/${roomId}`);
@@ -75,6 +79,11 @@ function Room() {
     const handleGoToState = (roomId) => {
         console.log("Navigating to state with roomId:", roomId); // Debugging
         navigate(`/room-state/`);
+    }
+
+    const handleGoToDisputes = (roomId) => {
+        console.log("Navigating to disputes with roomId:", roomId); // Debugging
+        navigate(`/disputes/`);
     }
 
     if (loading) return <div>Loading...</div>;
@@ -97,6 +106,7 @@ function Room() {
                 <Fridge room={roomData}/>
                 <Desk>
                     <Computer handleInviteClick={handleInviteClick} handleSettingsClick={handleSettingsClick} roomId={roomData._id} />
+                    <Gavel onClick={() => handleGoToDisputes(roomId)} />
                 </Desk>
                 <Clock onClick={() => handleGoToState(roomId)}/>
                 <BulletinBoard onClick={() => handleGoToHours(roomId)}/>

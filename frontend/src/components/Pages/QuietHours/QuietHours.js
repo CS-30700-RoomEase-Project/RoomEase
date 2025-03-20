@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styles from "./QuietHours.module.css";
 
-const roomStartTime = "23:00"; // Change this based on the database
-const roomEndTime = "7:00"; // Change this based on the database
+const roomStartTime = "23:00"; // Default value for start time
+const roomEndTime = "7:00"; // Default value for end time
 
 function QuietHours() {
   const [quietHours, setQuietHours] = useState({
@@ -15,15 +15,44 @@ function QuietHours() {
   const [customLevel, setCustomLevel] = useState(""); // State for custom quiet level
   const [levels, setLevels] = useState(["Low", "Medium", "High"]); // Default levels
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  // Handle form submission and send to backend
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert(
-      `Quiet Hours Updated: ${quietHours.startTime} to ${quietHours.endTime}, Level: ${quietHours.level}`
-    );
+    const finalLevel = customLevel ? customLevel : quietHours.level;
+
+    try {
+      const userId = localStorage.getItem("userId"); // Assuming user ID is stored in localStorage
+
+      // Send POST request to backend
+      const response = await fetch("http://localhost:5001/api/quiethours/addQuietHours", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          request: `Quiet Hours Updated: ${quietHours.startTime} to ${quietHours.endTime}`,
+          level: finalLevel,
+          userId,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Quiet hours updated and users notified!");
+        // Reset the state after successful update
+        setQuietHours({ startTime: roomStartTime, endTime: roomEndTime, level: "Medium" });
+        setCustomLevel("");
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error updating quiet hours:", error);
+      alert("Failed to update quiet hours.");
+    }
   };
 
-  // Handle input changes
+  // Handle input changes for quiet hours
   const handleChange = (e) => {
     const { name, value } = e.target;
     setQuietHours((prev) => ({
@@ -40,7 +69,7 @@ function QuietHours() {
     }
   };
 
-  // Format the time based on the selected time format
+  // Format the time based on the selected time format (12-hour or 24-hour)
   const formatTime = (time) => {
     if (is12HourFormat) {
       const [hours, minutes] = time.split(":");
