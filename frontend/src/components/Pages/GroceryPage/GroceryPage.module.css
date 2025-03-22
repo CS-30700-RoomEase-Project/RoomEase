@@ -103,11 +103,14 @@
 
 /* Grocery List */
 .groceryList {
+  width: 785px;
   list-style: none;
   padding: 0;
-  margin-top: 20px;
+  padding-right: 20px;
+  margin-top: 0px;
   max-height: 300px;
-  overflow-y: auto;
+  overflow-y: scroll;
+  height: 500px;
 }
 
 .groceryItemContainer {
@@ -121,6 +124,10 @@
 
 .groceryItem:hover {
   top: -4px;
+  background-color: rgba(99, 102, 241, 0.3);
+}
+
+.groceryItem:hover .totalCostBox {
   background-color: rgba(99, 102, 241, 0.3);
 }
 
@@ -258,19 +265,6 @@
   background: linear-gradient(135deg, #ae2819, #7b2015);
 }
 
-.totalCostBox {
-  position: absolute;
-  left: 100%;
-  width: 50px;
-  margin-left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  padding: 5px;
-  border-radius: 5px;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
 /* New wrapper for each grocery item to position the checkbox to the left */
 .groceryItemWrapper {
   display: flex;
@@ -291,9 +285,10 @@
   margin: 0;       /* Reset default margin */
   line-height: 0;  /* Reset line-height if necessary */
   position: absolute;
-  left: -40px;
+  left: -70px;
   top: 30px;
 }
+
 
 .checked {
   color:white;
@@ -353,4 +348,70 @@
   cursor: pointer;
 }
 
+.paidLabel {
+  display: flex;
+  width: 30px;
+  padding-top: 6px;
+  font-size: 16px;
+  position: relative;
+  left: 13px;
+  accent-color: #6366f1;
+}
 
+.totalCostBox {
+  position: absolute;
+  left: 100%;
+  width: 85px;
+  margin-left: 10px;
+  height: 67px;
+  top: 0px;
+  padding: 5px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.inputCost {
+  -moz-appearance: textfield;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 40px !important;
+  height: 10px;
+  padding: 5px;
+}
+
+.inputCost:focus {
+  border-color: #8b5cf6 !important;
+}
+
+.inputCost::-webkit-inner-spin-button,
+.inputCost::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.costText {
+  position: relative;
+  left: 664px;
+  top: 71px;
+  font-weight: 700;
+  font-size: 16px;
+  width: 100px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.purchasedText {
+  position: relative;
+  left: 0px;
+  top: 107px;
+  font-weight: 700;
+  font-size: 16px;
+  width: 100px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}

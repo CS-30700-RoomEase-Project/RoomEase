@@ -44,7 +44,6 @@ useEffect(() => {
         <p className={styles.groceryTitleDescription}>
           A shared grocery list to add and track items easily.
         </p>
-
         <div className={styles.inputContainer}>
           <input
             type="text"
@@ -72,9 +71,20 @@ useEffect(() => {
             Add Item
           </button>
         </div>
-
+        <p className={styles.purchasedText} style={{ visibility: items.length > 0 ? "visible" : "hidden" }}>
+          Purchased
+        </p>
+        <p
+            className={styles.costText}
+            style={{ visibility: items.some((item) => item.purchased) ? "visible" : "hidden" }}
+          >
+          Cost of Item
+        </p>
+        <h3 className={styles.title} style={{ visibility: items.length > 0 ? "visible" : "hidden" }}>Items</h3>
+        <h3 className={styles.title} style={{ display: items.length > 0 ? "none" : "block" }}>
+          Your grocery list is empty. Add an item to get started!
+        </h3>
         <ul className={styles.groceryList}>
-          <h3 className={styles.title}>Items</h3>
           {items.map((item, index) => (
             <li key={index} className={styles.groceryItem}>
               <GroceryItem items={items} setItems={setItems} index={index} item={item} description={item.description} room={room}/>

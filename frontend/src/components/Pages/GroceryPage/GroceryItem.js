@@ -118,7 +118,10 @@ function GroceryItem(props) {
 
   const togglePaid = () => {
     const updatedItems = [...items];
-    updatedItems[index].paid = !updatedItems[index].paid;
+    updatedItems[index].paid = false;
+    updatedItems[index].cost = 0;
+    updatedItems[index].purchased = false;
+    setCost(0);
     setItems(updatedItems);
     const updatedItem = { ...item, paid: updatedItems[index].paid };
     CallService("grocery/update", updatedItem, editResponseHandler);
@@ -131,7 +134,7 @@ function GroceryItem(props) {
     const usernames = item.requesters.map((req) => req.username).join(", ");
     const requesterCount = item.requesters.length;
     let shareText = "";
-    if (item.cost && requesterCount > 0) {
+    if (item.cost > 0 && requesterCount > 0) {
       const share = (item.cost / requesterCount).toFixed(2);
       shareText = ` (must pay: $${share})`;
     }
@@ -243,6 +246,11 @@ function GroceryItem(props) {
             onChange={(e) =>
               setCost(Math.min(9999, Math.max(0, parseInt(e.target.value) || 0)))
             }
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                saveItem();
+              }
+            }}
             onBlur={saveItem}
             placeholder="Cost"
             className={styles.inputCost}
@@ -253,7 +261,7 @@ function GroceryItem(props) {
               checked={item.paid || false}
               onChange={(e) => togglePaid(e)}
             />{" "}
-            Payment Fulfilled
+            Paid
           </label>
         </div>
       )}
