@@ -22,10 +22,14 @@ function GroceryItem(props) {
     }
   }, [item.cost]);
 
+  useEffect(() => {
+    setTempComment(description || "");
+  }, [description]);
+
   const togglePurchased = () => {
     const updatedItems = [...items];
     updatedItems[index].purchased = !updatedItems[index].purchased;
-    updatedItems[index].description = comment;
+    updatedItems[index].description = tempComment;
     const userId = localStorage.getItem("userId");
     setItems(updatedItems);
     saveItem();
@@ -95,7 +99,7 @@ function GroceryItem(props) {
   const saveItem = () => {
     const requesterCount = item.requesters ? item.requesters.length : 0;
     const amountOwed = requesterCount > 0 ? cost / requesterCount : 0;
-    const description = tempComment;
+    let description = tempComment;
     const updatedItem = { 
       ...item, 
       cost,        
@@ -143,6 +147,7 @@ function GroceryItem(props) {
 
   // Handle comment submission
   const handleSubmitComment = (e) => {
+    setComment(tempComment);
     setComment(tempComment);
     e.stopPropagation();
     saveItem();
