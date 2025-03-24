@@ -37,6 +37,22 @@ useEffect(() => {
   });
 }, []);
 
+const toggleAllPaid = () => {
+  const updatedItems = items.map((item) => ({
+    ...item,
+    paid: false,
+    cost: 0,
+    purchased: false,
+  }));
+
+  setItems(updatedItems);
+
+  updatedItems.forEach((updatedItem) => {
+    CallService("grocery/update", updatedItem, (data) => {
+    });
+  });
+};
+
   return (
     <div className={styles.appContainer}>
       <div className={styles.card}>
@@ -69,6 +85,9 @@ useEffect(() => {
           />
           <button onClick={addItem} className={styles.Button}>
             Add Item
+          </button>
+          <button onClick={toggleAllPaid} className={styles.Button}>
+            All Paid
           </button>
         </div>
         <p className={styles.purchasedText} style={{ visibility: items.length > 0 ? "visible" : "hidden" }}>

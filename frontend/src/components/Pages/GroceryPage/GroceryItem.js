@@ -22,10 +22,14 @@ function GroceryItem(props) {
     }
   }, [item.cost]);
 
+  useEffect(() => {
+    setTempComment(description || "");
+  }, [description]);
+
   const togglePurchased = () => {
     const updatedItems = [...items];
     updatedItems[index].purchased = !updatedItems[index].purchased;
-    updatedItems[index].description = comment;
+    updatedItems[index].description = tempComment;
     const userId = localStorage.getItem("userId");
     setItems(updatedItems);
     saveItem();
@@ -95,7 +99,7 @@ function GroceryItem(props) {
   const saveItem = () => {
     const requesterCount = item.requesters ? item.requesters.length : 0;
     const amountOwed = requesterCount > 0 ? cost / requesterCount : 0;
-    const description = tempComment;
+    let description = tempComment;
     const updatedItem = { 
       ...item, 
       cost,        
@@ -143,6 +147,7 @@ function GroceryItem(props) {
 
   // Handle comment submission
   const handleSubmitComment = (e) => {
+    setComment(tempComment);
     setComment(tempComment);
     e.stopPropagation();
     saveItem();
@@ -239,19 +244,38 @@ function GroceryItem(props) {
         <div className={styles.totalCostBox} onClick={(e) => e.stopPropagation()}>
           <input
             type="number"
+            step="0.01"
+            max="9999"
             value={cost}
             ref={costRef}
             onFocus={() => costRef.current.select()}
             onClick={(e) => e.stopPropagation()}
-            onChange={(e) =>
-              setCost(Math.min(9999, Math.max(0, parseInt(e.target.value) || 0)))
-            }
+            onChange={(e) => {
+              let value = e.target.value;
+              // If there's a decimal point, ensure no more than 2 decimal places are entered.
+              if (value.includes('.')) {
+                const [whole, fraction] = value.split('.');
+                if (fraction.length > 2) {
+                  value = `${whole}.${fraction.substring(0, 2)}`;
+                }
+              }
+              // Convert value to a number and clamp it to a maximum of 9999.
+              const numericValue = Math.min(parseFloat(value) || 0, 9999);
+              setCost(numericValue);
+            }}
+            onBlur={(e) => {
+              // Parse the number and ensure it's not above 9999.
+              const numericValue = Math.min(parseFloat(e.target.value) || 0, 9999);
+              // Format to exactly two decimal places.
+              const formatted = numericValue.toFixed(2);
+              setCost(parseFloat(formatted));
+              saveItem();
+            }}
             onKeyDown={(e) => {
-              if (e.key === 'Enter') {
+              if (e.key === "Enter") {
                 saveItem();
               }
             }}
-            onBlur={saveItem}
             placeholder="Cost"
             className={styles.inputCost}
           />

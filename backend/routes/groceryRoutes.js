@@ -27,7 +27,7 @@ router.post('/add/:roomID', async (req, res) => {
     try {
       console.log("Update payload:", req.body);
       let updatedItem = req.body;
-      updatedItem = await Grocery.findByIdAndUpdate(updatedItem._id, updatedItem, { new: false });
+      updatedItem = await Grocery.findByIdAndUpdate(updatedItem._id, updatedItem, { new: true });
       updatedItem = await updatedItem.populate('requesters', 'username');
       res.status(200).json(updatedItem);
     } catch (error) {
