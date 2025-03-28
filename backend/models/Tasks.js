@@ -51,8 +51,17 @@ const choreSchema = new mongoose.Schema({
     whoseTurn: Number,
     dueDate: { type: Date, required: false }, // Due date of the chore
     recurringDays: { type: Number, default: 0 }, // Number of days between occurrences (0 = not recurring)
-    completed: { type: Boolean, default: false } // Indicates if the chore is done
+    completed: { type: Boolean, default: false }, // Indicates if the chore is done
+    difficulty: { type: String, default: "Easy"}, //indicates how difficult the chore is
+    comments: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'choreComment'}], default: []}
 });
+
+const choreCommentSchema = new mongoose.Schema({
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    comment: String
+});
+
+const choreComment = mongoose.model('choreComment', choreCommentSchema);
 
 choreSchema.methods.createNotification = async function(path) {
     console.log("creating notification");
@@ -314,5 +323,5 @@ const Bill = Task.discriminator('Bill', billSchema);
  * Exports the task class so it can be used in other files.
  * Update this with each new subclass of tasks.
  */
-module.exports = { Task, Chore, Grocery, Bill };
+module.exports = { Task, Chore, Grocery, Bill, choreComment };
 

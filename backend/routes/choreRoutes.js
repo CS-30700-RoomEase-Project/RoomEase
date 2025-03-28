@@ -14,6 +14,28 @@ router.put('/markComplete/:id/:roomId', async (req, res) => {
             return res.status(404).json({ message: "Chore not found" });
         }
 
+        if (!chore.completed) {
+            const room = await Room.findById(roomId);
+            if (!room) {
+                return res.status(404).json({ message: "Room not found" });
+            }
+
+            const userId = chore.order[chore.whoseTurn];
+
+            if (!userId) {
+                return res.status(400).json({ message: "Invalid turn order" });
+            }
+
+            // Step 4: Get the difficulty-based points
+            const difficultyPoints = room.chorePoints.get(chore.difficulty) || 0;
+
+            room.points.set(userId, (room.points.get(userId) || 0) + difficultyPoints);
+
+            console.log(room.points);
+            // Save the updated room document
+            await room.save();
+        }
+
         // Call the complete method
         await chore.complete(roomId);
 
@@ -24,7 +46,27 @@ router.put('/markComplete/:id/:roomId', async (req, res) => {
     }
 });
 
+router.put('/putPoints/:roomId', async (req, res) => {
+    try {
+        const { roomId } = req.params;
+        const updatedPoints = req.body; // Expecting an object { Easy: X, Medium: Y, Hard: Z }
 
+        const updatedRoom = await Room.findByIdAndUpdate(
+            roomId,
+            { chorePoints: updatedPoints }, 
+            { new: true } // Returns the updated document
+        );
+
+        if (!updatedRoom) {
+            return res.status(404).json({ message: "Room not found." });
+        }
+
+        res.json({ message: "Chore points updated successfully!" });
+    } catch (error) {
+        console.error("Error updating points:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 
 //route to update a chore by id
@@ -33,7 +75,7 @@ router.put('/updateChore/:id', async (req, res) => {
     const { id } = req.params;
     console.log(id);
 
-    const { name, description, turns, firstTurn, dueDate, recurrenceDays } = req.body;
+    const { name, description, turns, firstTurn, dueDate, recurrenceDays, difficulty } = req.body;
 
     try {
         // Find and update the chore
@@ -45,7 +87,8 @@ router.put('/updateChore/:id', async (req, res) => {
                 order: turns, 
                 whoseTurn: firstTurn,
                 dueDate, // Directly storing the ISO-formatted due date
-                recurringDays: recurrenceDays || 0 // Default to non-recurring if not provided
+                recurringDays: recurrenceDays || 0, // Default to non-recurring if not provided
+                difficulty: difficulty
             },
             { new: true } // Return the updated document
         );
@@ -84,6 +127,23 @@ router.delete('/delete/:id/:roomId', async (req, res) => {
     }
 });
 
+router.get('/getPoints/:roomId', async (req, res) => {
+    try {
+        const { roomId } = req.params;
+
+        const points = await Room.findById(roomId).select('-_id chorePoints');
+        if (!points) {
+            return res.status(404).json({ message: "Room not found." });
+        }
+
+        //return chorePoints
+        res.json(points);
+    } catch (error) {
+        console.error("Error fetching points:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 router.get('/getChores/:roomId', async (req, res) => {
     try {
         const { roomId } = req.params;
@@ -116,7 +176,7 @@ router.post('/addChore/:roomId', async (req, res) => {
         const { roomId } = req.params
 
         console.log("adding");
-        const { name, description, turns, firstTurn, dueDate, recurrenceDays } = req.body;
+        const { name, description, turns, firstTurn, dueDate, recurrenceDays, difficulty } = req.body;
         console.log("recurrenceDays");
         console.log(recurrenceDays);
 
@@ -135,6 +195,7 @@ router.post('/addChore/:roomId', async (req, res) => {
             whoseTurn: firstTurn,
             dueDate: parsedDueDate,
             recurringDays: recurrenceDays || 0, // Default to non-recurring if not provided
+            difficulty: difficulty,
             isComplete: false // Initialize as not completed
         });
 

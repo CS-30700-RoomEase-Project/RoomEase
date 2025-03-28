@@ -10,6 +10,7 @@ const ChorePopup = ({ isOpen, onClose, chore, roomId }) => {
     const [firstTurn, setFirstTurn] = useState(null);
     const [dueDate, setDueDate] = useState("");
     const [recurringDays, setRecurringDays] = useState(0);
+    const [difficulty, setDifficulty] = useState("Medium");
     const [users, setUsers] = useState([]);
 
     useEffect(() => {
@@ -35,11 +36,10 @@ const ChorePopup = ({ isOpen, onClose, chore, roomId }) => {
             setChoreName(chore.choreName || "");
             setChoreDescription(chore.description || "");
             setOrderOfTurns(chore.order ? chore.order.map(user => user._id) : []);
-            setFirstTurn(chore.whoseTurn || null);
+            setFirstTurn(chore.whoseTurn);
             setDueDate(formatDate(chore.dueDate) || "");
             setRecurringDays(chore.recurringDays || 0);
-            console.log(firstTurn);
-            console.log(recurringDays);
+            setDifficulty(chore.difficulty);
         } else {
             setChoreName("");
             setChoreDescription("");
@@ -47,6 +47,7 @@ const ChorePopup = ({ isOpen, onClose, chore, roomId }) => {
             setFirstTurn(null);
             setDueDate("");
             setRecurringDays(0);
+            setDifficulty("Easy");
         }
     }, [chore]);
 
@@ -75,7 +76,8 @@ const ChorePopup = ({ isOpen, onClose, chore, roomId }) => {
             turns: orderOfTurns,
             firstTurn: firstTurn || 0,
             dueDate: dueDate,
-            recurrenceDays: parseInt(recurringDays, 10)
+            recurrenceDays: parseInt(recurringDays, 10),
+            difficulty: difficulty
         };
         console.log(choreData);
         console.log(chore);
@@ -150,6 +152,12 @@ const ChorePopup = ({ isOpen, onClose, chore, roomId }) => {
                             </option>
                         ) : null;
                     })}
+                </Select>
+                <h6>Set difficulty</h6>
+                <Select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
+                    <option value={"Easy"}>Easy</option>
+                    <option value={"Medium"}>Medium</option>
+                    <option value={"Hard"}>Hard</option>
                 </Select>
                 <button className={styles.addButton} onClick={handleAddChore}>{chore ? "Update" : "Add"}</button>
                 <button className={styles.cancelButton} onClick={onClose}>Cancel</button>

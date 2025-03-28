@@ -45,7 +45,7 @@
 
 .titleText {
     margin-left: 25%;
-    margin-right: 25%;
+    margin-right: 10%;
     width: 20%;
     text-align: center;
     font-size: 24px;
@@ -69,6 +69,21 @@
 
 .logoutButton:hover {
     background-color: red;
+}
+
+.pointsButton {
+    color:white;
+    background-color: blue; /* Optional: Style adjustments */
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15%;
+    height: 80%;
+}
+
+.pointsButton:hover {
+    background-color: aqua;
 }
 
 .list {
