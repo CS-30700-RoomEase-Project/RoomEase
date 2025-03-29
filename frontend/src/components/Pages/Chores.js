@@ -4,6 +4,7 @@ import ChorePointsPopup from "../Shared_components/Chores/ChorePointsPopup";
 import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Chores.module.css";
 import NotificationButton from '../Shared_components/NotificationBell/NotificationBell';
+import ChoreCommentsPopup from "../Shared_components/Chores/ChoreCommentsPopup";
 
 function Chores() {
     const { roomId } = useParams(); // Gets the roomId from the URL
@@ -11,6 +12,7 @@ function Chores() {
 
     const [isChorePopupOpen, setChorePopupOpen] = useState(false);
     const [isPointsPopupOpen, setPointsPopupOpen] = useState(false);
+    const [isCommentsPopupOpen, setCommentsPopupOpen] = useState(false);
     const [chores, setChores] = useState([]); // Store fetched chores
     const [selectedChore, setSelectedChore] = useState(null); // Track selected chore for editing
 
@@ -90,9 +92,20 @@ function Chores() {
         setChorePopupOpen(true);
     };
 
+    const handleViewComments = (chore) => {
+        setSelectedChore(chore);
+        setCommentsPopupOpen(true);
+    };
+
     const closeChorePopup = () => {
         setChorePopupOpen(false);
         setSelectedChore(null); // Reset selected chore when closing
+        fetchChores();
+    };
+
+    const closeCommentsPopup = () => {
+        setCommentsPopupOpen(false);
+        setSelectedChore(null);
         fetchChores();
     };
 
@@ -130,6 +143,12 @@ function Chores() {
                         <span>{chore.difficulty}</span>
                         <div className={styles.buttonContainer}>
                             <button
+                                className={styles.commentButton}
+                                onClick={() => handleViewComments(chore)}
+                            >
+                                comments
+                            </button>
+                            <button
                                 className={styles.markButton}
                                 onClick={() => handleMarkAsComplete(chore)}
                             >
@@ -161,6 +180,12 @@ function Chores() {
             <ChorePointsPopup
                 isOpen={isPointsPopupOpen}
                 onClose={closePointsPopup}
+                roomId={roomId}
+            />
+            <ChoreCommentsPopup
+                isOpen={isCommentsPopupOpen}
+                onClose={closeCommentsPopup}
+                chore={selectedChore}
                 roomId={roomId}
             />
         </div>

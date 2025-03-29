@@ -122,7 +122,7 @@
     gap: 8px; /* Adds spacing between buttons */
 }
 
-.markButton, .editButton, .deleteButton {
+.markButton, .editButton, .deleteButton, .commentButton {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -130,8 +130,19 @@
     font-size: 80%;
 }
 
+.commentButton {
+    width: 25%;
+    border-radius: 10%;
+    color: white;
+    background-color: blue;
+}
+
+.commentButton:hover {
+    background-color: aqua;
+}
+
 .markButton {
-    width: 30%;
+    width: 25%;
     border-radius: 10%;
     color: white;
     background-color: green;
@@ -142,7 +153,7 @@
 }
 
 .editButton {
-    width: 30%;
+    width: 25%;
     border-radius: 10%;
     color: white;
     background-color: green;
@@ -153,7 +164,7 @@
 }
 
 .deleteButton {
-    width: 30%;
+    width: 25%;
     border-radius: 10%;
     color: white;
     background-color: maroon;

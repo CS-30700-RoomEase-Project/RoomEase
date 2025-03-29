@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Task, Chore } = require('../models/Tasks'); // Import Chore and task models
+const { Task, Chore, choreComment } = require('../models/Tasks'); // Import Chore and task models
 const User = require('../models/User'); // Import User model
 const Room = require('../models/Room'); // Import the Room model
 
@@ -156,7 +156,14 @@ router.get('/getChores/:roomId', async (req, res) => {
 
         // Find only the tasks that are in the room's tasks array and are of type 'Chore'
         const chores = await Task.find({ _id: { $in: room.tasks }, type: 'Chore' })
-            .populate('order', 'username'); // Populate order field with usernames
+            .populate('order', 'username') // Populate order field with usernames
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'creator',
+                    select: 'username' // Select only the username of the creator
+                }
+            });
 
         if (!chores.length) {
             return res.status(404).json({ message: "No chores found for this room." });
@@ -217,6 +224,44 @@ router.post('/addChore/:roomId', async (req, res) => {
         output = await newChore.createNotification(roomId);
         console.log(output);
         res.status(201).json({ message: "Chore added successfully!", chore: newChore });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.post('/addComment', async (req, res) => {
+    try {
+        const {chore, creator, message} = req.body;
+
+        ///console.log("creator:", creator);
+
+        const user = await User.findOne({userId: creator}).populate();
+
+        console.log("userid:", user._id);
+        console.log("user:", user);
+
+        const newComment = new choreComment({
+            creator: user._id,
+            comment: message   
+        });
+
+        await newComment.save();
+
+        console.log("chore:", chore);
+
+        const updatedChore = await Chore.findByIdAndUpdate(
+            chore,
+            { $push: { comments: newComment._id }},
+            { new: true, useFindAndModify: false }
+        );
+
+        if (!updatedChore) {
+            return res.status(404).json({ error: "chore not found" });
+        }
+
+        res.status(201).json({ message: "comment added successfully!", comment: newComment });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Internal Server Error" });
