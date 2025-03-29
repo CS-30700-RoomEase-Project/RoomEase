@@ -14,6 +14,7 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const inviteRoutes = require("./routes/inviteRoutes");
 const roomStateRoutes = require("./routes/stateRoutes");
+const ratingRoutes = require("./routes/ratingRoutes"); // ✅ NEW ROUTE
 
 // Initialize app and HTTP server
 const app = express();
@@ -45,6 +46,7 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/room", roomRoutes);
 app.use("/api/invite", inviteRoutes);
 app.use("/api/roomstate", roomStateRoutes);
+app.use("/api/rating", ratingRoutes); // ✅ CORRECTED TO /api/rating
 
 // Import and pass Socket.IO to group chat routes
 const groupChatRoutes = require("./routes/groupChatRoutes")(io);

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Avatar from '../../Shared_components/AvatarButton/AvatarButton';
 import GroupChat from '../../Shared_components/Messages/GroupChat';
+import RateButton from '../../Shared_components/RoomRating/RateButton';
 import ExitRoom from './Room Icons/ExitRoom';
 import BulletinBoard from './Room Items/BulletinBoard';
 import ChoreItems from './Room Items/ChoreItems';
@@ -10,7 +11,6 @@ import Computer from './Room Items/Computer';
 import Desk from './Room Items/Desk';
 import Fridge from './Room Items/Fridge';
 import Gavel from './Room Items/Gavel';
-import GavelPad from './Room Items/GavelPad';
 
 import style from './Room.module.css';
 function Room() {
@@ -45,6 +45,8 @@ function Room() {
                 }
 
                 const data = await response.json();
+                localStorage.setItem('roommates', "");
+                localStorage.setItem('roommates', JSON.stringify(data.room.roomMembers)); // Store room data in local storage
                 setRoomData(data.room);
                 setLoading(false);
             } catch (err) {
@@ -96,6 +98,7 @@ function Room() {
                 <h1 className={style.roomTitle}>{roomData.roomName}</h1>
                 {/* <Message onClick={() => handleGoToState(roomId)/> */}
                 <div className={style.roomBannerMini}>
+                    <RateButton/>
                     <GroupChat roomId={roomId} userName={username}/>
                     <Avatar />
                 </div> 
