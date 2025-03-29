@@ -45,8 +45,6 @@ function Room() {
                 }
 
                 const data = await response.json();
-                localStorage.setItem('roommates', "");
-                localStorage.setItem('roommates', JSON.stringify(data.room.roomMembers)); // Store room data in local storage
                 setRoomData(data.room);
                 setLoading(false);
             } catch (err) {

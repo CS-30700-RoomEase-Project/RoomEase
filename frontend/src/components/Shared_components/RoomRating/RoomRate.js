@@ -67,36 +67,43 @@ const RoomRate = ({ onClose }) => {
     const storedRoomData = getStoredData("roomData");
     const roomId = storedRoomData?.roomId || "room123";
 
+    // Ensure at least one rating exists
+    if (!roommates.length) {
+        alert("No roommates available to rate.");
+        return;
+    }
+
     const ratingData = {
-      // senderId: storedUserData?.userId,
-      roomId: roomId,
-      recId: roommates.map((user) => user.userId),
-      cleanRating: roommates.map((user) => ratings[user.userId]?.cleanRating || 0),
-      noiseRating: roommates.map((user) => ratings[user.userId]?.noiseRating || 0),
-      paymentRating: roommates.map((user) => ratings[user.userId]?.paymentRating || 0),
-      rulesRating: roommates.map((user) => ratings[user.userId]?.rulesRating || 0),
-      numRating: 1,
+        roomId,
+        recId: roommates.map((user) => user.userId),
+        cleanRating: roommates.map((user) => ratings[user.userId]?.cleanlinessRating || 0),
+        noiseRating: roommates.map((user) => ratings[user.userId]?.noiseLevelRating || 0),
+        paymentRating: roommates.map((user) => ratings[user.userId]?.paymentTimelinessRating || 0),
+        rulesRating: roommates.map((user) => ratings[user.userId]?.ruleAdherenceRating || 0),
     };
 
+    console.log("Sending rating data:", ratingData);  // Debugging
+
     try {
-      const response = await fetch("http://localhost:5001/api/rating/updateRating", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(ratingData),
-      });
+        const response = await fetch("http://localhost:5001/api/rating/updateRating", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(ratingData),
+        });
 
-      const responseBody = await response.json();
-      if (!response.ok) {
-        throw new Error(`Server Error: ${response.status} - ${responseBody.message || 'Unknown error'}`);
-      }
+        const responseBody = await response.json();
+        if (!response.ok) {
+            throw new Error(`Server Error: ${response.status} - ${responseBody.message || "Unknown error"}`);
+        }
 
-      alert("Ratings submitted successfully!");
-      onClose();
+        alert("Ratings submitted successfully!");
+        onClose();
     } catch (error) {
-      console.error("Error submitting ratings:", error);
-      alert(`An error occurred while submitting ratings: ${error.message}`);
+        console.error("Error submitting ratings:", error);
+        alert(`An error occurred while submitting ratings: ${error.message}`);
     }
   };
+
 
   return (
     <div className="modal">
@@ -107,35 +114,49 @@ const RoomRate = ({ onClose }) => {
           <p>Loading roommates...</p>
         ) : (
           <>
-            <label htmlFor="roommate-select">Select Roommate:</label>
-            <select
-              id="roommate-select"
-              onChange={(e) => {
-                const selectedUserId = e.target.value;
-                const selectedUser = roommates.find((user) => user.userId === selectedUserId);
-                setSelectedRoommate(selectedUser);
-              }}
-              value={selectedRoommate?.userId || ""}
-            >
-              {roommates.map((user) => (
-                <option key={user.userId} value={user.userId}>
-                  {user.username}
-                </option>
-              ))}
-            </select>
+            <div className="select-container">
+              <label htmlFor="roommate-select">Select Roommate:</label>
+              <select
+                id="roommate-select"
+                onChange={(e) => {
+                  const selectedUserId = e.target.value;
+                  const selectedUser = roommates.find((user) => user.userId === selectedUserId);
+                  setSelectedRoommate(selectedUser);
+                }}
+                value={selectedRoommate?.userId || ""}
+              >
+                {roommates.map((user) => (
+                  <option key={user.userId} value={user.userId}>
+                    {user.username}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             {selectedRoommate && (
               <div className="rating-group">
-                {["cleanRating", "noiseRating", "paymentRating", "rulesRating"].map((category) => (
+                {[
+                  { category: "cleanlinessRating", label: "Cleanliness" },
+                  { category: "noiseLevelRating", label: "Noise Level" },
+                  { category: "paymentTimelinessRating", label: "Payment Timeliness" },
+                  { category: "ruleAdherenceRating", label: "Rule Adherence" },
+                ].map(({ category, label }) => (
                   <div key={category} className="input-group">
-                    <label>{category.replace("Rating", " Rating")}:</label>
-                    <input
-                      type="number"
-                      min="1"
-                      max="5"
-                      value={ratings[selectedRoommate.userId]?.[category] || ""}
-                      onChange={(e) => handleRatingChange(category, parseInt(e.target.value) || 0)}
-                    />
+                    <label>{label}:</label>
+                    <div className="star-rating">
+                      {[...Array(5)].map((_, index) => {
+                        const ratingValue = (index + 1) * 2; // Converts 1-based index to 2, 4, 6, 8, 10
+                        return (
+                          <span
+                            key={index}
+                            className={`star ${ratings[selectedRoommate.userId]?.[category] >= ratingValue ? "selected" : ""}`}
+                            onClick={() => handleRatingChange(category, ratingValue)}
+                          >
+                            ★
+                          </span>
+                        );
+                      })}
+                    </div>
                   </div>
                 ))}
               </div>
