@@ -232,7 +232,7 @@ router.post('/addChore/:roomId', async (req, res) => {
 
 router.post('/addComment', async (req, res) => {
     try {
-        const {chore, creator, message} = req.body;
+        const {chore, creator, message, notify, roomId} = req.body;
 
         ///console.log("creator:", creator);
 
@@ -260,6 +260,15 @@ router.post('/addComment', async (req, res) => {
             return res.status(404).json({ error: "chore not found" });
         }
 
+        if (notify) {
+            target = await Chore.findById(chore);
+            if (!target) {
+                console.log("null target");
+            }
+            await target.commentNotification(message, roomId);
+        }
+
+
         res.status(201).json({ message: "comment added successfully!", comment: newComment });
 
     } catch (error) {
@@ -267,6 +276,31 @@ router.post('/addComment', async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+router.delete('/deleteComment', async (req, res) => {
+    try {
+        const { commentId, choreId } = req.body;
+
+        if (!commentId || !choreId) {
+            return res.status(400).json({ error: "Comment ID and Chore ID are required." });
+        }
+
+        // Remove the comment from the database
+        const deletedComment = await choreComment.findByIdAndDelete(commentId);
+        if (!deletedComment) {
+            return res.status(404).json({ error: "Comment not found." });
+        }
+
+        // Remove the comment reference from the Chore document
+        await Chore.findByIdAndUpdate(choreId, { $pull: { comments: commentId } });
+
+        res.status(200).json({ message: "Comment deleted successfully.", commentId });
+    } catch (error) {
+        console.error("Error deleting comment:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 router.post('/checkOverdue/:userId', async (req, res) => {
     try {

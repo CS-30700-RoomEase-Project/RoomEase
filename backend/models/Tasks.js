@@ -63,6 +63,21 @@ const choreCommentSchema = new mongoose.Schema({
 
 const choreComment = mongoose.model('choreComment', choreCommentSchema);
 
+choreSchema.methods.commentNotification = async function(message, path) {
+    try {
+        const notification = await Notification.create({
+            description: `Comment added to '${this.choreName}'. Description: '${message}'.`,
+            pageID: `/Chores/${path}`,
+            usersNotified: this.order,
+            notificationType: 'Chore Comment',
+            origin: this.creatorId
+        });
+        await notification.propagateNotification();
+    } catch (error) {
+        console.error("Error creating notification:", error);
+    }
+}
+
 choreSchema.methods.createNotification = async function(path) {
     console.log("creating notification");
     try {
