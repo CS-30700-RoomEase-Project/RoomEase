@@ -293,12 +293,15 @@ const billSchema = new mongoose.Schema({
     title: { type: String, required: true },
     amount: { type: Number, required: true },
     dueDate: { type: Date },
+    // Instead of using _id automatically for each responsible subdocument,
+    // we explicitly store the user's id as a string (userId) and their name.
     responsible: [{
+      userId: { type: String, required: true },
       name: { type: String, required: true },
       paid: { type: Boolean, default: false }
     }],
     paymaster: { type: String, default: "" },
-    // Recurring fields:
+    // Recurring fields
     isRecurring: { type: Boolean, default: false },
     frequency: { type: String, enum: ['daily', 'weekly', 'biweekly', 'monthly', 'custom'], default: null },
     customFrequency: { type: Number, default: null },
@@ -314,34 +317,20 @@ billSchema.methods.getResponsible = function() {
 };
 
 billSchema.methods.markAsPaid = async function() {
-    // Mark all responsible as paid:
     this.responsible = this.responsible.map(person => ({ ...person, paid: true }));
-    
     if (this.isRecurring) {
       let daysToAdd = 0;
       switch (this.frequency) {
-        case 'daily':
-          daysToAdd = 1;
-          break;
-        case 'weekly':
-          daysToAdd = 7;
-          break;
-        case 'biweekly':
-          daysToAdd = 14;
-          break;
-        case 'monthly':
-          daysToAdd = 30;
-          break;
-        case 'custom':
-          daysToAdd = this.customFrequency || 0;
-          break;
-        default:
-          daysToAdd = 0;
+        case 'daily': daysToAdd = 1; break;
+        case 'weekly': daysToAdd = 7; break;
+        case 'biweekly': daysToAdd = 14; break;
+        case 'monthly': daysToAdd = 30; break;
+        case 'custom': daysToAdd = this.customFrequency || 0; break;
+        default: daysToAdd = 0;
       }
       if (daysToAdd > 0 && this.dueDate) {
         this.dueDate = new Date(this.dueDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
       }
-      // For recurring bills, reset amount to 0 and mark as pending:
       this.amount = 0;
       this.isAmountPending = true;
     }

@@ -60,4 +60,28 @@ router.get('/getRoom', async( req, res) => {
     }
 });
 
+router.get('/getUsers/:roomId', async (req, res) => {
+    try {
+      const { roomId } = req.params;
+      const room = await Room.findById(roomId);
+      if (!room) {
+        return res.status(404).json({ error: 'Room not found' });
+      }
+      // roomMembers is an array of strings that match the User model's userId field.
+      const memberIds = room.roomMembers;
+      // Query users by matching the userId field.
+      const users = await User.find({ userId: { $in: memberIds } }).select('username userId');
+      // Transform the output so that each user has _id equal to userId.
+      const transformed = users.map(u => ({
+        _id: u.userId,
+        username: u.username
+      }));
+      res.json(transformed);
+    } catch (error) {
+      console.error("Error fetching room users:", error);
+      res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+  
+
 module.exports = router;
