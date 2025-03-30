@@ -7,14 +7,22 @@ import GroceryPopUp from '../../GroceryPage/GroceryPopUp';
  * 
  * @returns Fridge component that will go into the room class and display the fridge
  */
-function Fridge(props) {
+function Fridge({ room, enabled }) {
     
-    const {room} = props;
     const [isPopUpOpen, setPopUpOpen] = useState(false);
     
+    const handleClick = () => {
+        if (enabled) {
+            setPopUpOpen(true);
+        } else {
+            return;
+        }
+    }
+
     return (
 
-        <div className='fridgeContainer' onClick={() => setPopUpOpen(true)} style={{ cursor: 'pointer' } } title="Grocery List">
+        <div className='fridgeContainer' onClick={handleClick} 
+            style={{ cursor: 'pointer', pointerEvents: (enabled) ? "auto" : "none"} } title={(enabled) ? "Grocery List" : ""}>
             <div className='freezerDoor'>
                 <div className='fridgeHandle'/>
             </div>
