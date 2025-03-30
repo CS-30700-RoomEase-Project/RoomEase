@@ -11,7 +11,8 @@ const BillsExpenses = () => {
   const [bills, setBills] = useState([]);
   const [roomUsers, setRoomUsers] = useState([]); // List of roommates
 
-  // For new bill: frequency is now used as "Recurring:" dropdown.
+  // State for Add New Bill Modal
+  const [showAddModal, setShowAddModal] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     amount: '',
@@ -23,7 +24,7 @@ const BillsExpenses = () => {
   });
   const [newPerson, setNewPerson] = useState("");
 
-  // For editing an existing bill
+  // State for Edit Bill Modal
   const [selectedBill, setSelectedBill] = useState(null);
   const [editFormData, setEditFormData] = useState({
     title: '',
@@ -32,8 +33,18 @@ const BillsExpenses = () => {
     responsiblePeople: [],
     paymaster: '',
     frequency: 'none',
-    customFrequency: ''
+    customFrequency: '',
+    priceHistory: []
   });
+
+  // State for Bills History Modal
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [historyBills, setHistoryBills] = useState([]);
+
+  // State for Price History Modal (for recurring bills in edit)
+  const [showPriceHistoryModal, setShowPriceHistoryModal] = useState(false);
+  const [currentPriceHistory, setCurrentPriceHistory] = useState([]);
+  const [currentPriceHistoryBillTitle, setCurrentPriceHistoryBillTitle] = useState('');
 
   const userData = JSON.parse(localStorage.getItem('userData')) || {
     username: 'Guest',
@@ -41,13 +52,13 @@ const BillsExpenses = () => {
     profilePic: '',
   };
 
-  // Fetch bills for the current room
+  // Fetch active bills for the current room (active bills have isPaid: false)
   useEffect(() => {
     if (roomId) {
       fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
         .then((res) => res.json())
         .then((data) => {
-          console.log("Fetched bills data:", data);
+          console.log("Fetched active bills data:", data);
           if (Array.isArray(data)) {
             setBills(data);
           } else if (Array.isArray(data.bills)) {
@@ -61,7 +72,7 @@ const BillsExpenses = () => {
     }
   }, [roomId]);
 
-  // Fetch room users from new endpoint
+  // Fetch room users
   useEffect(() => {
     if (roomId) {
       fetch(`http://localhost:5001/api/room/getUsers/${roomId}`)
@@ -78,34 +89,15 @@ const BillsExpenses = () => {
     }
   }, [roomId]);
 
-  // Update new bill form fields
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  // Update manual responsible person input
-  const handleNewPersonChange = (e) => {
-    setNewPerson(e.target.value);
-  };
-
-  // Manually add a person to the responsiblePeople array
-  const handleAddPerson = () => {
-    if (newPerson.trim() !== "") {
-      console.log("Adding manual responsible person:", newPerson);
-      setFormData({
-        ...formData,
-        responsiblePeople: [
-          ...formData.responsiblePeople,
-          { userId: null, name: newPerson.trim(), paid: false }
-        ]
-      });
-      setNewPerson("");
-    }
-  };
-
-  // Set paymaster to current user (for add form)
-  const handleSetMeAsPaymaster = () => {
-    setFormData({ ...formData, paymaster: userData.username });
+  // Fetch history bills from endpoint
+  const fetchHistoryBills = () => {
+    fetch(`http://localhost:5001/api/bills/history/${roomId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Fetched history bills:", data);
+        setHistoryBills(data);
+      })
+      .catch((err) => console.error(err));
   };
 
   // Helper: Parse date string into a Date object
@@ -115,10 +107,34 @@ const BillsExpenses = () => {
     return new Date(year, month - 1, day);
   };
 
-  // Handle new bill submission
+  // Handlers for Add Modal form
+  const handleAddChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleAddNewPersonChange = (e) => {
+    setNewPerson(e.target.value);
+  };
+
+  const handleAddPerson = () => {
+    if (newPerson.trim() !== "") {
+      setFormData((prev) => ({
+        ...prev,
+        responsiblePeople: [
+          ...prev.responsiblePeople,
+          { userId: null, name: newPerson.trim(), paid: false }
+        ]
+      }));
+      setNewPerson("");
+    }
+  };
+
+  const handleSetMeAsPaymasterAdd = () => {
+    setFormData({ ...formData, paymaster: userData.username });
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Submitting new bill:", formData);
     const newBill = {
       title: formData.title,
       amount: parseFloat(formData.amount),
@@ -137,9 +153,7 @@ const BillsExpenses = () => {
     })
       .then((res) => res.json())
       .then((savedBill) => {
-        console.log("Saved bill:", savedBill);
         setBills([...bills, savedBill]);
-        // Reset form
         setFormData({
           title: '',
           amount: '',
@@ -149,10 +163,12 @@ const BillsExpenses = () => {
           frequency: 'none',
           customFrequency: ''
         });
+        setShowAddModal(false);
       })
       .catch((err) => console.error(err));
   };
 
+  // Sorted active bills (by due date)
   const sortedBills = bills.slice().sort((a, b) => {
     if (!a.dueDate && !b.dueDate) return 0;
     if (!a.dueDate) return 1;
@@ -160,7 +176,7 @@ const BillsExpenses = () => {
     return new Date(a.dueDate) - new Date(b.dueDate);
   });
 
-  // When a bill is clicked, open the edit popup
+  // Handlers for Edit Modal form
   const handleBillClick = (bill) => {
     setSelectedBill(bill);
     setEditFormData({
@@ -170,7 +186,8 @@ const BillsExpenses = () => {
       responsiblePeople: bill.responsible || [],
       paymaster: bill.paymaster || '',
       frequency: bill.frequency ? bill.frequency : "none",
-      customFrequency: bill.customFrequency || ''
+      customFrequency: bill.customFrequency || '',
+      priceHistory: bill.priceHistory || []
     });
   };
 
@@ -182,7 +199,6 @@ const BillsExpenses = () => {
     setEditFormData({ ...editFormData, paymaster: userData.username });
   };
 
-  // Toggle the 'paid' status for a responsible person in the edit popup
   const handleTogglePaid = (index) => {
     const updatedPeople = editFormData.responsiblePeople.map((person, idx) => {
       if (idx === index) {
@@ -206,7 +222,8 @@ const BillsExpenses = () => {
       isRecurring: editFormData.frequency !== "none",
       frequency: editFormData.frequency !== "none" ? editFormData.frequency : null,
       customFrequency: editFormData.frequency === "custom" ? parseInt(editFormData.customFrequency) : null,
-      isAmountPending: parsedAmount > 0 ? false : true
+      isAmountPending: parsedAmount > 0 ? false : true,
+      priceHistory: editFormData.priceHistory
     };
 
     fetch(`http://localhost:5001/api/bills/updateBill/${selectedBill._id}`, {
@@ -239,16 +256,38 @@ const BillsExpenses = () => {
     navigate(`/room/${roomId}`);
   };
 
-  const handleMarkAsPaid = (billId) => {
+  // Mark as Paid handler – stops propagation so it doesn't open the edit modal.
+  const handleMarkAsPaid = (billId, e) => {
+    e.stopPropagation();
     fetch(`http://localhost:5001/api/bills/markAsPaid/${billId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
     })
       .then((res) => res.json())
       .then((updatedBill) => {
-        setBills(bills.map(bill => bill._id === updatedBill._id ? updatedBill : bill));
+        // For non-recurring bills, remove from active list.
+        if (!updatedBill.isRecurring) {
+          setBills(bills.filter(bill => bill._id !== updatedBill._id));
+        } else {
+          setBills(bills.map(bill => bill._id === updatedBill._id ? updatedBill : bill));
+        }
+        // Refresh history so that the paid bill shows up immediately.
+        fetchHistoryBills();
       })
       .catch((err) => console.error(err));
+  };
+
+  // Handler to open Bills History modal
+  const handleOpenHistory = () => {
+    fetchHistoryBills();
+    setShowHistoryModal(true);
+  };
+
+  // Handler to open Price History modal from the edit modal for recurring bills
+  const handleShowPriceHistory = () => {
+    setCurrentPriceHistory(editFormData.priceHistory || []);
+    setCurrentPriceHistoryBillTitle(editFormData.title);
+    setShowPriceHistoryModal(true);
   };
 
   return (
@@ -270,118 +309,16 @@ const BillsExpenses = () => {
         </div>
       </nav>
       <div className={styles.mainContent}>
-        <h2 className={styles.heading}>Add New Bill/Expense</h2>
-        <form onSubmit={handleSubmit} className={styles.billForm}>
-          <div className={styles.formGroup}>
-            <label htmlFor="title">Title:</label>
-            <input type="text" id="title" name="title" value={formData.title} onChange={handleChange} required />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="amount">Amount:</label>
-            <input type="number" id="amount" name="amount" value={formData.amount} onChange={handleChange} required />
-          </div>
-          <div className={styles.formGroup}>
-            <label htmlFor="dueDate">Due Date:</label>
-            <input type="date" id="dueDate" name="dueDate" value={formData.dueDate} onChange={handleChange} />
-          </div>
-          {/* Responsible People Table */}
-          <div className={styles.formGroup}>
-            <label>Responsible People:</label>
-            <table className={styles.userTable}>
-              <thead>
-                <tr>
-                  <th>Select</th>
-                  <th>Username</th>
-                </tr>
-              </thead>
-              <tbody>
-                {roomUsers.map((user) => (
-                  <tr key={user._id}>
-                    <td>
-                      <input
-                        type="checkbox"
-                        checked={formData.responsiblePeople.some((r) => r.userId === user._id)}
-                        onChange={(e) => {
-                          const checked = e.target.checked;
-                          if (checked) {
-                            setFormData((prev) => ({
-                              ...prev,
-                              responsiblePeople: [
-                                ...prev.responsiblePeople,
-                                { userId: user._id, name: user.username, paid: false }
-                              ]
-                            }));
-                          } else {
-                            setFormData((prev) => ({
-                              ...prev,
-                              responsiblePeople: prev.responsiblePeople.filter((r) => r.userId !== user._id)
-                            }));
-                          }
-                        }}
-                      />
-                    </td>
-                    <td>{user.username}</td>
-                  </tr>
-                ))}
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td colSpan="2">
-                    <button type="button" onClick={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        responsiblePeople: roomUsers.map((user) => ({
-                          userId: user._id,
-                          name: user.username,
-                          paid: false
-                        }))
-                      }))
-                    }>
-                      Everyone
-                    </button>
-                  </td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          {/* Paymaster Dropdown */}
-          <div className={styles.formGroup}>
-            <label htmlFor="paymaster">Paymaster:</label>
-            <div className={styles.formGroupRow}>
-              <select id="paymaster" name="paymaster" value={formData.paymaster} onChange={handleChange}>
-                <option value="">Select a user</option>
-                {roomUsers.map((user) => (
-                  <option key={user._id} value={user.username}>
-                    {user.username}
-                  </option>
-                ))}
-              </select>
-              <button type="button" onClick={handleSetMeAsPaymaster}>
-                Me
-              </button>
-            </div>
-          </div>
-          {/* Recurring Dropdown placed below Paymaster */}
-          <div className={styles.formGroup}>
-            <label htmlFor="frequency">Recurring:</label>
-            <select id="frequency" name="frequency" value={formData.frequency} onChange={handleChange}>
-              <option value="none">Not Recurring</option>
-              <option value="daily">Daily</option>
-              <option value="weekly">Weekly</option>
-              <option value="biweekly">Biweekly</option>
-              <option value="monthly">Monthly</option>
-              <option value="custom">Custom</option>
-            </select>
-          </div>
-          {formData.frequency === 'custom' && (
-            <div className={styles.formGroup}>
-              <label htmlFor="customFrequency">Custom Frequency (in days):</label>
-              <input type="number" id="customFrequency" name="customFrequency" value={formData.customFrequency} onChange={handleChange} />
-            </div>
-          )}
-          <button type="submit" className={styles.submitButton}>Add Bill/Expense</button>
-        </form>
-        <hr />
+        {/* Top Actions */}
+        <div className={styles.topActions}>
+          <button className={styles.addButton} onClick={() => setShowAddModal(true)}>
+            Add New Bill/Expense
+          </button>
+          <button className={styles.historyButton} onClick={handleOpenHistory}>
+            Bills/Expenses History
+          </button>
+        </div>
+        {/* Active Bills List */}
         <h3 className={styles.heading}>All Bills & Expenses</h3>
         <ul className={styles.billList}>
           {sortedBills.map((bill) => (
@@ -402,17 +339,152 @@ const BillsExpenses = () => {
                   </div>
                 )}
                 {bill.paymaster && <div>Paymaster: {bill.paymaster}</div>}
-                {bill.isRecurring && (
-                  <div>
-                    <button onClick={() => handleMarkAsPaid(bill._id)}>
-                      Mark "{bill.title}" as Paid
-                    </button>
-                  </div>
-                )}
+                <div>
+                  <button onClick={(e) => handleMarkAsPaid(bill._id, e)}>
+                    Mark "{bill.title}" as Paid
+                  </button>
+                </div>
               </div>
             </li>
           ))}
         </ul>
+
+        {/* Add New Bill Modal */}
+        {showAddModal && (
+          <div className={styles.popupOverlay}>
+            <div className={styles.popupMenu}>
+              <h3>Add New Bill/Expense</h3>
+              <form onSubmit={handleSubmit}>
+                <div className={styles.formGroup}>
+                  <label htmlFor="title">Title:</label>
+                  <input type="text" id="title" name="title" value={formData.title} onChange={handleAddChange} required />
+                </div>
+                <div className={styles.formGroup}>
+                  <label htmlFor="amount">Amount:</label>
+                  <input type="number" id="amount" name="amount" value={formData.amount} onChange={handleAddChange} required />
+                </div>
+                <div className={styles.formGroup}>
+                  <label htmlFor="dueDate">Due Date:</label>
+                  <input type="date" id="dueDate" name="dueDate" value={formData.dueDate} onChange={handleAddChange} />
+                </div>
+                {/* Responsible People Table */}
+                <div className={styles.formGroup}>
+                  <label>Responsible People:</label>
+                  <table className={styles.userTable}>
+                    <thead>
+                      <tr>
+                        <th>Select</th>
+                        <th>Username</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {roomUsers.map((user) => (
+                        <tr key={user._id}>
+                          <td>
+                            <input
+                              type="checkbox"
+                              checked={formData.responsiblePeople.some((r) => r.userId === user._id)}
+                              onChange={(e) => {
+                                const checked = e.target.checked;
+                                if (checked) {
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    responsiblePeople: [
+                                      ...prev.responsiblePeople,
+                                      { userId: user._id, name: user.username, paid: false }
+                                    ]
+                                  }));
+                                } else {
+                                  setFormData((prev) => ({
+                                    ...prev,
+                                    responsiblePeople: prev.responsiblePeople.filter((r) => r.userId !== user._id)
+                                  }));
+                                }
+                              }}
+                            />
+                          </td>
+                          <td>{user.username}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan="2">
+                          <button type="button" onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              responsiblePeople: roomUsers.map((user) => ({
+                                userId: user._id,
+                                name: user.username,
+                                paid: false
+                              }))
+                            }))
+                          }>
+                            Everyone
+                          </button>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                {/* Paymaster Dropdown */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="paymaster">Paymaster:</label>
+                  <div className={styles.formGroupRow}>
+                    <select
+                      id="paymaster"
+                      name="paymaster"
+                      value={formData.paymaster}
+                      onChange={handleAddChange}
+                    >
+                      <option value="">Select a user</option>
+                      {roomUsers.map((user) => (
+                        <option key={user._id} value={user.username}>
+                          {user.username}
+                        </option>
+                      ))}
+                    </select>
+                    <button type="button" onClick={handleSetMeAsPaymasterAdd}>
+                      Me
+                    </button>
+                  </div>
+                </div>
+                {/* Recurring Dropdown placed below Paymaster */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="frequency">Recurring:</label>
+                  <select id="frequency" name="frequency" value={formData.frequency} onChange={handleAddChange}>
+                    <option value="none">Not Recurring</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                    <option value="biweekly">Biweekly</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="custom">Custom</option>
+                  </select>
+                </div>
+                {formData.frequency === 'custom' && (
+                  <div className={styles.formGroup}>
+                    <label htmlFor="customFrequency">Custom Frequency (in days):</label>
+                    <input type="number" id="customFrequency" name="customFrequency" value={formData.customFrequency} onChange={handleAddChange} />
+                  </div>
+                )}
+                <div className={styles.buttonGroup}>
+                  <button type="submit" className={styles.saveButton} style={{ backgroundColor: 'green' }}>
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    style={{ backgroundColor: 'yellow' }}
+                    onClick={() => setShowAddModal(false)}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {/* Edit Bill Modal */}
         {selectedBill && (
           <div className={styles.popupOverlay}>
             <div className={styles.popupMenu}>
@@ -445,6 +517,14 @@ const BillsExpenses = () => {
                   <div className={styles.formGroup}>
                     <label htmlFor="editCustomFrequency">Custom Frequency (in days):</label>
                     <input type="number" id="editCustomFrequency" name="customFrequency" value={editFormData.customFrequency} onChange={handleEditChange} />
+                  </div>
+                )}
+                {/* Price History Button for recurring bills */}
+                {editFormData.frequency !== "none" && (
+                  <div className={styles.formGroup}>
+                    <button type="button" onClick={handleShowPriceHistory}>
+                      Show Price History
+                    </button>
                   </div>
                 )}
                 {/* Table for Responsible People with Payment Status */}
@@ -554,15 +634,80 @@ const BillsExpenses = () => {
             </div>
           </div>
         )}
-        <div className={styles.markPaidContainer}>
-          {sortedBills.map(bill =>
-            bill.isRecurring && (
-              <button key={bill._id} onClick={() => handleMarkAsPaid(bill._id)}>
-                Mark "{bill.title}" as Paid
-              </button>
-            )
-          )}
-        </div>
+        {/* History Modal */}
+        {showHistoryModal && (
+          <div className={styles.popupOverlay}>
+            <div className={styles.popupMenu}>
+              <h3>Bills/Expenses History</h3>
+              <button className={styles.closeButton} onClick={() => setShowHistoryModal(false)}>Close</button>
+              <div className={styles.historyList}>
+                {historyBills.length ? (
+                  <ul>
+                    {historyBills.map((bill) => (
+                      <li key={bill._id} className={styles.historyItem}>
+                        <div>
+                          <strong>{bill.title}</strong> - {bill.isAmountPending ? "Amount Not Set" : `$${bill.amount}`}
+                          {bill.dueDate && (<span> - Due: {new Date(bill.dueDate).toLocaleDateString()}</span>)}
+                          {bill.responsible && bill.responsible.length > 0 && (
+                            <div>
+                              Responsible:
+                              <ul>
+                                {bill.responsible.map((person, index) => (
+                                  <li key={index}>
+                                    {person.name} {person.paid ? "(Paid)" : "(Not Paid)"}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+                          {bill.paymaster && <div>Paymaster: {bill.paymaster}</div>}
+                          {bill.frequency && bill.frequency !== "none" && (
+                            <button onClick={() => handleShowPriceHistory(bill)}>
+                              Price History
+                            </button>
+                          )}
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p>No history available.</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+        {/* Price History Modal */}
+        {showPriceHistoryModal && (
+          <div className={styles.popupOverlay}>
+            <div className={styles.popupMenu}>
+              <h3>Price History for {currentPriceHistoryBillTitle}</h3>
+              <button className={styles.closeButton} onClick={() => setShowPriceHistoryModal(false)}>Close</button>
+              <div className={styles.historyTableContainer}>
+                {currentPriceHistory.length ? (
+                  <table className={styles.userTable}>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Amount</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {currentPriceHistory.map((entry, idx) => (
+                        <tr key={idx}>
+                          <td>{new Date(entry.date).toLocaleDateString()}</td>
+                          <td>{entry.amount > 0 ? `$${entry.amount}` : "Amount Not Set"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                ) : (
+                  <p>No price history available.</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <footer className={styles.footer}>
         <p>© 2025 RoomEase. All rights reserved.</p>

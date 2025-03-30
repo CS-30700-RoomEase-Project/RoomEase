@@ -293,19 +293,22 @@ const billSchema = new mongoose.Schema({
     title: { type: String, required: true },
     amount: { type: Number, required: true },
     dueDate: { type: Date },
-    // Instead of using _id automatically for each responsible subdocument,
-    // we explicitly store the user's id as a string (userId) and their name.
     responsible: [{
       userId: { type: String, required: true },
       name: { type: String, required: true },
       paid: { type: Boolean, default: false }
     }],
     paymaster: { type: String, default: "" },
-    // Recurring fields
     isRecurring: { type: Boolean, default: false },
     frequency: { type: String, enum: ['daily', 'weekly', 'biweekly', 'monthly', 'custom'], default: null },
     customFrequency: { type: Number, default: null },
-    isAmountPending: { type: Boolean, default: false }
+    isAmountPending: { type: Boolean, default: false },
+    isPaid: { type: Boolean, default: false },
+    // For recurring bills, record the price history
+    priceHistory: [{
+      date: Date,
+      amount: Number
+    }]
 });
 
 billSchema.methods.getFormattedDueDate = function() {
@@ -316,26 +319,57 @@ billSchema.methods.getResponsible = function() {
     return this.responsible;
 };
 
-billSchema.methods.markAsPaid = async function() {
-    this.responsible = this.responsible.map(person => ({ ...person, paid: true }));
+billSchema.methods.markAsPaid = async function () {
     if (this.isRecurring) {
+      // Convert the dueDate to a Date object explicitly.
+      const currentDueDate = new Date(this.dueDate);
+      if (isNaN(currentDueDate.getTime())) {
+        throw new Error("Invalid due date");
+      }
+      // Record the current cycle in the price history using the current due date.
+      this.priceHistory.push({ date: currentDueDate, amount: this.amount || 0 });
+  
+      // Determine the number of days to add based on frequency.
       let daysToAdd = 0;
       switch (this.frequency) {
-        case 'daily': daysToAdd = 1; break;
-        case 'weekly': daysToAdd = 7; break;
-        case 'biweekly': daysToAdd = 14; break;
-        case 'monthly': daysToAdd = 30; break;
-        case 'custom': daysToAdd = this.customFrequency || 0; break;
-        default: daysToAdd = 0;
+        case 'daily': 
+          daysToAdd = 1; 
+          break;
+        case 'weekly': 
+          daysToAdd = 7; 
+          break;
+        case 'biweekly': 
+          daysToAdd = 14; 
+          break;
+        case 'monthly': 
+          daysToAdd = 30; 
+          break;
+        case 'custom': 
+          daysToAdd = Number(this.customFrequency) || 0; 
+          break;
+        default: 
+          daysToAdd = 0;
       }
-      if (daysToAdd > 0 && this.dueDate) {
-        this.dueDate = new Date(this.dueDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
-      }
-      this.amount = 0;
+      // Calculate the new due date based solely on the current due date.
+      const newDueDate = new Date(currentDueDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+  
+      // Update this recurring bill in place.
+      this.dueDate = newDueDate;
+      this.amount = 0; // Reset the amount so UI can display "Amount Not Set Yet"
       this.isAmountPending = true;
+      // Do not mark as paid so it remains active.
+      await this.save();
+      return this;
+    } else {
+      // For non-recurring bills, mark as paid.
+      this.isPaid = true;
+      await this.save();
+      return this;
     }
-    return this.save();
-};
+  };
+  
+  
+  
 
 
 const Bill = Task.discriminator('Bill', billSchema);

@@ -14,10 +14,26 @@ router.get('/getBills/:roomId', async (req, res) => {
     if (!room) {
       return res.status(404).json({ message: "Room not found." });
     }
-    const bills = await Task.find({ _id: { $in: room.tasks }, type: 'Bill' });
-    res.json(bills.length ? bills : []);
+    // Only return active bills (not marked as paid)
+    const bills = await Task.find({ _id: { $in: room.tasks }, type: 'Bill', isPaid: false });
+    res.json(bills);
   } catch (error) {
     console.error("Error fetching bills:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get('/history/:roomId', async (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const room = await Room.findById(roomId).select('tasks');
+    if (!room) {
+      return res.status(404).json({ message: "Room not found." });
+    }
+    const bills = await Task.find({ _id: { $in: room.tasks }, type: 'Bill', isPaid: true });
+    res.json(bills);
+  } catch (error) {
+    console.error("Error fetching history bills:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });
@@ -85,14 +101,12 @@ router.put('/markAsPaid/:billId', async (req, res) => {
   try {
     const { billId } = req.params;
     const bill = await Bill.findById(billId);
-    if (!bill) {
-      return res.status(404).json({ error: 'Bill not found' });
-    }
+    if (!bill) return res.status(404).json({ error: "Bill not found" });
     const updatedBill = await bill.markAsPaid();
     res.json(updatedBill);
   } catch (error) {
-    console.error("Error marking bill as paid:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    console.error('Error marking bill as paid:', error);
+    res.status(500).json({ error: 'Server error while marking bill as paid' });
   }
 });
 
