@@ -1,248 +1,417 @@
+/* Main Container */
 .appContainer {
+  min-height: 0vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
   padding: 20px;
-  overflow: hidden; 
+  overflow: hidden;
+  position: relative;
+  color: white;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
+/* Card styling similar to the feature cards in your theme */
 .card {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(99, 102, 241, 0.3);
   border-radius: 10px;
-  padding: 40px 100px;
+  padding: 40px;
   text-align: center;
-  max-width: 400px;
-  width: 100%;
+  max-width: 800px;
+  width: 800px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(4px);
 }
 
+/* Title with gradient text styling */
 .title {
   font-size: 2rem;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 10px;
-  letter-spacing: 2px;
-  color: #bc9974;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-.groceryTitleDescription {
-  font-size: 1rem;
+/* Description text */
+.description {
+  font-size: 1.125rem;
   margin-bottom: 30px;
-  opacity: 0.9;
-  color: #ddd;
+  color: #e2e8f0;
 }
 
-.inputBox {  
-  width: 80%;
-  padding: 5px !important;
-  margin: 10px 0;
-  border-radius: 5px;
-}
-
-.inputCost {
-  width: 80%;
-  padding: 5px !important;
-  margin: 10px 0;
-  border-radius: 5px;
-}
-
+/* Input Container */
 .inputContainer {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 10px;
+  margin-bottom: 20px;
+  width: 500px;
+  margin: 0 auto;
 }
 
+/* Text Input */
+.inputBox {
+  flex: 0 0 170px;
+  height: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.inputBox:focus {
+  border-color: #8b5cf6 !important;
+}
+
+.quantityBox:focus {
+  border-color: #8b5cf6 !important;
+}
+
+/* Quantity Input */
+.quantityBox {
+  flex: 0 0 70px;
+  height: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* Button Styling */
 .Button {
-  background-color: #bc9974;
-  color: #fff;
-  padding: 3px 15px;
+  padding: 8px 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  color: white;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 11.5px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .Button:hover {
-  background-color: #a67c52;
+  transform: translateY(-2px);
+  box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.4), 0 10px 10px -5px rgba(139, 92, 246, 0.3);
 }
 
+/* Grocery List */
 .groceryList {
-  padding: 12px;
-  border-radius: 8px;
-  margin-top: 10px;
+  width: 785px;
   list-style: none;
-  max-width: 100%;
+  padding: 0;
+  padding-right: 20px;
+  margin-top: 0px;
+  max-height: 300px;
+  overflow-y: scroll;
+  height: 500px;
 }
 
-.groceryItem {
-  background-color: rgba(255, 255, 255, 0.2);
+.groceryItemContainer {
   padding: 10px;
-  margin: 8px 0;
+  margin: 8px 110px;
   border-radius: 5px;
-  color: #ddd;
   display: flex;
-  justify-content: space-between;
   align-items: center;
   position: relative;
 }
 
-.groceryItemContent {
+.groceryItem:hover {
+  top: -4px;
+  background-color: rgba(99, 102, 241, 0.3);
+}
+
+.groceryItem:hover .totalCostBox {
+  background-color: rgba(99, 102, 241, 0.3);
+}
+
+.groceryItemC {
+  flex: 1;
+}
+
+/* Grocery Item styling */
+.groceryItem {
+  top: 0;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 10px;
+  margin: 8px 110px;
+  border-radius: 5px;
   display: flex;
   align-items: center;
+  position: relative;
+  transition: top .2s ease, box-shadow .2s ease;
 }
 
-.quantityText {
-  margin-left: 5px;
+.groceryItemText {
+  position: relative;
+  left: -110px;
+  top: -13px;
 }
 
-.quantityBox {
-  width: 20% !important;
-  padding: 5px !important;
-  margin: 5px 0;
-  border: none;
-  border-radius: 5px;
+.requestersText {
+  position: absolute;
+  left: 20px;
+  bottom: 15px;
 }
 
 .groceryItemButtons {
-  display: flex;
-  gap: 10px;
   position: absolute;
-  right: 10px;
   top: 50%;
+  right: 10px;
   transform: translateY(-50%);
+  display: none;
+  gap: 5px;
 }
 
-.editButton {
-  display: none;
-  background-color: #bc9974;
+/* Show the button container on hover */
+.groceryItem:hover .groceryItemButtons {
+  display: flex;
+}
+
+/* Style the individual buttons */
+.groceryItemButtons button {
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
   color: white;
+  border: none;
   padding: 5px 10px;
   border-radius: 5px;
   cursor: pointer;
+  font-size: 0.875rem;
 }
 
-.removeButton {
-  display: none;
-  background-color: #bc9974;
-  color: white;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
+.groceryItemButtons button:hover {
+  opacity: 0.8;
 }
 
-.groceryItem:hover .editButton,
-.groceryItem:hover .removeButton {
-  display: inline-block;
-}
-
-.removeButton:hover {
-  background-color: #a67c52;
-}
-
-.editButton:hover {
-  background-color: #a67c52;
-}
-
+/* Container for edit inputs */
 .editContainer {
   display: flex;
   gap: 10px;
-  margin-right: 120px; /* Added margin to prevent overlap with buttons */
+  width: 300px;
 }
 
-.editInput {
-  width: 80%;
-  padding: 5px !important;
-  margin: 10px 0;
-  border: none;
-  border-radius: 5px;
+.editQuantityInput:focus {
+  border-color: #8b5cf6 !important;
 }
 
+.editInput:focus {
+  border-color: #8b5cf6 !important;
+}
+/* Edit inputs styling */
+.editInput{
+  flex: 0 0 160px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
 .editQuantityInput {
-  width: 40% !important;
-  height: 20% !important;
-  padding: 5px !important;
-  margin: 8px;
+  flex: 0 0 50px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
-.saveButton {
-  background-color: #2ecc71;
+.editButtons {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  display: none;
+  gap: 5px;
+}
+
+.editButtons button {
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.875rem;
 }
 
 .saveButton:hover {
-  background-color: #27ae60;
-}
-
-.cancelButton {
-  background-color: #e74c3c;
+  box-shadow: 0 15px 30px -5px #1e9750, 0 10px 10px -5px #0f6c36;
 }
 
 .cancelButton:hover {
-  background-color: #c0392b;
+  box-shadow: 0 15px 30px -5px #7e1c11, 0 10px 10px -5px #7e1c11;
 }
 
-.saveButton,
+.groceryItem:hover .editButtons {
+  display: flex;
+}
+
+.saveButton {
+  background: linear-gradient(135deg, #2ecc71, #1a9a4f);
+}
+
+.saveButton:hover {
+  
+  background: linear-gradient(135deg, #27ae60, #0e6632);
+}
+
 .cancelButton {
-  padding: 4px 10px;
-  font-size: 0.8rem;
+  
+  background: linear-gradient(135deg, #e74c3c, #7e1c11);
 }
 
-.purchaseButton {
-  position: absolute;
-  left: -30px;
-  top: 25%;
-  transform: translateY(10%);
-  width: 20px !important;
-  height: 20px !important;
-  border: 2px solid #bc9974;
-  border-radius: 3px;
-  background-color: transparent;
+.cancelButton:hover {
+  background: linear-gradient(135deg, #ae2819, #7b2015);
+}
+
+/* New wrapper for each grocery item to position the checkbox to the left */
+.groceryItemWrapper {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 0 !important;
-  box-sizing: border-box;
-}
-
-.checkmark {
-  font-size: 2.2rem;
-  color: #bc9974;
   position: relative;
-  top: -5px;
+  margin: 8px 75px;
 }
 
-/* New style for the insert box */
-.insertBox {
-  
-  input[type='number'] {
-    -moz-appearance:textfield;
-  }
+/* The themed purchase checkbox styling */
+.purchaseCheckbox {
+  box-sizing: border-box;
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #8b5cf6;
+  background: transparent;
+  padding: 0;      /* Reset default padding */
+  margin: 0;       /* Reset default margin */
+  line-height: 0;  /* Reset line-height if necessary */
+  position: absolute;
+  left: -70px;
+  top: 30px;
+}
 
-  input::-webkit-outer-spin-button,
-  input::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-  }
 
+.checked {
+  color:white;
+  position: relative;
+  top: 0px;
+  left: -5px;
+  font-size: 26pt;
+}
+
+.commentOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.commentModal {
+  background: rgba(30, 41, 59, 0.9);
+  padding: 20px;
+  border-radius: 10px;
+  width: 300px;
+}
+
+.commentModal h3 {
+  margin-top: 0;
+  color: white;
+}
+
+.commentModal textarea {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 10px;
+  padding: 0px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  resize: none;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modalButtons button {
+  padding: 5px 10px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.paidLabel {
+  display: flex;
+  width: 30px;
+  padding-top: 6px;
+  font-size: 16px;
+  position: relative;
+  left: 13px;
+  accent-color: #6366f1;
+}
+
+.totalCostBox {
   position: absolute;
   left: 100%;
-  width: 50px !important;
+  width: 85px;
   margin-left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
+  height: 67px;
+  top: 0px;
   padding: 5px;
   border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
 }
 
-.requestButton {
-  display: none;
-  font-size: 0.7rem; /* smaller text */
-  padding: 0.1rem 0.4rem; /* reduced padding */
-  width: auto;
-  height: auto;
+.inputCost {
+  -moz-appearance: textfield;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 40px !important;
+  height: 10px;
+  padding: 5px;
 }
 
-/* Show the request button on hover just like the others */
-.groceryItem:hover .requestButton {
-  display: inline-block;
+.inputCost:focus {
+  border-color: #8b5cf6 !important;
 }
 
-.insertCostBox {
-  margin-left: 0px;
-  /* other styling... */
+.inputCost::-webkit-inner-spin-button,
+.inputCost::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.costText {
+  position: relative;
+  left: 664px;
+  top: 71px;
+  font-weight: 700;
+  font-size: 16px;
+  width: 100px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.purchasedText {
+  position: relative;
+  left: 0px;
+  top: 107px;
+  font-weight: 700;
+  font-size: 16px;
+  width: 100px;
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }

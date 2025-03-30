@@ -9,6 +9,9 @@ import Clock from './Room Items/Clock';
 import Computer from './Room Items/Computer';
 import Desk from './Room Items/Desk';
 import Fridge from './Room Items/Fridge';
+import Gavel from './Room Items/Gavel';
+import GavelPad from './Room Items/GavelPad';
+
 import style from './Room.module.css';
 import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
 function Room() {
@@ -63,6 +66,7 @@ function Room() {
     const handleSettingsClick = () => {
         navigate(`/room/${roomId}/settings`);
     };
+
     const handleGoToChores = (roomId) => {
         console.log("Navigating to chores with roomId:", roomId); // Debugging
         navigate(`/chores/${roomId}`);
@@ -76,6 +80,11 @@ function Room() {
     const handleGoToState = (roomId) => {
         console.log("Navigating to state with roomId:", roomId); // Debugging
         navigate(`/room-state/`);
+    }
+
+    const handleGoToDisputes = (roomId) => {
+        console.log("Navigating to disputes with roomId:", roomId); // Debugging
+        navigate(`/disputes/`);
     }
 
     const handleBulletinClick = () => {
@@ -112,6 +121,7 @@ function Room() {
                         roomId={roomData._id}
                         roomData={roomData}
                     />
+                    <Gavel onClick={() => handleGoToDisputes(roomId)} />
                 </Desk>
                 <Clock onClick={() => handleGoToState(roomId)} enabled={roomData.settings[4]} />
                 <BulletinBoard 
