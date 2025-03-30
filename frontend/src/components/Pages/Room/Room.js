@@ -83,8 +83,10 @@ function Room() {
     }
 
     const handleGoToDisputes = (roomId) => {
-        console.log("Navigating to disputes with roomId:", roomId); // Debugging
-        navigate(`/disputes/`);
+        if (roomData.settings[2]) {
+            console.log("Navigating to disputes with roomId:", roomId); // Debugging
+            navigate(`/disputes/`);
+        }
     }
 
     const handleBulletinClick = () => {
@@ -121,7 +123,7 @@ function Room() {
                         roomId={roomData._id}
                         roomData={roomData}
                     />
-                    <Gavel onClick={() => handleGoToDisputes(roomId)} />
+                    <Gavel onClick={() => handleGoToDisputes(roomId)} enabled={roomData.settings[2]} />
                 </Desk>
                 <Clock onClick={() => handleGoToState(roomId)} enabled={roomData.settings[4]} />
                 <BulletinBoard 

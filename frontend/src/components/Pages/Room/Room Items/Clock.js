@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./RoomItems.css";
 
-function Clock({ onClick }) {
+function Clock({ onClick, enabled }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {

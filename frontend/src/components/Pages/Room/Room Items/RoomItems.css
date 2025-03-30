@@ -494,3 +494,9 @@ OLD
   left: 100%; /* Move the head to the center horizontally */
   transform: translateX(80%); /* Center it properly */
 }
+
+
+.gavel-container:hover {
+  scale: 1.1; /* Scale up the gavel when hovered */
+  bottom: 2px; /* Fine-tune the position when hovered */
+}
