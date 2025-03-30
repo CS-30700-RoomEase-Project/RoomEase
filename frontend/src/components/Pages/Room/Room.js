@@ -13,11 +13,12 @@ import Gavel from './Room Items/Gavel';
 import GavelPad from './Room Items/GavelPad';
 
 import style from './Room.module.css';
+import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
 function Room() {
     const { roomId } = useParams(); // Gets the roomId from the URL
-
     const navigate = useNavigate();
-    console.log("Room");
+
+    const [showBulletin, setShowBulletin] = useState(false);
     const [roomData, setRoomData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -82,14 +83,21 @@ function Room() {
     }
 
     const handleGoToDisputes = (roomId) => {
-        console.log("Navigating to disputes with roomId:", roomId); // Debugging
-        navigate(`/disputes/`);
+        if (roomData.settings[2]) {
+            console.log("Navigating to disputes with roomId:", roomId); // Debugging
+            navigate(`/disputes/`);
+        }
     }
+
+    const handleBulletinClick = () => {
+        setShowBulletin(true);
+    };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
-    console.log(roomData);
+
     return (
+        <>
         <div className={style.appContainer}>
             <div className={style.roomBanner}>
                 <ExitRoom onClick={() => navigate('/dashboard')} />
@@ -103,17 +111,34 @@ function Room() {
             
 
             <div className={style.roomBackground}>
-                <Fridge room={roomData}/>
+                <Fridge 
+                    room={roomData}
+                    enabled={roomData.settings[0]}
+                />
                 <Desk>
-                    <Computer handleInviteClick={handleInviteClick} handleSettingsClick={handleSettingsClick} roomId={roomData._id} />
-                    <Gavel onClick={() => handleGoToDisputes(roomId)} />
+                    <Computer 
+                        
+                        handleInviteClick={handleInviteClick} 
+                        handleSettingsClick={handleSettingsClick} 
+                        roomId={roomData._id}
+                        roomData={roomData}
+                    />
+                    <Gavel onClick={() => handleGoToDisputes(roomId)} enabled={roomData.settings[2]} />
                 </Desk>
-                <Clock onClick={() => handleGoToState(roomId)}/>
-                <BulletinBoard onClick={() => handleGoToHours(roomId)}/>
-                <ChoreItems onClick={() => handleGoToChores(roomId)}/>
+                <Clock onClick={() => handleGoToState(roomId)} enabled={roomData.settings[4]} />
+                <BulletinBoard 
+                    onClick={handleBulletinClick}
+                />
+
+                <ChoreItems 
+                    onClick={() => handleGoToChores(roomId)}
+                    enabled={roomData.settings[5]}
+                />
             </div>
             <div className={style.roomFloor}/>
         </div>
+        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={roomData.settings} />
+        </>
     )
 };
 

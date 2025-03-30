@@ -80,3 +80,46 @@
   background-color: rgb(170, 169, 169);
   scale: 1.1;
 }
+
+/* CSS for bills icon on the computer */
+.bill-icon {
+  width: 40px;
+  height: 40px;
+  background: tan;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.bill-icon:hover {
+  background: #d2b48c; /* Darker tan */
+  scale: 1.1;
+}
+
+.vertical-dollar-line {
+  width: 5%;
+  height: 55%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2px;
+}
+
+.dollar-s {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: white;
+}
+
+.bill-icon:hover .vertical-dollar-line {
+  background-color: rgb(170, 169, 169);
+  scale: 1.1;
+}
+
+.bill-icon:hover .dollar-s {
+  color: rgb(170, 169, 169);
+}
