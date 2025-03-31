@@ -312,6 +312,145 @@ const billSchema = new mongoose.Schema({
     }]
   });
 
+  billSchema.methods.createNotification = async function(roomId) {
+    console.log("Creating bill notification");
+    try {
+      // Import models here to avoid circular dependencies
+      const User = require('./User');
+      const Notification = require('./Notification');
+      
+      // For each responsible person, look up the user by your custom userId field
+      const usersNotified = await Promise.all(
+        this.responsible.map(async (person) => {
+          const user = await User.findOne({ userId: person.userId });
+          return user ? user._id : null;
+        })
+      );
+      const validUsersNotified = usersNotified.filter(id => id !== null);
+      
+      // Create a notification for these users with the full URL for the bills page.
+      const notification = await Notification.create({
+        description: `A new bill "${this.title}" of $${this.amount} has been created with due date ${
+          this.dueDate ? this.dueDate.toLocaleDateString() : 'N/A'
+        } that you have been marked responsible for.`,
+        pageID: `/room/${roomId}/bills`, // Updated URL
+        usersNotified: validUsersNotified,
+        notificationType: 'Bill Created',
+        origin: this.creatorId || null
+      });
+      const output = await notification.propagateNotification();
+      return output;
+    } catch (error) {
+      console.error("Error creating bill notification:", error);
+      throw error;
+    }
+  };
+
+// Method to create an "edit" notification when a bill is modified
+billSchema.methods.createEditNotification = async function(roomId) {
+    console.log("Creating bill edit notification");
+    try {
+      const User = require('./User');
+      const Notification = require('./Notification');
+      // Look up each responsible user by their custom userId
+      const usersNotified = await Promise.all(
+        this.responsible.map(async (person) => {
+          const user = await User.findOne({ userId: person.userId });
+          return user ? user._id : null;
+        })
+      );
+      const validUsersNotified = usersNotified.filter(id => id !== null);
+      
+      // Create a notification for these users with the bills page URL.
+      const notification = await Notification.create({
+        description: `The bill "${this.title}" has been updated. Please review the changes.`,
+        pageID: `/room/${roomId}/bills`, // URL as in your fixed version
+        usersNotified: validUsersNotified,
+        notificationType: 'Bill Updated',
+        origin: this.creatorId || null
+      });
+      const output = await notification.propagateNotification();
+      return output;
+    } catch (error) {
+      console.error("Error creating bill edit notification:", error);
+      throw error;
+    }
+  };
+  
+  // Method to create a "delete" notification when a bill is deleted
+  billSchema.methods.createDeleteNotification = async function(roomId) {
+    console.log("Creating bill deletion notification");
+    try {
+      const User = require('./User');
+      const Notification = require('./Notification');
+      // Look up each responsible user by their custom userId
+      const usersNotified = await Promise.all(
+        this.responsible.map(async (person) => {
+          const user = await User.findOne({ userId: person.userId });
+          return user ? user._id : null;
+        })
+      );
+      const validUsersNotified = usersNotified.filter(id => id !== null);
+      
+      // Create a notification for these users with the bills page URL.
+      const notification = await Notification.create({
+        description: `The bill "${this.title}" has been deleted.`,
+        pageID: `/room/${roomId}/bills`,
+        usersNotified: validUsersNotified,
+        notificationType: 'Bill Deleted',
+        origin: this.creatorId || null
+      });
+      const output = await notification.propagateNotification();
+      return output;
+    } catch (error) {
+      console.error("Error creating bill deletion notification:", error);
+      throw error;
+    }
+  };
+
+  // Method to create a notification when a bill has been marked as paid
+billSchema.methods.createPaidNotification = async function(roomId) {
+    console.log("Creating paid notification for bill");
+    try {
+      const User = require('./User');
+      const Notification = require('./Notification');
+      
+      // Look up each responsible person using the custom userId and get their actual _id.
+      const usersNotified = await Promise.all(
+        this.responsible.map(async (person) => {
+          const user = await User.findOne({ userId: person.userId });
+          return user ? user._id : null;
+        })
+      );
+      const validUsersNotified = usersNotified.filter(id => id !== null);
+      
+      // Build an appropriate description.
+      let description;
+      if (this.isRecurring && !this.isFinished) {
+        description = `Payment for the recurring bill "${this.title}" has been processed. The next cycle is scheduled for ${
+          this.dueDate ? new Date(this.dueDate).toLocaleDateString() : 'N/A'
+        }.`;
+      } else {
+        description = `The bill "${this.title}" has been marked as paid.`;
+      }
+      
+      // Create the notification using the roomId to build the pageID.
+      const notification = await Notification.create({
+        description,
+        pageID: `/room/${roomId}/bills`,
+        usersNotified: validUsersNotified,
+        notificationType: 'Bill Paid',
+        origin: this.creatorId || null
+      });
+      const output = await notification.propagateNotification();
+      return output;
+    } catch (error) {
+      console.error("Error creating paid notification:", error);
+      throw error;
+    }
+  };
+  
+
 billSchema.methods.getFormattedDueDate = function() {
     return this.dueDate ? this.dueDate.toLocaleDateString() : "No due date";
 };
@@ -322,15 +461,15 @@ billSchema.methods.getResponsible = function() {
 
 billSchema.methods.markAsPaid = async function () {
     if (this.isRecurring) {
-      // Convert the dueDate to a Date object explicitly.
+      // For recurring bills, we follow the existing behavior
       const currentDueDate = new Date(this.dueDate);
       if (isNaN(currentDueDate.getTime())) {
         throw new Error("Invalid due date");
       }
-      // Record the current cycle in the price history using the current due date.
+      // Record the current cycle in the price history
       this.priceHistory.push({ date: currentDueDate, amount: this.amount || 0 });
-  
-      // Determine the number of days to add based on frequency.
+      
+      // Determine days to add based on frequency
       let daysToAdd = 0;
       switch (this.frequency) {
         case 'daily': 
@@ -351,23 +490,25 @@ billSchema.methods.markAsPaid = async function () {
         default: 
           daysToAdd = 0;
       }
-      // Calculate the new due date based solely on the current due date.
+      // Calculate new due date
       const newDueDate = new Date(currentDueDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
-  
-      // Update this recurring bill in place.
       this.dueDate = newDueDate;
-      this.amount = 0; // Reset the amount so UI can display "Amount Not Set Yet"
+      this.amount = 0; // Reset amount for the next cycle
       this.isAmountPending = true;
-      // Do not mark as paid so it remains active.
       await this.save();
       return this;
     } else {
-      // For non-recurring bills, mark as paid.
+      // For non-recurring bills, update responsible persons as paid
+      this.responsible = this.responsible.map(person => ({
+        ...person,
+        paid: true
+      }));
       this.isPaid = true;
       await this.save();
       return this;
     }
   };
+  
   
   
   

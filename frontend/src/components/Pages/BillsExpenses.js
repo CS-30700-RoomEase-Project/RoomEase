@@ -229,7 +229,7 @@ const BillsExpenses = () => {
       isFinished: editFormData.isFinished
     };
 
-    fetch(`http://localhost:5001/api/bills/updateBill/${selectedBill._id}`, {
+    fetch(`http://localhost:5001/api/bills/updateBill/${selectedBill._id}/${roomId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedBill)
@@ -278,7 +278,7 @@ const BillsExpenses = () => {
   // Mark as Paid handler – stops propagation so it doesn't open the edit modal.
   const handleMarkAsPaid = (billId, e) => {
     e.stopPropagation();
-    fetch(`http://localhost:5001/api/bills/markAsPaid/${billId}`, {
+    fetch(`http://localhost:5001/api/bills/markAsPaid/${billId}/${roomId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
     })
