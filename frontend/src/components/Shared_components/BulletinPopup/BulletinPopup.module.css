@@ -1,23 +1,27 @@
 .bulletinContainer {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;  /* Align the content to the left */
     gap: 15px;
     width: 1200px;
     height: 600px;
+    padding-left: 30px; /* Adds padding to push the content left */
 }
 
 .bulletinPopupContainer {
     background: rgba(0, 0, 0, 0.7) !important;
     display: flex;
+    flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start; /* Align the content to the left */
     height: 100vh !important;
     width: 100vw !important;
     position: fixed !important;
     top: 0;
     left: 0;
     z-index: 2000 !important; /* Ensure it's above everything */
+    gap: 15px;
+    padding-left: 30px;  /* Optional: Adds padding to move it further left */
 }
 
 .bulletinPopupContent {
@@ -96,9 +100,20 @@
 .quietHours {
     width: 30%;
     height: 70%;
+    margin-left: 100px; /* Align to the left */
 }
 
 .quietHours:hover {
     cursor: pointer;
     transform: scale(1.1);
+}
+
+/* Room Clauses element */
+.room-clauses {
+    margin-top: 20px;
+    width: 100%;
+    text-align: left;
+    padding-left: 20px; /* Add padding to ensure content is aligned properly */
+    font-size: 16px;
+    color: #fff;
 }
