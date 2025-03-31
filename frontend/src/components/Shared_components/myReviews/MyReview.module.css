@@ -8,19 +8,20 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+    background-color: rgba(0, 0, 0, 0.5);
   }
   
   .content {
-    background-color: rgba(15, 23, 42, 0.95); /* Deep bluish-gray */
+    background-color: rgba(15, 23, 42, 0.95);
     padding: 2rem;
     border-radius: 12px;
     width: 100%;
     max-width: 400px;
     animation: fadeIn 0.3s ease;
-    border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2),
                 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    color: #ffffff;
   }
   
   @keyframes fadeIn {
@@ -35,17 +36,9 @@
   }
   
   h4 {
-    color: #e7e7e7;
+    color: #ffffff;
     font-size: 1.5rem;
     margin-bottom: 1.5rem;
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-  }
-  
-  h5 {
-    color: #e7e7e7;
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
     text-align: center;
     font-family: 'Inter', sans-serif;
   }
@@ -56,17 +49,9 @@
     gap: 1.5rem;
   }
   
-  .roommate-rating {
-    background-color: rgba(30, 41, 59, 0.5);
-    padding: 1rem;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-  
   .rating-category {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
     margin-bottom: 0.75rem;
     padding: 0.5rem;
     background-color: rgba(15, 23, 42, 0.5);
@@ -74,13 +59,16 @@
   }
   
   .rating-category strong {
-    color: #e7e7e7;
+    color: #ffffff;
     font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
   }
   
   .star-rating {
     display: flex;
     gap: 5px;
+    flex-wrap: wrap;
   }
   
   .star {
@@ -89,8 +77,8 @@
   }
   
   .star.filled {
-    color: gold; /* Gold color for filled stars */
-    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); /* Subtle glow effect */
+    color: gold;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
   }
   
   .button-group {
@@ -120,19 +108,26 @@
   }
   
   .close-button {
-    background-color: #ef4444; /* Red */
+    background-color: #ef4444;
     color: #ffffff;
     min-width: 120px;
   }
   
   .close-button:hover {
-    background-color: #f87171; /* Lighter red */
+    background-color: #f87171;
   }
   
   /* For loading state */
   p {
-    color: #e7e7e7;
+    color: #ffffff;
     text-align: center;
     margin: 1rem 0;
+  }
+  
+  /* Rating value text */
+  .rating-value {
+    color: #ffffff !important;
+    font-size: 0.875rem;
+    margin-left: 0.5rem;
   }
   
