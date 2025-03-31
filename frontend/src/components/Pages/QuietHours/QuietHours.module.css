@@ -10,18 +10,43 @@
   box-sizing: border-box;
 }
 
-.quietHours {
+.openPopupButton {
+  padding: 12px 20px;
+  font-size: 1rem;
+  background-color: #bc9974;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.openPopupButton:hover {
+  background-color: #a67c52;
+}
+
+.popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  max-width: 500px;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.popupContent {
   background-color: white;
-  padding: 20px;
+  padding: 25px;
   border-radius: 8px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  margin-bottom: 30px;
+  width: 90%;
+  max-width: 400px;
 }
 
-.quietHours h2 {
+.popupContent h2 {
   font-size: 1.8rem;
   font-weight: bold;
   color: #bc9974;
@@ -32,32 +57,15 @@
   flex-direction: column;
   gap: 20px;
   width: 100%;
-  max-width: 500px;
-  padding: 25px;
-  background-color: rgba(40, 38, 38, 0.8);
-  border-radius: 8px;
 }
 
-.form h2 {
-  color: white; /* Change text color to white */
-  font-size: 1.8rem;
+.form label {
   font-weight: bold;
-  margin-bottom: 20px;
+  color: black;
 }
 
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.formGroup label {
-  font-weight: bold;
-  color: white;
-}
-
-.formGroup input,
-.formGroup select {
+.form input,
+.form select {
   width: 100%;
   padding: 12px;
   margin-top: 5px;
@@ -67,49 +75,21 @@
   box-sizing: border-box;
 }
 
-.addLevelContainer {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.customLevelInput {
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
-  width: 150px;
-}
-
-.addLevelButton {
-  padding: 5px 10px;
-  background-color: #bc9974;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.addLevelButton:hover {
-  background-color: #a67c52;
-}
-
 .timeFormatContainer {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
 .timeFormatButton {
-  padding: 10px 20px;
+  padding: 10px;
   background-color: #f7e4d2;
   color: black;
   border: 2px solid #bc9974;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.3s ease;
 }
 
 .timeFormatButton.active {
@@ -132,4 +112,18 @@
 
 .submitButton:hover {
   background-color: #0056b3;
+}
+
+.closePopupButton {
+  margin-top: 10px;
+  background-color: red;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.closePopupButton:hover {
+  background-color: darkred;
 }
