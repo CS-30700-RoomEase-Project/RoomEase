@@ -34,7 +34,8 @@ const BillsExpenses = () => {
     paymaster: '',
     frequency: 'none',
     customFrequency: '',
-    priceHistory: []
+    priceHistory: [],
+    isFinished: false // for recurring bills that have been finished
   });
 
   // State for Bills History Modal
@@ -52,7 +53,7 @@ const BillsExpenses = () => {
     profilePic: '',
   };
 
-  // Fetch active bills for the current room (active bills have isPaid: false)
+  // Fetch active bills (only bills with isPaid: false)
   useEffect(() => {
     if (roomId) {
       fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
@@ -64,7 +65,7 @@ const BillsExpenses = () => {
           } else if (Array.isArray(data.bills)) {
             setBills(data.bills);
           } else {
-            console.error("Unexpected bills response structure", data);
+            console.error("Unexpected active bills response structure", data);
             setBills([]);
           }
         })
@@ -100,7 +101,7 @@ const BillsExpenses = () => {
       .catch((err) => console.error(err));
   };
 
-  // Helper: Parse date string into a Date object
+  // Helper: Parse date string into Date object
   const parseDueDate = (dateString) => {
     if (!dateString) return null;
     const [year, month, day] = dateString.split('-');
@@ -168,7 +169,7 @@ const BillsExpenses = () => {
       .catch((err) => console.error(err));
   };
 
-  // Sorted active bills (by due date)
+  // Sorted active bills by due date
   const sortedBills = bills.slice().sort((a, b) => {
     if (!a.dueDate && !b.dueDate) return 0;
     if (!a.dueDate) return 1;
@@ -187,7 +188,8 @@ const BillsExpenses = () => {
       paymaster: bill.paymaster || '',
       frequency: bill.frequency ? bill.frequency : "none",
       customFrequency: bill.customFrequency || '',
-      priceHistory: bill.priceHistory || []
+      priceHistory: bill.priceHistory || [],
+      isFinished: bill.isFinished || false
     });
   };
 
@@ -223,7 +225,8 @@ const BillsExpenses = () => {
       frequency: editFormData.frequency !== "none" ? editFormData.frequency : null,
       customFrequency: editFormData.frequency === "custom" ? parseInt(editFormData.customFrequency) : null,
       isAmountPending: parsedAmount > 0 ? false : true,
-      priceHistory: editFormData.priceHistory
+      priceHistory: editFormData.priceHistory,
+      isFinished: editFormData.isFinished
     };
 
     fetch(`http://localhost:5001/api/bills/updateBill/${selectedBill._id}`, {
@@ -247,6 +250,22 @@ const BillsExpenses = () => {
       .then((res) => res.json())
       .then(() => {
         setBills(bills.filter((bill) => bill._id !== selectedBill._id));
+        setSelectedBill(null);
+      })
+      .catch((err) => console.error(err));
+  };
+
+  const handleFinishRecurring = () => {
+    // Finish recurring expense: call new endpoint to finalize recurring bill
+    fetch(`http://localhost:5001/api/bills/finishRecurring/${selectedBill._id}/${roomId}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' }
+    })
+      .then((res) => res.json())
+      .then((updatedBill) => {
+        // Remove from active list and refresh history
+        setBills(bills.filter((bill) => bill._id !== updatedBill._id));
+        fetchHistoryBills();
         setSelectedBill(null);
       })
       .catch((err) => console.error(err));
@@ -283,11 +302,35 @@ const BillsExpenses = () => {
     setShowHistoryModal(true);
   };
 
-  // Handler to open Price History modal from the edit modal for recurring bills
+  // Handler to open Price History modal from edit modal for recurring bills
   const handleShowPriceHistory = () => {
     setCurrentPriceHistory(editFormData.priceHistory || []);
     setCurrentPriceHistoryBillTitle(editFormData.title);
     setShowPriceHistoryModal(true);
+  };
+
+  // Handler to delete an individual bill from history
+  const handleDeleteHistory = (billId) => {
+    fetch(`http://localhost:5001/api/bills/deleteBill/${billId}/${roomId}`, {
+      method: 'DELETE'
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setHistoryBills(historyBills.filter(bill => bill._id !== billId));
+      })
+      .catch((err) => console.error(err));
+  };
+
+  // Handler to clear entire bills history
+  const handleClearHistory = () => {
+    fetch(`http://localhost:5001/api/bills/clearHistory/${roomId}`, {
+      method: 'DELETE'
+    })
+      .then((res) => res.json())
+      .then(() => {
+        setHistoryBills([]);
+      })
+      .catch((err) => console.error(err));
   };
 
   return (
@@ -431,12 +474,7 @@ const BillsExpenses = () => {
                 <div className={styles.formGroup}>
                   <label htmlFor="paymaster">Paymaster:</label>
                   <div className={styles.formGroupRow}>
-                    <select
-                      id="paymaster"
-                      name="paymaster"
-                      value={formData.paymaster}
-                      onChange={handleAddChange}
-                    >
+                    <select id="paymaster" name="paymaster" value={formData.paymaster} onChange={handleAddChange}>
                       <option value="">Select a user</option>
                       {roomUsers.map((user) => (
                         <option key={user._id} value={user.username}>
@@ -471,12 +509,7 @@ const BillsExpenses = () => {
                   <button type="submit" className={styles.saveButton} style={{ backgroundColor: 'green' }}>
                     Save
                   </button>
-                  <button
-                    type="button"
-                    className={styles.cancelButton}
-                    style={{ backgroundColor: 'yellow' }}
-                    onClick={() => setShowAddModal(false)}
-                  >
+                  <button type="button" className={styles.cancelButton} style={{ backgroundColor: 'yellow' }} onClick={() => setShowAddModal(false)}>
                     Cancel
                   </button>
                 </div>
@@ -519,11 +552,14 @@ const BillsExpenses = () => {
                     <input type="number" id="editCustomFrequency" name="customFrequency" value={editFormData.customFrequency} onChange={handleEditChange} />
                   </div>
                 )}
-                {/* Price History Button for recurring bills */}
-                {editFormData.frequency !== "none" && (
-                  <div className={styles.formGroup}>
+                {/* For recurring bills, show Price History and Finish buttons */}
+                {editFormData.frequency !== "none" && !editFormData.isFinished && (
+                  <div className={styles.formGroupRow}>
                     <button type="button" onClick={handleShowPriceHistory}>
                       Show Price History
+                    </button>
+                    <button type="button" onClick={handleFinishRecurring}>
+                      Finish Recurring Expense
                     </button>
                   </div>
                 )}
@@ -640,6 +676,7 @@ const BillsExpenses = () => {
             <div className={styles.popupMenu}>
               <h3>Bills/Expenses History</h3>
               <button className={styles.closeButton} onClick={() => setShowHistoryModal(false)}>Close</button>
+              <button className={styles.clearHistoryButton} onClick={handleClearHistory}>Clear History</button>
               <div className={styles.historyList}>
                 {historyBills.length ? (
                   <ul>
@@ -666,6 +703,9 @@ const BillsExpenses = () => {
                               Price History
                             </button>
                           )}
+                          <button onClick={() => handleDeleteHistory(bill._id)}>
+                            Delete
+                          </button>
                         </div>
                       </li>
                     ))}

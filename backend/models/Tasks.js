@@ -304,12 +304,13 @@ const billSchema = new mongoose.Schema({
     customFrequency: { type: Number, default: null },
     isAmountPending: { type: Boolean, default: false },
     isPaid: { type: Boolean, default: false },
-    // For recurring bills, record the price history
+    // New field: whether a recurring bill has been finished.
+    isFinished: { type: Boolean, default: false },
     priceHistory: [{
       date: Date,
       amount: Number
     }]
-});
+  });
 
 billSchema.methods.getFormattedDueDate = function() {
     return this.dueDate ? this.dueDate.toLocaleDateString() : "No due date";
