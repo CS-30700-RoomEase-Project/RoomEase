@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AvatarButton from "../Shared_components/AvatarButton/AvatarButton";
 import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
@@ -13,16 +13,19 @@ import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
 function Dashboard() {
 
   const navigate = useNavigate();
+  const [userData, setUserData] = useState({});
 
-  // Safely parse userData from localStorage
-  let userData;
-  try {
-    userData = JSON.parse(localStorage.getItem("userData")) || {};
-    console.log(userData);
-  } catch (error) {
-    console.error("Error parsing userData:", error);
-    userData = {};
-  }
+    // Update userData from localStorage on mount
+    useEffect(() => {
+      try {
+        const data = JSON.parse(localStorage.getItem("userData")) || {};
+        console.log("Updated userData:", data);
+        setUserData(data);
+      } catch (error) {
+        console.error("Error parsing userData:", error);
+        setUserData({});
+      }
+    }, []);
 
   function getRoom(roomId) {
     const roomData = { roomId }; // Creating an object with roomId (you can add more properties if needed)
@@ -124,7 +127,7 @@ function Dashboard() {
           </div>
 
           {/* Ensure userData.rooms exists and is an array */}
-          {Array.isArray(getUserData().rooms) &&
+          {Array.isArray(userData.rooms) &&
             userData.rooms.map((room) => (
               <div key={room._id} className={styles.roomWrapper}>
                 <RoomDoor
