@@ -1,6 +1,7 @@
 const express = require('express');
 const User = require('../models/User');
 const Room = require('../models/Room');
+const Notification = require('../models/Notification');
 
 const router = express.Router();
 
@@ -57,6 +58,61 @@ router.get('/getRoom', async( req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
+    }
+});
+
+router.get('/leaveRoom', async (req, res) => {
+    console.log("--------------------------------------------------");
+    const { roomId, userId } = req.query;
+    let room = await Room.findOne({ _id: roomId });
+    console.log("Room found:", room);
+    // Check if the room exists
+    if (!room) {
+        return res.status(404).json({ message: "Room not found" });
+    }
+    let user = await User.findOne({ userId: userId });
+    
+    // Check if the user is in the room, leave the room if they are
+    if (room.roomMembers.includes(userId)) {
+        // Remove the room from the user's list of rooms
+        user.rooms = user.rooms.filter(room => room._id.toString() !== roomId);
+        await user.save();
+        // If the user is the last person in the room, delete the room
+        if (room.roomMembers.length === 1) {
+            await Room.deleteOne({ _id: roomId });
+            console.log("Room deleted:", roomId);
+        } else { // Otherwise, just remove the user from the room
+            room.roomMembers = room.roomMembers.filter(member => member.toString() !== userId);
+            await room.save();
+            console.log("User removed from room:", userId);
+
+            let roomMembers = [];
+            for (let i of room.roomMembers) {
+                if (i != user.userId) {
+                    let curr = await User.findOne({ userId: i });
+                    roomMembers.push(curr._id);
+                }
+            }
+
+            // Notify all other members of the room
+            const memberNotificationDesc = user.username + " has left the room: " + room.roomName + "!";
+            const memeberNotification = new Notification({
+                usersNotified: roomMembers,
+                description: memberNotificationDesc,
+                pageID: `/room/${room._id}`,
+                origin: user._id
+            })
+            
+            await memeberNotification.save();
+            await memeberNotification.propagateNotification();
+        }
+        console.log("---------------------------------------------------");
+        return res.status(200).json({ message: "User successfully left!", userData: user, roomData: room });
+    } else {
+        console.log(room.roomMembers);
+        console.log("--------------------------------------fdsdf-------------");
+
+        return res.status(404).json({ message: "User is not a member of this room" });
     }
 });
 
