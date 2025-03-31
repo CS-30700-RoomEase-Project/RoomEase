@@ -43,7 +43,7 @@ function RoomSettings() {
     }, [roomId, navigate]);
 
 
-    const handleRoomLeave = () => {
+    const handleRoomLeave = async () => {
         const leaveRoom = async () => {
             try {
                 const response = await fetch(`http://localhost:5001/api/room/leaveRoom?roomId=${roomId}&userId=${userID}`, {
@@ -65,9 +65,10 @@ function RoomSettings() {
             }
         };
         console.log("Leaving room with ID:", roomId); // Debugging
-        leaveRoom();
+        await leaveRoom();
         console.log("done leaving room"); // Debugging
         navigate("/dashboard");
+        console.log("reached 111");
     }
 
     return (
