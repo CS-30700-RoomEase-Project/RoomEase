@@ -31,16 +31,16 @@ function App() {
         <Route path="/grocery" element={<GroceryPage />} />
 
         {/* Quiet Hours Settings route */}
-        <Route path="/quiet-hours" element={<QuietHoursSettings />} />
+        <Route path="/quiet-hours/:roomId" element={<QuietHoursSettings />} />
         
         {/* Disputes route */}
-        <Route path="/disputes" element={<Disputes />} />
+        <Route path="/disputes/:roomId" element={<Disputes />} />
 
         {/* Room page route */}
         <Route path="/room/:roomId" element={<Room />}/>
 
         {/* Room State route */}
-        <Route path="/room-state" element={<RoomState />} />
+        <Route path="/room-state/:roomId" element={<RoomState />} />
 
         {/* Invite page route */}
         <Route path="/room/:roomId/invite" element={<InvitePage />} />
