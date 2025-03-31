@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Popup from 'reactjs-popup';
 import ProfilePopUp from '../Profile/ProfilePopUp';
+// import RoomRatePopUp from '../RoomRating/RoomRatePopUp';
 import './AvatarButton.css';
-
 const AvatarButton = () => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
@@ -81,7 +81,7 @@ const AvatarButton = () => {
           <button onClick={handleLogout} className='signoutButton'>Logout</button>
         </div>
       </Popup>
-
+      {/* <RoomRatePopUp isOpen={showSettings} onClose={() => setShowSettings(false)} /> */}
       <ProfilePopUp isOpen={showSettings} onClose={() => setShowSettings(false)} />
     </>
   );
