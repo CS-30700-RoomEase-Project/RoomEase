@@ -13,7 +13,8 @@ const billsRoutes = require("./routes/billsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const inviteRoutes = require("./routes/inviteRoutes");
-const roomStateRoutes = require("./routes/stateRoutes");
+const stateRoutes = require("./routes/stateRoutes");
+const quietHoursRoutes = require("./routes/quietHoursRoutes");
 
 // Initialize app and HTTP server
 const app = express();
@@ -44,7 +45,8 @@ app.use("/api/bills", billsRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/room", roomRoutes);
 app.use("/api/invite", inviteRoutes);
-app.use("/api/roomstate", roomStateRoutes);
+app.use("/api/roomstate", stateRoutes);
+app.use("/api/quiethours", quietHoursRoutes);
 
 // Import and pass Socket.IO to group chat routes
 const groupChatRoutes = require("./routes/groupChatRoutes")(io);

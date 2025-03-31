@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./RoomItems.css";
 
-function Clock({ onClick }) {
+function Clock({ onClick, enabled }) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -19,7 +19,7 @@ function Clock({ onClick }) {
   const minutesDeg = minutes * 6; // 6° per minute
 
   return (
-    <div className="clock" onClick={onClick} title="Quiet Hours" style={{ cursor: "pointer" }}>
+    <div className="clock" onClick={onClick} title={(enabled) ? "Room State" : ""} style={{ cursor: 'pointer', pointerEvents: (enabled) ? "auto" : "none" }}>
       <div className="clock-face">
         <div className="hour-hand" style={{ transform: `rotate(${hoursDeg}deg)` }}></div>
         <div className="minute-hand" style={{ transform: `rotate(${minutesDeg}deg)` }}></div>
