@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useNavigate } from "react-router-dom";
 import AvatarButton from "../Shared_components/AvatarButton/AvatarButton";
 import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
@@ -11,6 +11,7 @@ import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
  * @returns Dashboard component
  */
 function Dashboard() {
+
   const navigate = useNavigate();
 
   // Safely parse userData from localStorage
@@ -27,6 +28,13 @@ function Dashboard() {
     localStorage.setItem("roomData", roomId);
     navigate(`/room/${roomId}`);
   }
+
+
+  const getUserData = () => {
+    console.log("userDatfidsfjsiosa: ", userData);
+    userData = JSON.parse(localStorage.getItem("userData"));
+    return JSON.parse(localStorage.getItem("userData"));
+  };
 
   const acceptInvite = async ({invite}) => {
     try {
@@ -114,7 +122,7 @@ function Dashboard() {
           </div>
 
           {/* Ensure userData.rooms exists and is an array */}
-          {Array.isArray(userData.rooms) &&
+          {Array.isArray(getUserData().rooms) &&
             userData.rooms.map((room) => (
               <div key={room._id} className={styles.roomWrapper}>
                 <RoomDoor

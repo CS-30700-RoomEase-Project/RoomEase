@@ -1,0 +1,30 @@
+/* Quiet Hours icon styling */
+.quietHours {
+    width: 30%;
+    height: 70%;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease;
+  }
+  
+  .quietHours:hover {
+    cursor: pointer;
+    transform: scale(1.1); /* Scale up on hover */
+  }
+  
+  .quietHours svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+  }
+  
+  .quietHours line {
+    transition: stroke 0.3s ease;
+  }
+  
+  .quietHours:hover line {
+    stroke: #ff4c4c; /* Red color when hovered */
+  }
+  
