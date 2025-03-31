@@ -45,6 +45,8 @@ function Room() {
                 }
 
                 const data = await response.json();
+                localStorage.setItem('roommates', "");                localStorage.setItem('roommates', "");
+                localStorage.setItem('roommates', JSON.stringify(data.room.roomMembers)); // Store room data in local storage                localStorage.setItem('roommates', JSON.stringify(data.room.roomMembers)); // Store room data in local storage
                 setRoomData(data.room);
                 setLoading(false);
             } catch (err) {
@@ -70,12 +72,12 @@ function Room() {
         console.log("Navigating to chores with roomId:", roomId); // Debugging
         navigate(`/chores/${roomId}`);
     }
-    
+
     const handleGoToHours = (roomId) => {
         console.log("Navigating to quiet-hours with roomId:", roomId); // Debugging
         navigate(`/quiet-hours/`);
     }
-    
+
     const handleGoToState = (roomId) => {
         console.log("Navigating to state with roomId:", roomId); // Debugging
         navigate(`/room-state/`);
@@ -101,7 +103,7 @@ function Room() {
                     <Avatar />
                 </div> 
             </div>
-            
+
 
             <div className={style.roomBackground}>
                 <Fridge room={roomData}/>

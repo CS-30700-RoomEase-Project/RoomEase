@@ -32,6 +32,7 @@ const RoomRate = ({ onClose }) => {
             const response = await fetch(`http://localhost:5001/api/users/getUser?userId=${userId}`);
             if (!response.ok) throw new Error(`Failed to fetch user data for ${userId}`);
             const data = await response.json();
+            
             return {
               userId,
               username: data.user?.username || "Unknown",
