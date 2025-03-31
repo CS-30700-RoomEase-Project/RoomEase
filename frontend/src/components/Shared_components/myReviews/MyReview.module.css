@@ -1,0 +1,133 @@
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  .content {
+    background-color: rgba(15, 23, 42, 0.95);
+    padding: 2rem;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    animation: fadeIn 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2),
+                0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    color: #ffffff;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  h4 {
+    color: #ffffff;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  .rating-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .rating-category {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 6px;
+  }
+  
+  .rating-category strong {
+    color: #ffffff;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  .star-rating {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+  }
+  
+  .star {
+    font-size: 24px;
+    color: #ffdd00;
+  }
+  
+  .star.filled {
+    color: gold;
+    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+  
+  button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Inter', sans-serif;
+  }
+  
+  button:hover {
+    transform: translateY(-1px);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+  
+  .close-button {
+    background-color: #ef4444;
+    color: #ffffff;
+    min-width: 120px;
+  }
+  
+  .close-button:hover {
+    background-color: #f87171;
+  }
+  
+  /* For loading state */
+  p {
+    color: #ffffff;
+    text-align: center;
+    margin: 1rem 0;
+  }
+  
+  /* Rating value text */
+  .rating-value {
+    color: #ffffff !important;
+    font-size: 0.875rem;
+    margin-left: 0.5rem;
+  }
+  

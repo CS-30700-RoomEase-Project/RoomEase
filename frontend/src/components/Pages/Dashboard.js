@@ -28,9 +28,11 @@ function Dashboard() {
     }, []);
 
   function getRoom(roomId) {
-    localStorage.setItem("roomData", roomId);
+    const roomData = { roomId }; // Creating an object with roomId (you can add more properties if needed)
+    localStorage.setItem("roomData", JSON.stringify(roomData));
     navigate(`/room/${roomId}`);
   }
+  
 
 
   const getUserData = () => {
