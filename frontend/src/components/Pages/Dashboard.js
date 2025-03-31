@@ -1,4 +1,4 @@
-import React, {useEffect} from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import AvatarButton from "../Shared_components/AvatarButton/AvatarButton";
 import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
@@ -25,9 +25,11 @@ function Dashboard() {
   }
 
   function getRoom(roomId) {
-    localStorage.setItem("roomData", roomId);
+    const roomData = { roomId }; // Creating an object with roomId (you can add more properties if needed)
+    localStorage.setItem("roomData", JSON.stringify(roomData));
     navigate(`/room/${roomId}`);
   }
+  
 
 
   const getUserData = () => {
