@@ -466,7 +466,7 @@ OLD
   display: inline-block;
   cursor: pointer;
   transition: transform 1.0s ease;
-  transform-origin: 200% 150%; /* Rotating around the rightmost point */
+  transform-origin: 100px 100px; /* Rotating around the rightmost point */
 }
 
 .gavel-head {
@@ -500,14 +500,13 @@ OLD
 
 @keyframes gavelRotation {
   0% {
-    transform: rotate(120deg);
+    transform: rotate(90deg);
   }
-
 }
 
 /* Hover effect with animation */
 .gavel-container:hover {
-  animation: gavelRotation 10s ease-in-out 3; /* Smooth and quicker rotation, repeat 3 times */
+  animation: gavelRotation 0.5s ease-in-out 3; /* Smooth and quicker rotation, repeat 3 times */
   bottom: 5px;
   scale: 1.1;
 }
