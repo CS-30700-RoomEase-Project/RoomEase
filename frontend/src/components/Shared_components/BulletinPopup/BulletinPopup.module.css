@@ -1,13 +1,15 @@
+/* Container for the entire bulletin board */
 .bulletinContainer {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;  /* Align the content to the left */
+    align-items: flex-start; /* Align the content to the left */
     gap: 15px;
     width: 1200px;
     height: 600px;
-    padding-left: 30px; /* Adds padding to push the content left */
+    padding-left: 30px; /* Optional: Adjusts the padding if needed */
 }
 
+/* Popup container for the bulletin */
 .bulletinPopupContainer {
     background: rgba(0, 0, 0, 0.7) !important;
     display: flex;
@@ -24,6 +26,7 @@
     padding-left: 30px;  /* Optional: Adds padding to move it further left */
 }
 
+/* Content inside the popup */
 .bulletinPopupContent {
     background: #333 !important;
     width: 350px;
@@ -42,6 +45,7 @@
     align-items: center;
 }
 
+/* General styling for the bulletin */
 .bulletin {
     background: none !important;
     margin: 0 !important;
@@ -54,6 +58,7 @@
     width: 100px;
 }
 
+/* Frame to show the bulletin */
 .board {
     width: 1200px;
     height: 600px;
@@ -62,12 +67,14 @@
     display: flex;
 }
 
+/* Frame of the content */
 .frame {
     width: 80%;
     height: 80%;
     background-color: #5c3939;
 }
 
+/* Content inside the frame */
 .content {
     width: 90%;
     height: 90%;
@@ -82,7 +89,7 @@
     flex-shrink: 0;
 }
 
-/* Remove unnecessary styling from modal */
+/* Modal appearance */
 .modal {
     background: none !important;
     margin: 0 !important;
@@ -92,15 +99,14 @@
     justify-content: center;
     align-items: center;
     min-height: 250px;
-
 }
-
 
 /* Quiet hours logo css */
 .quietHours {
     width: 30%;
     height: 70%;
-    margin-left: 100px; /* Align to the left */
+    position: relative;
+    left: 20%;
 }
 
 .quietHours:hover {
@@ -109,11 +115,14 @@
 }
 
 /* Room Clauses element */
-.room-clauses {
-    margin-top: 20px;
-    width: 100%;
-    text-align: left;
-    padding-left: 20px; /* Add padding to ensure content is aligned properly */
-    font-size: 16px;
-    color: #fff;
+.roomClauses {
+    width: 20%;    /* Scale the image to 10% of its original size */
+    height: auto;  /* Maintain the aspect ratio */
+    position: relative;
+    right: 50%;     /* Same as quiet hours logo for alignment */
+}
+
+.roomClauses:hover {
+    cursor: pointer;
+    transform: scale(1.1);
 }

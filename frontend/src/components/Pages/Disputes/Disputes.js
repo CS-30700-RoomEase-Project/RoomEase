@@ -6,22 +6,29 @@ const Disputes = () => {
   const [description, setDescription] = useState("");
   const [severity, setSeverity] = useState("Low");
   const [customSeverity, setCustomSeverity] = useState("");
+  const [loading, setLoading] = useState(true); // Loading state for fetching disputes
+  const [error, setError] = useState(null); // For handling errors
 
   useEffect(() => {
     fetchDisputes();
   }, []);
 
   const fetchDisputes = async () => {
+    setLoading(true); // Start loading
     try {
       const response = await fetch("http://localhost:5001/api/disputes/getDisputes");
       const data = await response.json();
+
       if (response.ok) {
         setDisputes(data);
       } else {
-        alert(`Error: ${data.message}`);
+        setError(data.message); // Set error message if any
       }
     } catch (error) {
       console.error("Error fetching disputes:", error);
+      setError("Failed to fetch disputes. Please try again later.");
+    } finally {
+      setLoading(false); // End loading
     }
   };
 
@@ -48,7 +55,7 @@ const Disputes = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!description.trim()) {
       alert("Description cannot be empty.");
       return;
@@ -88,27 +95,34 @@ const Disputes = () => {
     <div className={styles.container}>
       <h1>Dispute Poll</h1>
 
-      {/* Dispute List with Voting */}
-      <div className={styles.disputesList}>
-        {disputes.length > 0 ? (
-          disputes.map((dispute) => (
-            <div key={dispute.id} className={styles.dispute}>
-              <h2>{dispute.description}</h2>
-              <p><strong>Severity:</strong> {dispute.severity}</p>
-              <div className={styles.voteContainer}>
-                <button onClick={() => handleVote(dispute.id, "agree")} className={styles.voteButton}>
-                  👍 {dispute.agreeVotes}
-                </button>
-                <button onClick={() => handleVote(dispute.id, "disagree")} className={styles.voteButton}>
-                  👎 {dispute.disagreeVotes}
-                </button>
+      {/* Error message */}
+      {error && <p className={styles.error}>{error}</p>}
+
+      {/* Loading state */}
+      {loading ? (
+        <p>Loading disputes...</p>
+      ) : (
+        <div className={styles.disputesList}>
+          {disputes.length > 0 ? (
+            disputes.map((dispute) => (
+              <div key={dispute.id} className={styles.dispute}>
+                <h2>{dispute.description}</h2>
+                <p><strong>Severity:</strong> {dispute.severity}</p>
+                <div className={styles.voteContainer}>
+                  <button onClick={() => handleVote(dispute.id, "agree")} className={styles.voteButton}>
+                    👍 {dispute.agreeVotes}
+                  </button>
+                  <button onClick={() => handleVote(dispute.id, "disagree")} className={styles.voteButton}>
+                    👎 {dispute.disagreeVotes}
+                  </button>
+                </div>
               </div>
-            </div>
-          ))
-        ) : (
-          <p>No disputes available.</p>
-        )}
-      </div>
+            ))
+          ) : (
+            <p>No disputes available.</p>
+          )}
+        </div>
+      )}
 
       {/* Add a new dispute */}
       <form onSubmit={handleSubmit} className={styles.form}>
