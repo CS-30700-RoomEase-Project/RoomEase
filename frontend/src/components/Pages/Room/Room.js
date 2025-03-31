@@ -10,10 +10,10 @@ import Computer from './Room Items/Computer';
 import Desk from './Room Items/Desk';
 import Fridge from './Room Items/Fridge';
 import Gavel from './Room Items/Gavel';
-import GavelPad from './Room Items/GavelPad';
 
 import style from './Room.module.css';
 import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
+
 function Room() {
     const { roomId } = useParams(); // Gets the roomId from the URL
     const navigate = useNavigate();
@@ -74,18 +74,18 @@ function Room() {
     
     const handleGoToHours = (roomId) => {
         console.log("Navigating to quiet-hours with roomId:", roomId); // Debugging
-        navigate(`/quiet-hours/`);
+        navigate(`/quiet-hours/${roomId}`);
     }
     
     const handleGoToState = (roomId) => {
         console.log("Navigating to state with roomId:", roomId); // Debugging
-        navigate(`/room-state/`);
+        navigate(`/room-state/${roomId}`);
     }
 
     const handleGoToDisputes = (roomId) => {
         if (roomData.settings[2]) {
             console.log("Navigating to disputes with roomId:", roomId); // Debugging
-            navigate(`/disputes/`);
+            navigate(`/disputes/${roomId}`);
         }
     }
 
