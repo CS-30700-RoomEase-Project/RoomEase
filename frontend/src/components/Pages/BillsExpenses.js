@@ -20,7 +20,8 @@ const BillsExpenses = () => {
     responsiblePeople: [],
     paymaster: '',
     frequency: 'none', // "none" means Not Recurring
-    customFrequency: ''
+    customFrequency: '',
+    splitBill: true  // stored as boolean; default to splitting
   });
   const [newPerson, setNewPerson] = useState("");
 
@@ -35,7 +36,8 @@ const BillsExpenses = () => {
     frequency: 'none',
     customFrequency: '',
     priceHistory: [],
-    isFinished: false // for recurring bills that have been finished
+    isFinished: false, // for recurring bills that have been finished
+    splitBill: true
   });
 
   // State for Bills History Modal
@@ -46,6 +48,9 @@ const BillsExpenses = () => {
   const [showPriceHistoryModal, setShowPriceHistoryModal] = useState(false);
   const [currentPriceHistory, setCurrentPriceHistory] = useState([]);
   const [currentPriceHistoryBillTitle, setCurrentPriceHistoryBillTitle] = useState('');
+
+  // State for Balance Owed Popup
+  const [showBalancePopup, setShowBalancePopup] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem('userData')) || {
     username: 'Guest',
@@ -110,7 +115,12 @@ const BillsExpenses = () => {
 
   // Handlers for Add Modal form
   const handleAddChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setFormData({ ...formData, [name]: checked });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleAddNewPersonChange = (e) => {
@@ -134,6 +144,7 @@ const BillsExpenses = () => {
     setFormData({ ...formData, paymaster: userData.username });
   };
 
+  // When creating a bill, ensure we send the splitBill value.
   const handleSubmit = (e) => {
     e.preventDefault();
     const newBill = {
@@ -144,7 +155,8 @@ const BillsExpenses = () => {
       paymaster: formData.paymaster,
       isRecurring: formData.frequency !== "none",
       frequency: formData.frequency !== "none" ? formData.frequency : null,
-      customFrequency: formData.frequency === "custom" ? parseInt(formData.customFrequency) : null
+      customFrequency: formData.frequency === "custom" ? parseInt(formData.customFrequency) : null,
+      splitBill: formData.splitBill
     };
 
     fetch(`http://localhost:5001/api/bills/addBill/${roomId}`, {
@@ -162,7 +174,8 @@ const BillsExpenses = () => {
           responsiblePeople: [],
           paymaster: '',
           frequency: 'none',
-          customFrequency: ''
+          customFrequency: '',
+          splitBill: true
         });
         setShowAddModal(false);
       })
@@ -189,12 +202,18 @@ const BillsExpenses = () => {
       frequency: bill.frequency ? bill.frequency : "none",
       customFrequency: bill.customFrequency || '',
       priceHistory: bill.priceHistory || [],
-      isFinished: bill.isFinished || false
+      isFinished: bill.isFinished || false,
+      splitBill: bill.splitBill !== undefined ? bill.splitBill : true
     });
   };
 
   const handleEditChange = (e) => {
-    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setEditFormData({ ...editFormData, [name]: checked });
+    } else {
+      setEditFormData({ ...editFormData, [name]: value });
+    }
   };
 
   const handleSetMeAsPaymasterEdit = () => {
@@ -226,9 +245,11 @@ const BillsExpenses = () => {
       customFrequency: editFormData.frequency === "custom" ? parseInt(editFormData.customFrequency) : null,
       isAmountPending: parsedAmount > 0 ? false : true,
       priceHistory: editFormData.priceHistory,
-      isFinished: editFormData.isFinished
+      isFinished: editFormData.isFinished,
+      splitBill: editFormData.splitBill
     };
 
+    // Endpoint expects roomId as second parameter
     fetch(`http://localhost:5001/api/bills/updateBill/${selectedBill._id}/${roomId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -256,7 +277,7 @@ const BillsExpenses = () => {
   };
 
   const handleFinishRecurring = () => {
-    // Finish recurring expense: call new endpoint to finalize recurring bill
+    // Finish recurring expense: call endpoint to finalize recurring bill
     fetch(`http://localhost:5001/api/bills/finishRecurring/${selectedBill._id}/${roomId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
@@ -276,6 +297,7 @@ const BillsExpenses = () => {
   };
 
   // Mark as Paid handler – stops propagation so it doesn't open the edit modal.
+  // Endpoint expects roomId as second parameter.
   const handleMarkAsPaid = (billId, e) => {
     e.stopPropagation();
     fetch(`http://localhost:5001/api/bills/markAsPaid/${billId}/${roomId}`, {
@@ -284,13 +306,11 @@ const BillsExpenses = () => {
     })
       .then((res) => res.json())
       .then((updatedBill) => {
-        // For non-recurring bills, remove from active list.
         if (!updatedBill.isRecurring) {
           setBills(bills.filter(bill => bill._id !== updatedBill._id));
         } else {
           setBills(bills.map(bill => bill._id === updatedBill._id ? updatedBill : bill));
         }
-        // Refresh history so that the paid bill shows up immediately.
         fetchHistoryBills();
       })
       .catch((err) => console.error(err));
@@ -333,6 +353,80 @@ const BillsExpenses = () => {
       .catch((err) => console.error(err));
   };
 
+  // Compute net balances for the current user relative to each other user using only active bills.
+  const computeBalances = () => {
+    const balances = {};
+    const activeBills = bills;
+    // Initialize balance for each other user in the room using their _id.
+    roomUsers.forEach(user => {
+      if (user._id !== userData.userId) {
+        balances[user._id] = 0;
+      }
+    });
+    activeBills.forEach(bill => {
+      if (bill.amount && bill.responsible && bill.responsible.length > 0) {
+        // Determine the amount per person based on splitBill flag.
+        const amountPerPerson = bill.splitBill === false 
+          ? bill.amount 
+          : bill.amount / bill.responsible.length;
+          
+        // If current user is the paymaster, only add for those responsible who are NOT paid.
+        if (bill.paymaster === userData.username) {
+          bill.responsible.forEach(person => {
+            if (person.userId !== userData.userId && !person.paid) {
+              balances[person.userId] += amountPerPerson;
+            }
+          });
+        } else {
+          // If current user is responsible (and not paymaster), only subtract if current user is not paid.
+          const currentResp = bill.responsible.find(person => person.userId === userData.userId);
+          if (currentResp && !currentResp.paid) {
+            const paymasterUser = roomUsers.find(user => user.username === bill.paymaster);
+            if (paymasterUser && paymasterUser._id !== userData.userId) {
+              balances[paymasterUser._id] -= amountPerPerson;
+            }
+          }
+        }
+      }
+    });
+    return balances;
+  };
+
+  // Render Balance Owed Popup
+  const renderBalancePopup = () => {
+    const balances = computeBalances();
+    return (
+      <div className={styles.popupOverlay}>
+        <div className={styles.popupMenu}>
+          <h3>Balance Owed</h3>
+          <button className={styles.closeButton} onClick={() => setShowBalancePopup(false)}>Close</button>
+          <table className={styles.userTable}>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {roomUsers.filter(user => user._id !== userData.userId).map(user => (
+                <tr key={user._id}>
+                  <td>{user.username}</td>
+                  <td>
+                    {balances[user._id] > 0 
+                      ? `$${balances[user._id].toFixed(2)} owed to you`
+                      : balances[user._id] < 0 
+                        ? `You owe $${Math.abs(balances[user._id]).toFixed(2)}`
+                        : "No Pending Balance"}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className={styles.roomEaseContainer}>
       <div className={styles.gradientOverlay}></div>
@@ -359,6 +453,10 @@ const BillsExpenses = () => {
           </button>
           <button className={styles.historyButton} onClick={handleOpenHistory}>
             Bills/Expenses History
+          </button>
+          {/* Balance Owed Button */}
+          <button className={styles.balanceButton} onClick={() => setShowBalancePopup(true)}>
+            Balance Owed
           </button>
         </div>
         {/* Active Bills List */}
@@ -405,6 +503,21 @@ const BillsExpenses = () => {
                 <div className={styles.formGroup}>
                   <label htmlFor="amount">Amount:</label>
                   <input type="number" id="amount" name="amount" value={formData.amount} onChange={handleAddChange} required />
+                </div>
+                {/* NEW: Split Dropdown right below Amount */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="splitBill">Split:</label>
+                  <select
+                    id="splitBill"
+                    name="splitBill"
+                    value={formData.splitBill ? "true" : "false"}
+                    onChange={(e) =>
+                      setFormData({ ...formData, splitBill: e.target.value === "true" })
+                    }
+                  >
+                    <option value="false">Don't Split Amount</option>
+                    <option value="true">Split Amount Equally Among Responsible People</option>
+                  </select>
                 </div>
                 <div className={styles.formGroup}>
                   <label htmlFor="dueDate">Due Date:</label>
@@ -531,6 +644,21 @@ const BillsExpenses = () => {
                   <label htmlFor="editAmount">Amount:</label>
                   <input type="number" id="editAmount" name="amount" value={editFormData.amount} onChange={handleEditChange} required />
                 </div>
+                {/* NEW: Split Dropdown right below Amount in Edit */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="splitBill">Split:</label>
+                  <select
+                    id="splitBill"
+                    name="splitBill"
+                    value={editFormData.splitBill ? "true" : "false"}
+                    onChange={(e) =>
+                      setEditFormData({ ...editFormData, splitBill: e.target.value === "true" })
+                    }
+                  >
+                    <option value="false">Don't Split Amount</option>
+                    <option value="true">Split Amount Equally Among Responsible People</option>
+                  </select>
+                </div>
                 <div className={styles.formGroup}>
                   <label htmlFor="editDueDate">Due Date:</label>
                   <input type="date" id="editDueDate" name="dueDate" value={editFormData.dueDate} onChange={handleEditChange} />
@@ -552,7 +680,6 @@ const BillsExpenses = () => {
                     <input type="number" id="editCustomFrequency" name="customFrequency" value={editFormData.customFrequency} onChange={handleEditChange} />
                   </div>
                 )}
-                {/* For recurring bills, show Price History and Finish buttons */}
                 {editFormData.frequency !== "none" && !editFormData.isFinished && (
                   <div className={styles.formGroupRow}>
                     <button type="button" onClick={handleShowPriceHistory}>
@@ -563,7 +690,6 @@ const BillsExpenses = () => {
                     </button>
                   </div>
                 )}
-                {/* Table for Responsible People with Payment Status */}
                 <div className={styles.formGroup}>
                   <label>Responsible People:</label>
                   <table className={styles.userTable}>
@@ -748,6 +874,8 @@ const BillsExpenses = () => {
             </div>
           </div>
         )}
+        {/* Balance Owed Popup */}
+        {showBalancePopup && renderBalancePopup()}
       </div>
       <footer className={styles.footer}>
         <p>© 2025 RoomEase. All rights reserved.</p>

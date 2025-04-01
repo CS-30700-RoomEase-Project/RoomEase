@@ -78,4 +78,40 @@ router.get("/getNotifications/:userId", async (req, res) => {
     }
 });
 
+router.delete("/clearNotifications/:userId", async (req, res) => {
+    const { userId } = req.params;
+    try {
+        // Find the user by their custom userId
+        const user = await User.findOne({ userId });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Iterate over the user's notifications array
+        for (const notifId of user.notifications) {
+            const notification = await Notification.findById(notifId);
+            if (notification) {
+                // Remove the user from the notification's usersNotified array
+                notification.usersNotified = notification.usersNotified.filter(
+                    (u) => u.toString() !== user._id.toString()
+                );
+                await notification.save();
+                // If no users remain, delete the notification
+                if (notification.usersNotified.length === 0) {
+                    await Notification.findByIdAndDelete(notifId);
+                }
+            }
+        }
+
+        // Clear the user's notifications array
+        user.notifications = [];
+        await user.save();
+
+        res.json({ message: "Notifications Cleared." });
+    } catch (error) {
+        console.error("Error clearing notifications:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
 module.exports = router;

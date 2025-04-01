@@ -328,6 +328,7 @@ const billSchema = new mongoose.Schema({
     customFrequency: { type: Number, default: null },
     isAmountPending: { type: Boolean, default: false },
     isPaid: { type: Boolean, default: false },
+    splitBill: { type: Boolean, default: true },
     // New field: whether a recurring bill has been finished.
     isFinished: { type: Boolean, default: false },
     priceHistory: [{
