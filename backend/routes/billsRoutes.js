@@ -42,7 +42,7 @@ router.get('/history/:roomId', async (req, res) => {
 router.post('/addBill/:roomId', async (req, res) => {
   try {
     const { roomId } = req.params;
-    let { title, amount, dueDate, responsible, paymaster, frequency, customFrequency } = req.body;
+    let { title, amount, splitBill, dueDate, responsible, paymaster, frequency, customFrequency } = req.body;
 
     // Ensure responsible is an array.
     if (typeof responsible === 'string') {
@@ -58,6 +58,7 @@ router.post('/addBill/:roomId', async (req, res) => {
     const newBill = new Bill({
       title,
       amount,
+      splitBill,
       dueDate,
       responsible,
       paymaster,

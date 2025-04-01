@@ -20,7 +20,8 @@ const BillsExpenses = () => {
     responsiblePeople: [],
     paymaster: '',
     frequency: 'none', // "none" means Not Recurring
-    customFrequency: ''
+    customFrequency: '',
+    splitBill: true  // stored as boolean; default to splitting
   });
   const [newPerson, setNewPerson] = useState("");
 
@@ -35,7 +36,8 @@ const BillsExpenses = () => {
     frequency: 'none',
     customFrequency: '',
     priceHistory: [],
-    isFinished: false // for recurring bills that have been finished
+    isFinished: false, // for recurring bills that have been finished
+    splitBill: true
   });
 
   // State for Bills History Modal
@@ -47,7 +49,7 @@ const BillsExpenses = () => {
   const [currentPriceHistory, setCurrentPriceHistory] = useState([]);
   const [currentPriceHistoryBillTitle, setCurrentPriceHistoryBillTitle] = useState('');
 
-  // NEW: State for Balance Owed Popup
+  // State for Balance Owed Popup
   const [showBalancePopup, setShowBalancePopup] = useState(false);
 
   const userData = JSON.parse(localStorage.getItem('userData')) || {
@@ -113,7 +115,12 @@ const BillsExpenses = () => {
 
   // Handlers for Add Modal form
   const handleAddChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setFormData({ ...formData, [name]: checked });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   const handleAddNewPersonChange = (e) => {
@@ -137,6 +144,7 @@ const BillsExpenses = () => {
     setFormData({ ...formData, paymaster: userData.username });
   };
 
+  // When creating a bill, ensure we send the splitBill value.
   const handleSubmit = (e) => {
     e.preventDefault();
     const newBill = {
@@ -147,7 +155,8 @@ const BillsExpenses = () => {
       paymaster: formData.paymaster,
       isRecurring: formData.frequency !== "none",
       frequency: formData.frequency !== "none" ? formData.frequency : null,
-      customFrequency: formData.frequency === "custom" ? parseInt(formData.customFrequency) : null
+      customFrequency: formData.frequency === "custom" ? parseInt(formData.customFrequency) : null,
+      splitBill: formData.splitBill
     };
 
     fetch(`http://localhost:5001/api/bills/addBill/${roomId}`, {
@@ -165,7 +174,8 @@ const BillsExpenses = () => {
           responsiblePeople: [],
           paymaster: '',
           frequency: 'none',
-          customFrequency: ''
+          customFrequency: '',
+          splitBill: true
         });
         setShowAddModal(false);
       })
@@ -192,12 +202,18 @@ const BillsExpenses = () => {
       frequency: bill.frequency ? bill.frequency : "none",
       customFrequency: bill.customFrequency || '',
       priceHistory: bill.priceHistory || [],
-      isFinished: bill.isFinished || false
+      isFinished: bill.isFinished || false,
+      splitBill: bill.splitBill !== undefined ? bill.splitBill : true
     });
   };
 
   const handleEditChange = (e) => {
-    setEditFormData({ ...editFormData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    if (type === 'checkbox') {
+      setEditFormData({ ...editFormData, [name]: checked });
+    } else {
+      setEditFormData({ ...editFormData, [name]: value });
+    }
   };
 
   const handleSetMeAsPaymasterEdit = () => {
@@ -229,7 +245,8 @@ const BillsExpenses = () => {
       customFrequency: editFormData.frequency === "custom" ? parseInt(editFormData.customFrequency) : null,
       isAmountPending: parsedAmount > 0 ? false : true,
       priceHistory: editFormData.priceHistory,
-      isFinished: editFormData.isFinished
+      isFinished: editFormData.isFinished,
+      splitBill: editFormData.splitBill
     };
 
     // Endpoint expects roomId as second parameter
@@ -336,49 +353,46 @@ const BillsExpenses = () => {
       .catch((err) => console.error(err));
   };
 
-  // NEW: Compute net balances using only active bills.
+  // Compute net balances for the current user relative to each other user using only active bills.
   const computeBalances = () => {
     const balances = {};
-    const activeBills = bills; // Using only active bills
-  
+    const activeBills = bills;
     // Initialize balance for each other user in the room using their _id.
     roomUsers.forEach(user => {
       if (user._id !== userData.userId) {
         balances[user._id] = 0;
       }
     });
-  
     activeBills.forEach(bill => {
       if (bill.amount && bill.responsible && bill.responsible.length > 0) {
-        const split = bill.amount / bill.responsible.length;
-        
-        // If current user is the paymaster, each other responsible owes money to you.
+        // Determine the amount per person based on splitBill flag.
+        const amountPerPerson = bill.splitBill === false 
+          ? bill.amount 
+          : bill.amount / bill.responsible.length;
+          
+        // If current user is the paymaster, only add for those responsible who are NOT paid.
         if (bill.paymaster === userData.username) {
           bill.responsible.forEach(person => {
-            if (person.userId !== userData.userId) {
-              // person.userId matches roomUsers._id
-              balances[person.userId] += split;
+            if (person.userId !== userData.userId && !person.paid) {
+              balances[person.userId] += amountPerPerson;
             }
           });
         } else {
-          // Otherwise, if current user is among the responsible, they owe money to the paymaster.
-          const isCurrentResponsible = bill.responsible.some(person => person.userId === userData.userId);
-          if (isCurrentResponsible) {
-            // Find the paymaster from roomUsers by matching username.
+          // If current user is responsible (and not paymaster), only subtract if current user is not paid.
+          const currentResp = bill.responsible.find(person => person.userId === userData.userId);
+          if (currentResp && !currentResp.paid) {
             const paymasterUser = roomUsers.find(user => user.username === bill.paymaster);
             if (paymasterUser && paymasterUser._id !== userData.userId) {
-              balances[paymasterUser._id] -= split;
+              balances[paymasterUser._id] -= amountPerPerson;
             }
           }
         }
       }
     });
-  
     return balances;
   };
-  
 
-  // NEW: Render Balance Owed Popup
+  // Render Balance Owed Popup
   const renderBalancePopup = () => {
     const balances = computeBalances();
     return (
@@ -402,7 +416,7 @@ const BillsExpenses = () => {
                       ? `$${balances[user._id].toFixed(2)} owed to you`
                       : balances[user._id] < 0 
                         ? `You owe $${Math.abs(balances[user._id]).toFixed(2)}`
-                        : `$0.00`}
+                        : "No Pending Balance"}
                   </td>
                 </tr>
               ))}
@@ -412,7 +426,6 @@ const BillsExpenses = () => {
       </div>
     );
   };
-  
 
   return (
     <div className={styles.roomEaseContainer}>
@@ -441,7 +454,7 @@ const BillsExpenses = () => {
           <button className={styles.historyButton} onClick={handleOpenHistory}>
             Bills/Expenses History
           </button>
-          {/* NEW: Balance Owed Button */}
+          {/* Balance Owed Button */}
           <button className={styles.balanceButton} onClick={() => setShowBalancePopup(true)}>
             Balance Owed
           </button>
@@ -490,6 +503,21 @@ const BillsExpenses = () => {
                 <div className={styles.formGroup}>
                   <label htmlFor="amount">Amount:</label>
                   <input type="number" id="amount" name="amount" value={formData.amount} onChange={handleAddChange} required />
+                </div>
+                {/* NEW: Split Dropdown right below Amount */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="splitBill">Split:</label>
+                  <select
+                    id="splitBill"
+                    name="splitBill"
+                    value={formData.splitBill ? "true" : "false"}
+                    onChange={(e) =>
+                      setFormData({ ...formData, splitBill: e.target.value === "true" })
+                    }
+                  >
+                    <option value="false">Don't Split Amount</option>
+                    <option value="true">Split Amount Equally Among Responsible People</option>
+                  </select>
                 </div>
                 <div className={styles.formGroup}>
                   <label htmlFor="dueDate">Due Date:</label>
@@ -615,6 +643,21 @@ const BillsExpenses = () => {
                 <div className={styles.formGroup}>
                   <label htmlFor="editAmount">Amount:</label>
                   <input type="number" id="editAmount" name="amount" value={editFormData.amount} onChange={handleEditChange} required />
+                </div>
+                {/* NEW: Split Dropdown right below Amount in Edit */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="splitBill">Split:</label>
+                  <select
+                    id="splitBill"
+                    name="splitBill"
+                    value={editFormData.splitBill ? "true" : "false"}
+                    onChange={(e) =>
+                      setEditFormData({ ...editFormData, splitBill: e.target.value === "true" })
+                    }
+                  >
+                    <option value="false">Don't Split Amount</option>
+                    <option value="true">Split Amount Equally Among Responsible People</option>
+                  </select>
                 </div>
                 <div className={styles.formGroup}>
                   <label htmlFor="editDueDate">Due Date:</label>
@@ -831,7 +874,7 @@ const BillsExpenses = () => {
             </div>
           </div>
         )}
-        {/* NEW: Balance Owed Popup */}
+        {/* Balance Owed Popup */}
         {showBalancePopup && renderBalancePopup()}
       </div>
       <footer className={styles.footer}>
