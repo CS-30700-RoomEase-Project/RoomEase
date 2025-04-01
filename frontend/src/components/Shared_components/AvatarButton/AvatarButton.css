@@ -21,7 +21,7 @@
     flex-direction: column;
     width: 80px;
     box-shadow: 0px 4px 6px rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
+    border-radius: 10px;
     z-index: 1;
 }
   
@@ -63,7 +63,7 @@
   z-index: 10;
 }
 
-.dropdownItem, .signoutButton {
+.dropdownItem, .signoutButton .Button1 .Button2{
   width: 100%;
   padding: 12px; /* More padding for better clickability */
   border-radius: 5px;
@@ -87,5 +87,21 @@
 }
 
 .signoutButton:hover {
-  background-color: #d32f2f;
+  background-color: rgb(201, 95, 95);
+}
+
+.Button1 {
+  background-color: #8d8791;
+}
+
+.Button1:hover {
+  background-color: #aca9ae;
+}
+
+.Button2 {
+  background-color: #c792ee;
+}
+
+.Button2:hover {
+  background-color: #dbbef0;
 }

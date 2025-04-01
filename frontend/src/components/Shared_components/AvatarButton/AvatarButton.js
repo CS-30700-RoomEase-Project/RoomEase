@@ -77,8 +77,8 @@ const AvatarButton = () => {
         closeOnDocumentClick
       >
         <div className='dropdown'>
-          <button onClick={handleSettingsClick} className='dropdownItem'>Settings</button>
-          <button onClick={handleReviewsClick} className='signoutButton'>My Reviews</button>
+          <button onClick={handleSettingsClick} className='Button1'>Settings</button>
+          <button onClick={handleReviewsClick} className='Button2'>My Reviews</button>
           <button onClick={handleLogout} className='signoutButton'>Logout</button>
         </div>
       </Popup>

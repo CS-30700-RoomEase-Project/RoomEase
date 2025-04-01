@@ -14,51 +14,45 @@ const ProfileSettings = ({ onClose }) => {
     contactInfo: storedData.contactInfo || 1111111111,
     reviews: storedData.reviews || [],
     userId: storedData.userId || "",
-    birthday: storedData.birthday || "01/01/2000",
+    birthday: storedData.birthday || "01012000",
   })
 
-  // Handle the manual toggle of chatFilter state
-  const handleToggleChatFilter = () => {
-    setUserData((prevState) => ({
-      ...prevState,
-      chatFilter: !prevState.chatFilter,
-    }))
-  }
-
-  // const handleChange = (e) => {
-  //   const { name, value, type, checked } = e.target
-  //   setUserData((prevState) => ({
-  //     ...prevState,
-  //     [name]: type === "checkbox" ? checked : value,
-  //   }))
-  // }
   const handleChange = (e) => {
-    const { name, value, type } = e.target
+    const { name, value, type, checked } = e.target
     setUserData((prevState) => ({
       ...prevState,
-      [name]: type ===  value,
+      [name]: type === "checkbox" ? checked : value,
     }))
   }
-
 
   const handleSave = async () => {
-    localStorage.setItem("userData", JSON.stringify(userData));
+    if (userData.contactInfo.toString().length !== 10) {
+      alert("Phone number must be exactly 10 digits long.");
+      return;
+    }
 
+    if (userData.birthday.replace(/\D/g, "").length !== 8) {
+      alert("Birthday must be exactly 8 digits long.");
+      return;
+    }
+
+    localStorage.setItem("userData", JSON.stringify(userData));
+  
     try {
       const response = await fetch("http://localhost:5001/api/users/profile/updateProfile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
       });
-
+      
       if (!response.ok) {
         console.error(`Error: ${response.status} - ${response.statusText}`);
         alert("Server responded with an error.");
         return;
       }
-
+  
       const data = await response.json();
-      localStorage.setItem("userData", JSON.stringify(data.userData));  // Save updated data to localStorage
+      localStorage.setItem("userData", JSON.stringify(data.userData));
     } catch (error) {
       console.error("Error in the fetch request:", error);
       alert("An error occurred while sending the profile data.");
@@ -96,12 +90,14 @@ const ProfileSettings = ({ onClose }) => {
 
         <div className="input-group">
           <label htmlFor="chatFilter">
-            <div
-              onClick={handleToggleChatFilter}
-              className={`chat-filter-toggle ${userData.chatFilter ? "enabled" : "disabled"}`}
-            >
-              {userData.chatFilter ? "Chat Filter Enabled" : "Chat Filter Disabled"}
-            </div>
+            <input
+              type="checkbox"
+              id="chatFilter"
+              name="chatFilter"
+              checked={userData.chatFilter}
+              onChange={handleChange}
+            />
+            Enable Chat Filter
           </label>
         </div>
 
@@ -125,14 +121,10 @@ const ProfileSettings = ({ onClose }) => {
             type="text"
             id="birthday"
             name="birthday"
-            value={userData.birthday.replace(/(\d{2})\/(\d{2})\/(\d{4})/, "$1/$2/$3")}
+            value={userData.birthday.replace(/(\d{2})(\d{2})(\d{4})/, "$1/$2/$3")}
             onChange={(e) => {
               const formattedValue = e.target.value.replace(/\D/g, "").slice(0, 8);
-              const month = formattedValue.slice(0, 2);
-              const day = formattedValue.slice(2, 4);
-              const year = formattedValue.slice(4, 8);
-              const newValue = `${month}/${day}/${year}`;
-              handleChange({ target: { name: "birthday", value: newValue } });
+              handleChange({ target: { name: "birthday", value: formattedValue } });
             }}
           />
         </div>
