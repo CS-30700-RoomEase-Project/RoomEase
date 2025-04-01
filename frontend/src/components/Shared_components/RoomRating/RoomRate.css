@@ -46,8 +46,12 @@ label {
   margin-bottom: 0.5rem;
   color: #e7e7e7;
   font-weight: 500;
+  text-align: center;
 }
+select {
 
+  text-align: center;
+}
 input[type="text"],
 input[type="number"] {
   width: 100%;
@@ -141,4 +145,48 @@ button:active {
 .chat-filter-toggle.disabled {
   background-color: #ef4444; /* Red */
   color: white;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+  cursor: pointer;
+}
+.star {
+  font-size: 24px;
+  color: #ccc;
+  transition: color 0.2s;
+}
+.star.selected {
+  color: gold;
+}
+
+
+.select-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+#roommate-select {
+  width: 80%; /* Adjust width as needed */
+  padding: 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #334155;
+  background-color: #1e293b;
+  color: #e7e7e7;
+  font-size: 1rem;
+  text-align: center; /* Ensures text inside is centered */
+}
+
+#roommate-select {
+  display: block;
+  margin: 0 auto;
+  width: 80%;
+  text-align: center;
+}
+
+.content {
+  text-align: center;
 }
