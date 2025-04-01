@@ -47,6 +47,9 @@ const BillsExpenses = () => {
   const [currentPriceHistory, setCurrentPriceHistory] = useState([]);
   const [currentPriceHistoryBillTitle, setCurrentPriceHistoryBillTitle] = useState('');
 
+  // NEW: State for Balance Owed Popup
+  const [showBalancePopup, setShowBalancePopup] = useState(false);
+
   const userData = JSON.parse(localStorage.getItem('userData')) || {
     username: 'Guest',
     userId: null,
@@ -229,6 +232,7 @@ const BillsExpenses = () => {
       isFinished: editFormData.isFinished
     };
 
+    // Endpoint expects roomId as second parameter
     fetch(`http://localhost:5001/api/bills/updateBill/${selectedBill._id}/${roomId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -256,7 +260,7 @@ const BillsExpenses = () => {
   };
 
   const handleFinishRecurring = () => {
-    // Finish recurring expense: call new endpoint to finalize recurring bill
+    // Finish recurring expense: call endpoint to finalize recurring bill
     fetch(`http://localhost:5001/api/bills/finishRecurring/${selectedBill._id}/${roomId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' }
@@ -276,6 +280,7 @@ const BillsExpenses = () => {
   };
 
   // Mark as Paid handler – stops propagation so it doesn't open the edit modal.
+  // Endpoint expects roomId as second parameter.
   const handleMarkAsPaid = (billId, e) => {
     e.stopPropagation();
     fetch(`http://localhost:5001/api/bills/markAsPaid/${billId}/${roomId}`, {
@@ -284,13 +289,11 @@ const BillsExpenses = () => {
     })
       .then((res) => res.json())
       .then((updatedBill) => {
-        // For non-recurring bills, remove from active list.
         if (!updatedBill.isRecurring) {
           setBills(bills.filter(bill => bill._id !== updatedBill._id));
         } else {
           setBills(bills.map(bill => bill._id === updatedBill._id ? updatedBill : bill));
         }
-        // Refresh history so that the paid bill shows up immediately.
         fetchHistoryBills();
       })
       .catch((err) => console.error(err));
@@ -333,6 +336,84 @@ const BillsExpenses = () => {
       .catch((err) => console.error(err));
   };
 
+  // NEW: Compute net balances using only active bills.
+  const computeBalances = () => {
+    const balances = {};
+    const activeBills = bills; // Using only active bills
+  
+    // Initialize balance for each other user in the room using their _id.
+    roomUsers.forEach(user => {
+      if (user._id !== userData.userId) {
+        balances[user._id] = 0;
+      }
+    });
+  
+    activeBills.forEach(bill => {
+      if (bill.amount && bill.responsible && bill.responsible.length > 0) {
+        const split = bill.amount / bill.responsible.length;
+        
+        // If current user is the paymaster, each other responsible owes money to you.
+        if (bill.paymaster === userData.username) {
+          bill.responsible.forEach(person => {
+            if (person.userId !== userData.userId) {
+              // person.userId matches roomUsers._id
+              balances[person.userId] += split;
+            }
+          });
+        } else {
+          // Otherwise, if current user is among the responsible, they owe money to the paymaster.
+          const isCurrentResponsible = bill.responsible.some(person => person.userId === userData.userId);
+          if (isCurrentResponsible) {
+            // Find the paymaster from roomUsers by matching username.
+            const paymasterUser = roomUsers.find(user => user.username === bill.paymaster);
+            if (paymasterUser && paymasterUser._id !== userData.userId) {
+              balances[paymasterUser._id] -= split;
+            }
+          }
+        }
+      }
+    });
+  
+    return balances;
+  };
+  
+
+  // NEW: Render Balance Owed Popup
+  const renderBalancePopup = () => {
+    const balances = computeBalances();
+    return (
+      <div className={styles.popupOverlay}>
+        <div className={styles.popupMenu}>
+          <h3>Balance Owed</h3>
+          <button className={styles.closeButton} onClick={() => setShowBalancePopup(false)}>Close</button>
+          <table className={styles.userTable}>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Balance</th>
+              </tr>
+            </thead>
+            <tbody>
+              {roomUsers.filter(user => user._id !== userData.userId).map(user => (
+                <tr key={user._id}>
+                  <td>{user.username}</td>
+                  <td>
+                    {balances[user._id] > 0 
+                      ? `$${balances[user._id].toFixed(2)} owed to you`
+                      : balances[user._id] < 0 
+                        ? `You owe $${Math.abs(balances[user._id]).toFixed(2)}`
+                        : `$0.00`}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    );
+  };
+  
+
   return (
     <div className={styles.roomEaseContainer}>
       <div className={styles.gradientOverlay}></div>
@@ -359,6 +440,10 @@ const BillsExpenses = () => {
           </button>
           <button className={styles.historyButton} onClick={handleOpenHistory}>
             Bills/Expenses History
+          </button>
+          {/* NEW: Balance Owed Button */}
+          <button className={styles.balanceButton} onClick={() => setShowBalancePopup(true)}>
+            Balance Owed
           </button>
         </div>
         {/* Active Bills List */}
@@ -552,7 +637,6 @@ const BillsExpenses = () => {
                     <input type="number" id="editCustomFrequency" name="customFrequency" value={editFormData.customFrequency} onChange={handleEditChange} />
                   </div>
                 )}
-                {/* For recurring bills, show Price History and Finish buttons */}
                 {editFormData.frequency !== "none" && !editFormData.isFinished && (
                   <div className={styles.formGroupRow}>
                     <button type="button" onClick={handleShowPriceHistory}>
@@ -563,7 +647,6 @@ const BillsExpenses = () => {
                     </button>
                   </div>
                 )}
-                {/* Table for Responsible People with Payment Status */}
                 <div className={styles.formGroup}>
                   <label>Responsible People:</label>
                   <table className={styles.userTable}>
@@ -748,6 +831,8 @@ const BillsExpenses = () => {
             </div>
           </div>
         )}
+        {/* NEW: Balance Owed Popup */}
+        {showBalancePopup && renderBalancePopup()}
       </div>
       <footer className={styles.footer}>
         <p>© 2025 RoomEase. All rights reserved.</p>

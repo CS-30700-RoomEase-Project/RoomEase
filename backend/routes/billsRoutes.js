@@ -117,7 +117,9 @@ router.delete('/deleteBill/:billId/:roomId', async (req, res) => {
       return res.status(404).json({ error: 'Bill not found' });
     }
     // Create a deletion notification before deleting the bill
-    await billToDelete.createDeleteNotification(roomId);
+    if (!billToDelete.isPaid) {
+      await billToDelete.createDeleteNotification(roomId);
+    }
     
     // Now delete the bill
     await Bill.findByIdAndDelete(billId);
