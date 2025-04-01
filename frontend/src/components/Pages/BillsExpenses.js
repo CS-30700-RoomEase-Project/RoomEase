@@ -113,6 +113,30 @@ const BillsExpenses = () => {
     return new Date(year, month - 1, day);
   };
 
+  // NEW: Function to export currentPriceHistory as CSV
+  const exportPriceHistoryCSV = () => {
+    if (!currentPriceHistory || currentPriceHistory.length === 0) {
+      alert("No price history available to export.");
+      return;
+    }
+    const header = "Date,Amount\n";
+    // Convert each entry to a CSV row (formatting date as locale string)
+    const rows = currentPriceHistory.map(entry => {
+      const date = new Date(entry.date).toLocaleDateString();
+      const amount = entry.amount;
+      return `${date},${amount}`;
+    });
+    const csvString = header + rows.join("\n");
+    const blob = new Blob([csvString], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${currentPriceHistoryBillTitle}_price_history.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Handlers for Add Modal form
   const handleAddChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -378,7 +402,7 @@ const BillsExpenses = () => {
             }
           });
         } else {
-          // If current user is responsible (and not paymaster), only subtract if current user is not paid.
+          // If current user is responsible (and not paymaster), only subtract if they are NOT paid.
           const currentResp = bill.responsible.find(person => person.userId === userData.userId);
           if (currentResp && !currentResp.paid) {
             const paymasterUser = roomUsers.find(user => user.username === bill.paymaster);
@@ -504,7 +528,7 @@ const BillsExpenses = () => {
                   <label htmlFor="amount">Amount:</label>
                   <input type="number" id="amount" name="amount" value={formData.amount} onChange={handleAddChange} required />
                 </div>
-                {/* NEW: Split Dropdown right below Amount */}
+                {/* Split Dropdown right below Amount */}
                 <div className={styles.formGroup}>
                   <label htmlFor="splitBill">Split:</label>
                   <select
@@ -849,6 +873,10 @@ const BillsExpenses = () => {
             <div className={styles.popupMenu}>
               <h3>Price History for {currentPriceHistoryBillTitle}</h3>
               <button className={styles.closeButton} onClick={() => setShowPriceHistoryModal(false)}>Close</button>
+              {/* NEW: Export as CSV Button */}
+              <button className={styles.actionButton} onClick={exportPriceHistoryCSV}>
+                Export as CSV
+              </button>
               <div className={styles.historyTableContainer}>
                 {currentPriceHistory.length ? (
                   <table className={styles.userTable}>
