@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AvatarButton from "../Shared_components/AvatarButton/AvatarButton";
 import NotificationBell from "../Shared_components/NotificationBell/NotificationBell";
@@ -11,22 +11,35 @@ import styles from "./Dashboard.module.css"; // Import Dashboard specific styles
  * @returns Dashboard component
  */
 function Dashboard() {
-  const navigate = useNavigate();
 
-  // Safely parse userData from localStorage
-  let userData;
-  try {
-    userData = JSON.parse(localStorage.getItem("userData")) || {};
-    console.log(userData);
-  } catch (error) {
-    console.error("Error parsing userData:", error);
-    userData = {};
-  }
+  const navigate = useNavigate();
+  const [userData, setUserData] = useState({});
+
+    // Update userData from localStorage on mount
+    useEffect(() => {
+      try {
+        const data = JSON.parse(localStorage.getItem("userData")) || {};
+        console.log("Updated userData:", data);
+        setUserData(data);
+      } catch (error) {
+        console.error("Error parsing userData:", error);
+        setUserData({});
+      }
+    }, []);
 
   function getRoom(roomId) {
-    localStorage.setItem("roomData", roomId);
+    const roomData = { roomId }; // Creating an object with roomId (you can add more properties if needed)
+    localStorage.setItem("roomData", JSON.stringify(roomData));
     navigate(`/room/${roomId}`);
   }
+  
+
+
+  const getUserData = () => {
+    console.log("userDatfidsfjsiosa: ", userData);
+    userData = JSON.parse(localStorage.getItem("userData"));
+    return JSON.parse(localStorage.getItem("userData"));
+  };
 
   const acceptInvite = async ({invite}) => {
     try {

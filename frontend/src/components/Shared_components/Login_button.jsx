@@ -1,6 +1,6 @@
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const GoogleSignIn = () => {
@@ -23,7 +23,8 @@ const GoogleSignIn = () => {
         // Store user info in localStorage temporarily (before backend response)
         // localStorage.setItem('username', userName);
         localStorage.setItem('userId', userId);
-    
+        localStorage.setItem("userId2", String(userId)); // Ensure userId is stored as a string
+
         const userData = { username: userName, userId, email };
         console.log("Sending request with data:", userData);
         

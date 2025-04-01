@@ -121,15 +121,15 @@ const CreateRoom = ({ onClose }) => {
           </div>
 
           <div className="input-group">
-            <label htmlFor="bulletin">
+            <label htmlFor="dispute">
               <input
                 type="checkbox"
-                id="bulletin"
-                name="bulletin"
+                id="dispute"
+                name="dispute"
                 checked={roomData.roomSettings[2]}
                 onChange={handleCheckboxChange(2)}
               />
-              Enable Bulletin Board
+              Enable Disputes
             </label>
           </div>
 
@@ -147,13 +147,26 @@ const CreateRoom = ({ onClose }) => {
           </div>
 
           <div className="input-group">
+            <label htmlFor="room-state">
+              <input
+                type="checkbox"
+                id="room-state"
+                name="room-state"
+                checked={roomData.roomSettings[4]}
+                onChange={handleCheckboxChange(4)}
+              />
+              Enable Room State
+            </label>
+          </div>
+
+          <div className="input-group">
             <label htmlFor="chores">
               <input
                 type="checkbox"
                 id="chores"
                 name="chores"
-                checked={roomData.roomSettings[4]}
-                onChange={handleCheckboxChange(4)}
+                checked={roomData.roomSettings[5]}
+                onChange={handleCheckboxChange(5)}
               />
               Enable Chores Splitting
             </label>
