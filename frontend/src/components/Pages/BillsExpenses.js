@@ -50,12 +50,6 @@ const BillsExpenses = () => {
   const [currentPriceHistory, setCurrentPriceHistory] = useState([]);
   const [currentPriceHistoryBillTitle, setCurrentPriceHistoryBillTitle] = useState('');
 
-<<<<<<< HEAD
-  const userData = JSON.parse(localStorage.getItem('userData'));
-  if (!userData) {
-    navigate('/'); // Redirect to login if userData is not found
-  }
-=======
   // State for Balance Owed Popup
   const [showBalancePopup, setShowBalancePopup] = useState(false);
 
@@ -64,12 +58,10 @@ const BillsExpenses = () => {
     userId: null,
     profilePic: '',
   };
->>>>>>> main
 
   // Fetch active bills
   useEffect(() => {
     if (roomId) {
-<<<<<<< HEAD
       if (roomId === "master-room") {
         fetch(`http://localhost:5001/api/bills/getBillsMaster/${userData.userId}`)
           .then((res) => res.json())
@@ -88,7 +80,6 @@ const BillsExpenses = () => {
         fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
           .then((res) => res.json())
           .then((data) => {
-            console.log("Fetched active bills data:", data);
             if (Array.isArray(data)) {
               setBills(data);
             } else if (Array.isArray(data.bills)) {
@@ -100,21 +91,6 @@ const BillsExpenses = () => {
           })
           .catch((err) => console.error(err));
       }
-=======
-      fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (Array.isArray(data)) {
-            setBills(data);
-          } else if (Array.isArray(data.bills)) {
-            setBills(data.bills);
-          } else {
-            console.error("Unexpected active bills response structure", data);
-            setBills([]);
-          }
-        })
-        .catch((err) => console.error(err));
->>>>>>> main
     }
   }, [roomId]);
 
@@ -135,30 +111,17 @@ const BillsExpenses = () => {
   }, [roomId]);
 
   const fetchHistoryBills = () => {
-<<<<<<< HEAD
     if (roomId === 'master-room') {
       fetch(`http://localhost:5001/api/bills/historyMaster/${userData.userId}`)
         .then((res) => res.json())
-        .then((data) => {
-          console.log("Fetched aggregated history bills:", data);
-          setHistoryBills(data);
-        })
+        .then((data) => setHistoryBills(data))
         .catch((err) => console.error(err));
     } else {
       fetch(`http://localhost:5001/api/bills/history/${roomId}`)
         .then((res) => res.json())
-        .then((data) => {
-          console.log("Fetched history bills:", data);
-          setHistoryBills(data);
-        })
+        .then((data) => setHistoryBills(data))
         .catch((err) => console.error(err));
     }
-=======
-    fetch(`http://localhost:5001/api/bills/history/${roomId}`)
-      .then((res) => res.json())
-      .then((data) => setHistoryBills(data))
-      .catch((err) => console.error(err));
->>>>>>> main
   };
 
   const parseDueDate = (dateString) => {
@@ -534,6 +497,7 @@ const BillsExpenses = () => {
               </div>
             </li>
           ))}
+        </ul>
       </div>
 
       {/* Footer */}
