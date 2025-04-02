@@ -113,14 +113,19 @@
     border-radius: 5px;
     cursor: pointer;
     align-self: flex-end;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease; /* Remove opacity transition */
+    opacity: 0; /* Invisible by default */
   }
   
-  .deleteButton:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px -5px rgba(231, 76, 60, 0.4),
-                0 10px 10px -5px rgba(192, 57, 43, 0.3);
+  .noteItem:hover .deleteButton {
+    opacity: 1; /* Immediately visible on hover */
   }
+
+.deleteButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px -5px rgba(231, 76, 60, 0.4),
+              0 10px 10px -5px rgba(192, 57, 43, 0.3);
+}
   
   .noNotes {
     color: #e2e8f0;

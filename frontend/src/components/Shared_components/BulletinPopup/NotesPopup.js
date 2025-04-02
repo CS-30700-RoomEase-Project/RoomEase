@@ -1,23 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import styles from "./NotesPopup.module.css";
+import CallService from "../../SharedMethods/CallService";
 
-export default function NotesPopup({ isOpen, onClose, initialNotes = [] }) {
+export default function NotesPopup({ room, isOpen, onClose, initialNotes = [] }) {
   const [notes, setNotes] = useState(initialNotes);
   const [noteInput, setNoteInput] = useState("");
 
   const addNote = () => {
     if (noteInput.trim() !== "") {
-      setNotes([...notes, noteInput.trim()]);
+      const newNote = noteInput.trim();
+      setNotes([newNote, ...notes]);
       setNoteInput("");
+      CallService("notes/add/" + room._id, {note: newNote}, (data) => {console.log("NOTE HAS BEEN ADDED: " + data)});
     }
   };
 
   const deleteNote = (index) => {
     const updatedNotes = notes.filter((_, i) => i !== index);
     setNotes(updatedNotes);
+    CallService("notes/remove/" + room._id, { index: index }, (data) => console.log(data));
   };
+
+  useEffect(() => {
+    if (room && room._id) {
+      CallService("notes/getList/" + room._id, {}, (data) => {
+        console.log("Fetched data:", data);
+        if (data) {
+          // Reverse the fetched items so that the newest are first
+          setNotes(data);
+        } else {
+          console.error("No data received from API");
+        }
+      });
+    }
+  }, [room]);
 
   const handleKeyPress = (e) => {
     if (e.key === "Enter" && !e.shiftKey) { 

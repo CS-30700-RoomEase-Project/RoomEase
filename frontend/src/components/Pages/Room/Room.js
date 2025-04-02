@@ -145,9 +145,10 @@ function Room() {
         </div>
         <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={roomData.settings} onOpenNotes={() => setShowNotesPopup(true)} />
         <NotesPopup
+            room={roomData}
             isOpen={showNotesPopup}
             onClose={() => setShowNotesPopup(false)}
-            notes={roomData.bulletinNotes}
+            initialNotes={roomData.bulletinNotes}
         />
         </>
     )

@@ -13,6 +13,7 @@ import Notifications from "./components/Pages/Notifications/Notifications"; //im
 import InvitePage from "./components/Pages/InvitePage/InvitePage"; // Import InvitePage component
 import RoomSettings from "./components/Pages/RoomSettings/RoomSettings"; // Import InvitePage component
 import Disputes from "./components/Pages/Disputes/Disputes";
+import NotesPopup from "./components/Shared_components/BulletinPopup/NotesPopup"
 
 function App() {
   return (
@@ -47,6 +48,9 @@ function App() {
 
         {/* Room Settings page route */}
         <Route path="/room/:roomId/settings" element={<RoomSettings />} />
+
+        {/* Room notes page route */}
+        <Route path="/notes" element={<NotesPopup />} />
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />
