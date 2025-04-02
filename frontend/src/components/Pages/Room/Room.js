@@ -75,11 +75,6 @@ function Room() {
         navigate(`/chores/${roomId}`);
     }
 
-    const handleGoToHours = (roomId) => {
-        console.log("Navigating to quiet-hours with roomId:", roomId); // Debugging
-        navigate(`/quiet-hours/${roomId}`);
-    }
-
     const handleGoToState = (roomId) => {
         console.log("Navigating to state with roomId:", roomId); // Debugging
         navigate(`/room-state/${roomId}`);
@@ -141,7 +136,7 @@ function Room() {
             </div>
             <div className={style.roomFloor}/>
         </div>
-        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={roomData.settings} />
+        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={roomData.settings} roomId={roomId} />
         </>
     )
 };

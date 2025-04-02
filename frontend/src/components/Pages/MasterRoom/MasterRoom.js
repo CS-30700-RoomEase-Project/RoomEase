@@ -55,20 +55,20 @@ function MasterRoom() {
         })();
     }, []); // This effect runs once on mount
 
-    const handleGoToChores = (roomId) => {
-        // navigate(`/chores/${roomId}`);
+    const handleGoToChores = () => {
+        navigate(`/chores/master-room`);
     }
     
     const handleGoToHours = (roomId) => {
         // navigate(`/quiet-hours/${roomId}`);
     }
     
-    const handleGoToState = (roomId) => {
-        // navigate(`/room-state/${roomId}`);
+    const  handleGoToState = () => {
+        navigate(`/master-room/room-state`);
     }
 
-    const handleGoToDisputes = (roomId) => {
-        // navigate(`/disputes/${roomId}`);
+    const handleGoToDisputes = () => {
+        navigate(`/disputes/1`);
     }
 
     const handleBulletinClick = () => {
@@ -91,10 +91,10 @@ function MasterRoom() {
             
 
             <div className={style.roomBackground}>
-                {/* <Fridge 
+                <Fridge 
                     room={null}
                     enabled={true}
-                /> */}
+                />
                 <Desk>
                     <Computer 
                         handleSettingsClick={() => {}}
@@ -102,17 +102,17 @@ function MasterRoom() {
                         roomId={"master-room"} // Indicates that this is the master room
                         roomData={null} // Indicates that this is the master room
                     />
-                    <Gavel onClick={() => handleGoToDisputes(1)} enabled={true} />
+                    <Gavel onClick={() => handleGoToDisputes()} enabled={true} />
                 </Desk>
-                {/* <Clock onClick={() => handleGoToState(1)} enabled={true} /> */}
-                {/* <BulletinBoard 
+                <Clock onClick={() => handleGoToState()} enabled={true} />
+                <BulletinBoard 
                     onClick={handleGoToHours}
-                /> */}
+                />
 
-                {/* <ChoreItems 
-                    onClick={() => handleGoToChores(1)}
+                <ChoreItems 
+                    onClick={() => handleGoToChores()}
                     enabled={true}
-                /> */}
+                />
             </div>
             <div className={style.roomFloor}/>
         </div>

@@ -7,12 +7,12 @@ import '../../Pages/Room/Room Items/RoomItems.css';
 import QHLogo from './QuietHoursIcon.png';
 import RoomClausesImage from './RoomClauses.png';  // Import RoomClauses image
 
-export default function BulletinPopup({ isOpen, onClose, settings }) {
+export default function BulletinPopup({ isOpen, onClose, settings, roomId }) {
     const navigate = useNavigate();
 
-    const handleGoToHours = (roomId) => {
+    const handleGoToHours = () => {
         console.log("Navigating to quiet-hours with roomId:", roomId); // Debugging
-        navigate(`/quiet-hours/`);
+        navigate(`/quiet-hours/${roomId}`);
     }
 
     return (
@@ -29,7 +29,7 @@ export default function BulletinPopup({ isOpen, onClose, settings }) {
                 <div className={style.board}>
                     <div className={style.frame}>
                         <div className={style.content}>
-                            {settings[3] && <img onClick={handleGoToHours} className={style.quietHours} src={QHLogo} title="Quiet Hours"/>}
+                            {settings[3] && <img onClick={() => handleGoToHours()} className={style.quietHours} src={QHLogo} title="Quiet Hours"/>}
                             {settings[4] && <img className={style.roomClauses} src={RoomClausesImage} title="Room Clauses" />} {/* Add RoomClauses image */}
                         </div>
                     </div>

@@ -400,6 +400,7 @@ const BillsExpenses = () => {
     );
   };
 
+
   const exportPriceHistoryCSV = () => {
     if (!currentPriceHistory || currentPriceHistory.length === 0) {
       alert("No price history available to export.");
@@ -454,9 +455,11 @@ const BillsExpenses = () => {
           <button className={styles.historyButton} onClick={handleOpenHistory}>
             Bills/Expenses History
           </button>
+          {roomId !== "master-room" && (
           <button className={styles.balanceButton} onClick={() => setShowBalancePopup(true)}>
             Balance Owed
           </button>
+          )}
         </div>
 
         <h3>All Bills & Expenses</h3>

@@ -14,6 +14,7 @@ import InvitePage from "./components/Pages/InvitePage/InvitePage"; // Import Inv
 import RoomSettings from "./components/Pages/RoomSettings/RoomSettings"; // Import InvitePage component
 import Disputes from "./components/Pages/Disputes/Disputes";
 import MasterRoom from "./components/Pages/MasterRoom/MasterRoom"; // Import MasterRoom components
+import MasterRoomState from "./components/Pages/MasterRoom/MasterPages/RoomState/MasterRoomState"; // Import MasterRoomState component
 
 function App() {
   return (
@@ -60,6 +61,9 @@ function App() {
 
         {/* Master Room route */}
         <Route path="/room/master-room" element={<MasterRoom />} />
+
+        {/* Master Room State route */}
+        <Route path="/master-room/room-state" element={<MasterRoomState />} />
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />
