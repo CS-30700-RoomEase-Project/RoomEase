@@ -346,7 +346,7 @@ const BillsExpenses = () => {
       <div className={styles.popupOverlay}>
         <div className={styles.popupMenu}>
           <h3>Balance Owed</h3>
-          <button className={styles.closeButton} onClick={() => setShowBalancePopup(false)}>
+          <button className={styles.closeButton} onClick={() => setShowBalancePopup(false)} style={{ marginBottom: '1.5rem' }}>
             Close
           </button>
           <table className={styles.userTable}>
@@ -540,7 +540,7 @@ const BillsExpenses = () => {
                     onChange={handleAddChange}
                   />
                 </div>
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ marginBottom: '1rem' }}>
                   <label>Responsible People:</label>
                   <table className={styles.userTable}>
                     <thead>
@@ -602,7 +602,7 @@ const BillsExpenses = () => {
                     </tfoot>
                   </table>
                 </div>
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div>
                   <label htmlFor="paymaster">Paymaster:</label>
                   <select id="paymaster" name="paymaster" value={formData.paymaster} onChange={handleAddChange}>
                     <option value="">Select a user</option>
@@ -613,7 +613,7 @@ const BillsExpenses = () => {
                     ))}
                   </select>
                 </div>
-                <div>
+                <div style={{ marginBottom: '0.5rem' }}>
                   <label htmlFor="frequency">Recurring:</label>
                   <select id="frequency" name="frequency" value={formData.frequency} onChange={handleAddChange}>
                     <option value="none">Not Recurring</option>
@@ -724,7 +724,7 @@ const BillsExpenses = () => {
                     />
                   </div>
                 )}
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ marginBottom: '1rem' }}>
                   <label>Responsible People:</label>
                   <table className={styles.userTable}>
                     <thead>
@@ -783,7 +783,7 @@ const BillsExpenses = () => {
                     </tbody>
                   </table>
                 </div>
-                <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ marginBottom: '1rem' }}>
                   <label htmlFor="editPaymaster">Paymaster:</label>
                   <select id="editPaymaster" name="paymaster" value={editFormData.paymaster} onChange={handleEditChange}>
                     <option value="">Select a user</option>
@@ -816,7 +816,7 @@ const BillsExpenses = () => {
           <div className={styles.popupOverlay}>
             <div className={styles.popupMenu}>
               <h3>Bills/Expenses History</h3>
-              <button className={styles.closeButton} onClick={() => setShowHistoryModal(false)}>
+              <button className={styles.closeButton} onClick={() => setShowHistoryModal(false)} style={{ marginBottom: '0.5rem' }}>
                 Close
               </button>
               <button className={styles.clearHistoryButton} onClick={handleClearHistory}>
@@ -873,7 +873,7 @@ const BillsExpenses = () => {
           <div className={styles.popupOverlay}>
             <div className={styles.popupMenu}>
               <h3>Price History for {currentPriceHistoryBillTitle}</h3>
-              <button className={styles.closeButton} onClick={() => setShowPriceHistoryModal(false)}>
+              <button className={styles.closeButton} onClick={() => setShowPriceHistoryModal(false)} style={{ marginBottom: '1.5rem' }}>
                 Close
               </button>
               <button className={styles.actionButton} onClick={exportPriceHistoryCSV}>
