@@ -1,0 +1,150 @@
+.notesModal {
+    background: rgba(30, 41, 59, 0.7);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    border-radius: 10px;
+    padding: 40px;
+    max-width: 800px;
+    width: 800px;
+    max-height: 60vh; /* Prevent modal from expanding indefinitely */
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2),
+                0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(4px);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #8b5cf6, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .description {
+    font-size: 1.125rem;
+    margin-bottom: 30px;
+    color: #e2e8f0;
+  }
+  
+  .addNoteContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  
+  /* Change input to textarea for multiline, auto-wrapping text */
+  .noteInput {
+    width: 60%;
+    min-height: 50px;
+    max-height: 150px;
+    padding: 8px;
+    font-size: 1rem;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    resize: none;
+    overflow-y: auto;
+  }
+  
+.noteInput:focus {
+    border-color: #8b5cf6 !important;
+    outline: none;
+}
+
+
+  .addNoteButton {
+    padding: 8px 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .addNoteButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.4),
+                0 10px 10px -5px rgba(139, 92, 246, 0.3);
+  }
+  
+  .notesList {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+    overflow-y: auto;
+    flex: 1;
+  }
+  
+  .noteItem {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    margin: 8px 0;
+    border-radius: 5px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .noteContent {
+    white-space: normal;
+    word-break: break-word;
+  }
+  
+  .deleteButton {
+    margin-top: 10px;
+    padding: 4px 8px;
+    font-size: 0.875rem;
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: flex-end;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .deleteButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px -5px rgba(231, 76, 60, 0.4),
+                0 10px 10px -5px rgba(192, 57, 43, 0.3);
+  }
+  
+  .noNotes {
+    color: #e2e8f0;
+    font-size: 1rem;
+    margin: 20px 0;
+  }
+  
+  .closeButton {
+    display: block;
+    margin: 20px auto 0;
+    padding: 8px 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  
+  .closeButton:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(139, 92, 246, 0.4),
+                0 10px 10px -5px rgba(139, 92, 246, 0.3);
+  }
+  
