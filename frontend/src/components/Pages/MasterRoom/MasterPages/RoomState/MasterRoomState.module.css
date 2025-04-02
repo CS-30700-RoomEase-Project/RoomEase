@@ -1,0 +1,80 @@
+.roomStatesContainer {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #120a24, #1a1133, #0d0a1a);
+    background-size: 400% 400%;
+    animation: gradientBackground 15s ease infinite;
+    color: #f8fafc;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    padding: 2rem;
+  }
+  
+  @keyframes gradientBackground {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+  }
+  
+  .header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(90deg, #8b5cf6, #6366f1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .headerActions {
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .mainContent {
+    flex: 1;
+    margin-top: 2rem;
+  }
+  
+  .roomGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .roomCard {
+    background: rgba(30, 41, 59, 0.5);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    transition: transform 0.3s ease;
+  }
+  
+  .roomCard:hover {
+    transform: translateY(-5px) scale(1.02);
+  }
+  
+  .roomTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .roomState {
+    font-size: 1rem;
+    color: #cbd5e1;
+  }
+  
+  .footer {
+    text-align: center;
+    padding: 2rem 0;
+    border-top: 1px solid rgba(99, 102, 241, 0.2);
+    margin-top: 2rem;
+  }
