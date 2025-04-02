@@ -13,6 +13,7 @@ import Notifications from "./components/Pages/Notifications/Notifications"; //im
 import InvitePage from "./components/Pages/InvitePage/InvitePage"; // Import InvitePage component
 import RoomSettings from "./components/Pages/RoomSettings/RoomSettings"; // Import InvitePage component
 import Disputes from "./components/Pages/Disputes/Disputes";
+import MasterRoom from "./components/Pages/MasterRoom/MasterRoom"; // Import MasterRoom components
 
 function App() {
   return (
@@ -56,6 +57,9 @@ function App() {
 
         {/* Notifications route */}
         <Route path="/notifications" element={<Notifications/>} />
+
+        {/* Master Room route */}
+        <Route path="/room/master-room" element={<MasterRoom />} />
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />

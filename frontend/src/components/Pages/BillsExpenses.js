@@ -47,35 +47,50 @@ const BillsExpenses = () => {
   const [currentPriceHistory, setCurrentPriceHistory] = useState([]);
   const [currentPriceHistoryBillTitle, setCurrentPriceHistoryBillTitle] = useState('');
 
-  const userData = JSON.parse(localStorage.getItem('userData')) || {
-    username: 'Guest',
-    userId: null,
-    profilePic: '',
-  };
+  const userData = JSON.parse(localStorage.getItem('userData'));
+  if (!userData) {
+    navigate('/'); // Redirect to login if userData is not found
+  }
 
   // Fetch active bills (only bills with isPaid: false)
   useEffect(() => {
     if (roomId) {
-      fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          console.log("Fetched active bills data:", data);
-          if (Array.isArray(data)) {
-            setBills(data);
-          } else if (Array.isArray(data.bills)) {
-            setBills(data.bills);
-          } else {
-            console.error("Unexpected active bills response structure", data);
-            setBills([]);
-          }
-        })
-        .catch((err) => console.error(err));
+      if (roomId === "master-room") {
+        fetch(`http://localhost:5001/api/bills/getBillsMaster/${userData.userId}`)
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("Fetched aggregated active bills data:", data);
+            // Expecting an array with each bill containing a roomName property
+            if (Array.isArray(data)) {
+              setBills(data);
+            } else {
+              console.error("Unexpected aggregated bills response structure", data);
+              setBills([]);
+            }
+          })
+          .catch((err) => console.error(err));
+      } else {
+        fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("Fetched active bills data:", data);
+            if (Array.isArray(data)) {
+              setBills(data);
+            } else if (Array.isArray(data.bills)) {
+              setBills(data.bills);
+            } else {
+              console.error("Unexpected active bills response structure", data);
+              setBills([]);
+            }
+          })
+          .catch((err) => console.error(err));
+      }
     }
   }, [roomId]);
 
   // Fetch room users
   useEffect(() => {
-    if (roomId) {
+    if (roomId && roomId !== "master-room") {
       fetch(`http://localhost:5001/api/room/getUsers/${roomId}`)
         .then((res) => res.json())
         .then((data) => {
@@ -92,13 +107,23 @@ const BillsExpenses = () => {
 
   // Fetch history bills from endpoint
   const fetchHistoryBills = () => {
-    fetch(`http://localhost:5001/api/bills/history/${roomId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("Fetched history bills:", data);
-        setHistoryBills(data);
-      })
-      .catch((err) => console.error(err));
+    if (roomId === 'master-room') {
+      fetch(`http://localhost:5001/api/bills/historyMaster/${userData.userId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Fetched aggregated history bills:", data);
+          setHistoryBills(data);
+        })
+        .catch((err) => console.error(err));
+    } else {
+      fetch(`http://localhost:5001/api/bills/history/${roomId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log("Fetched history bills:", data);
+          setHistoryBills(data);
+        })
+        .catch((err) => console.error(err));
+    }
   };
 
   // Helper: Parse date string into Date object
@@ -354,9 +379,11 @@ const BillsExpenses = () => {
       <div className={styles.mainContent}>
         {/* Top Actions */}
         <div className={styles.topActions}>
-          <button className={styles.addButton} onClick={() => setShowAddModal(true)}>
-            Add New Bill/Expense
-          </button>
+        {roomId !== "master-room" && (
+            <button className={styles.addButton} onClick={() => setShowAddModal(true)}>
+              Add New Bill/Expense
+            </button>
+          )}
           <button className={styles.historyButton} onClick={handleOpenHistory}>
             Bills/Expenses History
           </button>
@@ -365,23 +392,10 @@ const BillsExpenses = () => {
         <h3 className={styles.heading}>All Bills & Expenses</h3>
         <ul className={styles.billList}>
           {sortedBills.map((bill) => (
-            <li key={bill._id} className={styles.billItem} onClick={() => handleBillClick(bill)}>
+            <li key={bill._id} className={styles.billItem} onClick={() => {/* Open edit modal if allowed */}}>
               <div>
                 <strong>{bill.title}</strong> - {bill.isAmountPending ? "Amount Not Set Yet" : `$${bill.amount}`}
                 {bill.dueDate && (<span> - Due: {new Date(bill.dueDate).toLocaleDateString()}</span>)}
-                {bill.responsible && bill.responsible.length > 0 && (
-                  <div>
-                    Responsible:
-                    <ul>
-                      {bill.responsible.map((person, index) => (
-                        <li key={index}>
-                          {person.name} {person.paid ? "(Paid)" : "(Not Paid)"}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {bill.paymaster && <div>Paymaster: {bill.paymaster}</div>}
                 <div>
                   <button onClick={(e) => handleMarkAsPaid(bill._id, e)}>
                     Mark "{bill.title}" as Paid
@@ -393,7 +407,7 @@ const BillsExpenses = () => {
         </ul>
 
         {/* Add New Bill Modal */}
-        {showAddModal && (
+        {roomId !== "master-room" && showAddModal && (
           <div className={styles.popupOverlay}>
             <div className={styles.popupMenu}>
               <h3>Add New Bill/Expense</h3>

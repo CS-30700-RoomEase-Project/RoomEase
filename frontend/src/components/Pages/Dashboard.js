@@ -72,7 +72,7 @@ function Dashboard() {
         console.log(invite._id);
         console.log(invite);
         const response = await fetch("http://localhost:5001/api/invite/deleteInvite", {
-            method: "DELETE",  // POST method to send data
+            method: "DELETE",  // POST method to delete data
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
                 inviteId: invite._id,
@@ -120,9 +120,9 @@ function Dashboard() {
             <RoomCreationDoor />
           </div>
           
-          <div className={styles.roomWrapper}>
-            <RoomDoor roomName="Master Room" />
-          </div>
+          {Array.isArray(userData.rooms) && userData.rooms.length > 1 && <div className={styles.roomWrapper}>
+            <RoomDoor roomName="Master Room" onClick={() => navigate(`/room/master-room`)} />
+          </div>}
 
           {/* Ensure userData.rooms exists and is an array */}
           {Array.isArray(userData.rooms) &&
