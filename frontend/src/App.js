@@ -15,6 +15,7 @@ import RoomSettings from "./components/Pages/RoomSettings/RoomSettings"; // Impo
 import Disputes from "./components/Pages/Disputes/Disputes";
 import MasterRoom from "./components/Pages/MasterRoom/MasterRoom"; // Import MasterRoom components
 import MasterRoomState from "./components/Pages/MasterRoom/MasterPages/RoomState/MasterRoomState"; // Import MasterRoomState component
+import NotesPopup from "./components/Shared_components/BulletinPopup/NotesPopup"
 
 function App() {
   return (
@@ -49,6 +50,9 @@ function App() {
 
         {/* Room Settings page route */}
         <Route path="/room/:roomId/settings" element={<RoomSettings />} />
+
+        {/* Room notes page route */}
+        <Route path="/notes" element={<NotesPopup />} />
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />

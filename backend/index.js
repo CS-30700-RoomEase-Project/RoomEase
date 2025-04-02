@@ -8,6 +8,7 @@ const { Server } = require("socket.io");
 const userRoutes = require("./routes/userRoutes");
 const choreRoutes = require("./routes/choreRoutes");
 const groceryRoutes = require("./routes/groceryRoutes");
+const noteRoutes = require("./routes/roomNoteRoutes");
 const updateProfileRoutes = require("./routes/updateProfileRoutes");
 const billsRoutes = require("./routes/billsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
@@ -41,6 +42,7 @@ app.use(express.json());
 // Routes
 app.use("/api/chores", choreRoutes);
 app.use("/api/grocery", groceryRoutes);
+app.use("/api/notes", noteRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/users/profile", updateProfileRoutes);
 app.use("/api/bills", billsRoutes);
