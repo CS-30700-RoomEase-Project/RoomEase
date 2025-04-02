@@ -1,0 +1,49 @@
+/* ChoreCommentsPopup.module.css */
+
+.modal {
+    background-color: white !important;
+    border-radius: 10px;
+    text-align: center;
+    width: 95%;
+    max-width: 400px; /* Increased max-width for better layout */
+    padding: 15px !important; /* More padding for better spacing */
+    max-height: 80vh; /* Ensure it doesn't take up the entire screen */
+    overflow-y: auto; /* Enable scrolling if content exceeds height */
+}
+
+.inputField {
+    width: 80% !important;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease-in-out;
+}
+
+.inputField:focus {
+    border-color: #007bff;
+}
+
+.commentContainer {
+    margin-top: 15px;
+    padding: 10px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.commentContainer h6 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.commentContainer p {
+    margin: 5px 0 0;
+    font-size: 13px;
+    color: #666;
+}

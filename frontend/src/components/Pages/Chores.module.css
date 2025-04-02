@@ -45,7 +45,7 @@
 
 .titleText {
     margin-left: 25%;
-    margin-right: 25%;
+    margin-right: 10%;
     width: 20%;
     text-align: center;
     font-size: 24px;
@@ -69,6 +69,21 @@
 
 .logoutButton:hover {
     background-color: red;
+}
+
+.pointsButton {
+    color:white;
+    background-color: blue; /* Optional: Style adjustments */
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 15%;
+    height: 80%;
+}
+
+.pointsButton:hover {
+    background-color: aqua;
 }
 
 .list {
@@ -107,7 +122,7 @@
     gap: 8px; /* Adds spacing between buttons */
 }
 
-.markButton, .editButton, .deleteButton {
+.markButton, .editButton, .deleteButton, .commentButton {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -115,8 +130,19 @@
     font-size: 80%;
 }
 
+.commentButton {
+    width: 25%;
+    border-radius: 10%;
+    color: white;
+    background-color: blue;
+}
+
+.commentButton:hover {
+    background-color: aqua;
+}
+
 .markButton {
-    width: 30%;
+    width: 25%;
     border-radius: 10%;
     color: white;
     background-color: green;
@@ -127,7 +153,7 @@
 }
 
 .editButton {
-    width: 30%;
+    width: 25%;
     border-radius: 10%;
     color: white;
     background-color: green;
@@ -138,7 +164,7 @@
 }
 
 .deleteButton {
-    width: 30%;
+    width: 25%;
     border-radius: 10%;
     color: white;
     background-color: maroon;
