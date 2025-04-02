@@ -1,121 +1,112 @@
-/* Main Container */
-.roomEaseContainer {
-  min-height: 100vh;
-  background: linear-gradient(135deg, #13151a, #1f2937, #111827);
-  background-size: 100% 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: white;
-  position: relative;
-  overflow: hidden;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+/* Global Reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #0d0a1a; /* Dark theme */
+  overflow-x: hidden;   /* Avoid horizontal scroll */
 }
 
-/* Gradient Overlay */
-.gradientOverlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: radial-gradient(circle at center, rgba(139, 92, 246, 0.05) 0%, rgba(0, 0, 0, 0) 70%);
-  z-index: 1;
-  pointer-events: none;
+/* Container: Sticky Footer Layout */
+.billsAppContainer {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;  /* Fill the viewport */
+  background: linear-gradient(135deg, #120a24, #1a1133, #0d0a1a);
+  background-size: 400% 400%;
+  animation: gradientBackground 15s ease infinite;
+  color: #f8fafc;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+@keyframes gradientBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
 /* Decorative Elements */
+.decorCircle1,
+.decorCircle2,
+.decorCircle3 {
+  position: fixed;      /* Fixed positioning so they don't expand page height */
+  pointer-events: none; /* Don't block clicks/scrolling */
+  z-index: 0;           /* Behind main content */
+}
+
 .decorCircle1 {
-  position: absolute;
   width: 300px;
   height: 300px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.1) 0%, rgba(139, 92, 246, 0) 70%);
-  top: -100px;
+  top: -100px;    /* Negative offset */
   left: -100px;
-  z-index: 1;
-  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(99,102,241,0.15) 50%, transparent 70%);
 }
 
 .decorCircle2 {
-  position: absolute;
-  width: 500px;
-  height: 500px;
+  width: 400px;
+  height: 400px;
+  bottom: -200px; /* Negative offset */
+  right: -150px;
   border-radius: 50%;
-  border: 2px solid rgba(139, 92, 246, 0.1);
-  bottom: -200px;
-  right: -200px;
-  z-index: 1;
-  pointer-events: none;
+  background: radial-gradient(circle, rgba(167,139,250,0.3) 0%, rgba(129,140,248,0.15) 50%, transparent 70%);
 }
 
 .decorCircle3 {
-  position: absolute;
-  width: 200px;
-  height: 200px;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, rgba(99, 102, 241, 0) 70%);
+  width: 300px;
+  height: 300px;
   top: 30%;
-  left: 10%;
-  z-index: 1;
-  pointer-events: none;
+  left: 60%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(129,140,248,0.15), transparent);
 }
 
 /* Navbar */
 .navbar {
-  width: 100%;
-  background: rgba(161, 188, 247, 0.8);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2.5rem;
+  background: rgba(180,190,255,0.8);
   backdrop-filter: blur(12px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
   z-index: 10;
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1),
-              0 4px 6px -2px rgba(0,0,0,0.05),
-              0 0 0 1px rgba(255,255,255,0.05);
-  position: relative;
-  transform-style: preserve-3d;
 }
 
 .navContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1.25rem 2.5rem;
   width: 100%;
 }
 
 .navBackButton {
   background: transparent;
   border: none;
-  color: white;
+  color: #f8fafc;
   font-size: 1rem;
   cursor: pointer;
 }
 
 .navTitle {
-  font-size: 1.75rem;
+  font-size: 2rem;
   font-weight: 700;
-  margin: 0;
   text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-  transform: translateZ(20px);
   letter-spacing: -0.5px;
   background: linear-gradient(90deg, #8b5cf6, #6366f1);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  position: relative;
-  padding-left: 1.5rem;
-}
-
-.navTitle::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 8px;
-  height: 24px;
-  background: linear-gradient(to bottom, #8b5cf6, #6366f1);
-  border-radius: 4px;
 }
 
 .navRight {
@@ -126,278 +117,162 @@
 
 /* Main Content */
 .mainContent {
-  flex-grow: 1;
-  width: 100%;
-  max-width: 1200px;
+  flex: 1;  /* Grow to push footer to bottom */
   padding: 2rem;
-  z-index: 2;
   position: relative;
+  z-index: 2;
 }
 
-/* Headings */
-.heading {
-  color: white;
-  font-size: 1.25rem;
-  text-align: center;
-  margin: 1rem 0;
-}
-
-/* Top Actions */
+/* Top Action Buttons */
 .topActions {
-  width: 100%;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.addButton, .historyButton {
-  padding: 0.75rem 1.5rem;
-  background-color: #8b5cf6;
-  color: white;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-size: 1rem;
-  margin: 0 0.5rem;
-}
-
-.addButton:hover, .historyButton:hover {
-  background-color: #6366f1;
-}
-
-/* Bills Content Section */
-.billsContent {
-  background: rgba(17, 24, 39, 0.8);
-  backdrop-filter: blur(8px);
-  border-radius: 1rem;
-  padding: 2rem;
-  width: 100%;
-  max-width: 800px;
-  margin: 2rem auto;
-  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1),
-              0 4px 6px -2px rgba(0,0,0,0.05);
-}
-
-/* Form Styling */
-.billForm {
   display: flex;
-  flex-direction: column;
   gap: 1rem;
+  justify-content: center;
   margin-bottom: 1.5rem;
 }
 
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 0.5rem;
-}
-
-.formGroup label {
-  font-weight: 600;
-  margin-bottom: 0.25rem;
-}
-
-.formGroup input,
-.formGroup select {
-  padding: 0.5rem;
-  border-radius: 0.375rem;
-  border: 1px solid #ccc;
-  width: 100%;
-}
-
-.formGroupRow {
-  display: flex;
-  gap: 0.5rem;
-  align-items: center;
-}
-
-/* User Table for Responsible People */
-.userTable {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 0.5rem;
-}
-
-.userTable th,
-.userTable td {
-  border: 1px solid #ccc;
-  padding: 0.5rem;
-  text-align: left;
-  vertical-align: middle;
-  color: white;
-}
-
-.userTable th {
-  background-color: #e5e7eb;
-  color: #111827;
-  font-size: 0.9rem;
-}
-
-.userTable tfoot button {
-  margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #8b5cf6;
-  color: white;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.userTable tfoot button:hover {
-  background-color: #6366f1;
-}
-
-/* Submit Button */
-.submitButton {
+.addButton,
+.historyButton,
+.balanceButton {
   padding: 0.75rem 1.5rem;
-  background-color: #8b5cf6;
-  color: white;
   border: none;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
+  background: #8b5cf6;
+  color: #f8fafc;
   cursor: pointer;
-  font-size: 1rem;
+  transition: background 0.3s ease;
 }
 
-.submitButton:hover {
-  background-color: #6366f1;
+.addButton:hover,
+.historyButton:hover,
+.balanceButton:hover {
+  background: #6366f1;
 }
 
 /* Bills List */
 .billList {
   list-style: none;
   padding: 0;
-  margin: 0;
 }
 
 .billItem {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255,255,255,0.1);
   padding: 1rem;
-  border-radius: 0.375rem;
+  border-radius: 0.5rem;
   margin-bottom: 1rem;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: background 0.3s ease;
 }
 
 .billItem:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255,255,255,0.2);
 }
 
-/* Popup Modal */
+/* Popup Overlay & Menu */
 .popupOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100;
+  z-index: 99999 !important;
+  padding: 1rem;
+  overflow-y: auto;
 }
 
 .popupMenu {
-  background: #1f2937;
+  position: relative;
+  background: #1a1133;
   padding: 2rem;
   border-radius: 0.5rem;
-  width: 90%;
+  width: 100%;
   max-width: 500px;
-  color: white;
-}
-
-/* Close Button for Modals */
-.closeButton {
-  background: transparent;
-  border: none;
-  color: white;
-  font-size: 1rem;
-  cursor: pointer;
-  float: right;
-}
-
-/* Buttons in Popup */
-.buttonGroup {
-  display: flex;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.saveButton,
-.deleteButton,
-.cancelButton {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-/* Mark as Paid Container (removed extra container) */
-
-/* History Modal styles */
-.historyList {
-  max-height: 400px;
+  color: #f8fafc;
+  max-height: 90vh;
   overflow-y: auto;
-  margin-top: 1rem;
+  z-index: 100000;
 }
 
-.historyItem {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 0.75rem;
+/* Form Elements in Popups */
+.popupMenu input,
+.popupMenu select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 0.375rem;
+  text-align: left;
+  background: rgba(255,255,255,0.1);
+  color: #f8fafc;
+}
+
+.popupMenu select option {
+  background: #fff;
+  color: #000;
+}
+
+.popupMenu input:focus,
+.popupMenu select:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 5px rgba(139,92,246,0.5);
+}
+
+.popupMenu label {
+  display: block;
+  text-align: left;
   margin-bottom: 0.5rem;
-  border-radius: 0.375rem;
+  font-weight: 500;
 }
 
-/* History Table container for Price History Modal */
-.historyTableContainer {
-  max-height: 300px;
-  overflow-y: auto;
-  margin-top: 1rem;
+/* Tables */
+.userTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.userTable th,
+.userTable td {
+  padding: 0.3rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  text-align: left;
+  color: #f8fafc;
+}
+
+.userTable th {
+  background: rgba(139,92,246,0.2);
 }
 
 /* Footer */
 .footer {
-  width: 100%;
+  background: rgba(17,24,39,0.9);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(99,102,241,0.2);
   padding: 1.5rem;
   text-align: center;
-  background: rgba(17, 24, 39, 0.9);
-  backdrop-filter: blur(8px);
-  border-top: 1px solid rgba(99, 102, 241, 0.2);
-  z-index: 10;
-  position: relative;
-  box-shadow: 0 -10px 15px -3px rgba(0,0,0,0.1),
-              0 -4px 6px -2px rgba(0,0,0,0.05);
-}
-
-.footer p {
-  font-size: 0.875rem;
   color: #94a3b8;
-  margin: 0.5rem 0;
+  z-index: 10;
+  margin-top: 0;
 }
 
-.footerLink {
-  color: #8b5cf6;
-  text-decoration: none;
-  transition: color 0.2s ease;
-  position: relative;
-  padding: 0 0.25rem;
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 1rem;
+  }
+  .navTitle {
+    font-size: 1.5rem;
+  }
 }
 
-.footerLink:hover {
-  color: #a78bfa;
-}
-
-.footerLink::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -2px;
-  left: 0;
-  background: #8b5cf6;
-  transition: width 0.3s ease;
-}
-
-.footerLink:hover::after {
-  width: 100%;
+/* Add spacing between adjacent buttons */
+button + button {
+  margin-left: 0.5rem;
 }

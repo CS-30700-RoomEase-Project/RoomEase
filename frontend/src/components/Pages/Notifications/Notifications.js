@@ -48,7 +48,7 @@ function Notifications() {
 
     const handleVisit = (notif) => {
         navigate(notif.pageID);
-    } 
+    };
 
     const handleDelete = async (notif) => {
         const userId = localStorage.getItem("userId");
@@ -78,10 +78,43 @@ function Notifications() {
         }
     };
 
+    // Handler to clear all notifications at once.
+    const handleClearNotifications = async () => {
+        const userId = localStorage.getItem("userId");
+        if (!userId) {
+            console.error("No userId found in localStorage");
+            setError("User not found. Please log in.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:5001/api/notifications/clearNotifications/${userId}`, {
+                method: "DELETE",
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to clear notifications");
+            }
+
+            setNotifs([]); // Clear local notifications state
+            alert("Notifications Cleared.");
+        } catch (error) {
+            console.error("Error clearing notifications:", error);
+            setError("Failed to clear notifications.");
+        }
+    };
+
     return (
         <div className={styles.notificationsSheet}>
             <div className={styles.notificationsContainer}>
                 <h2>Notifications</h2>
+                {/* NEW: Clear Notifications button above the list */}
+                <button 
+                    className={styles.actionButton} 
+                    onClick={handleClearNotifications}
+                >
+                    Clear Notifications
+                </button>
                 {loading ? (
                     <p>Loading notifications...</p>
                 ) : error ? (

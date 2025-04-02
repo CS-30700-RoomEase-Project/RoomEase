@@ -51,8 +51,32 @@ const choreSchema = new mongoose.Schema({
     whoseTurn: Number,
     dueDate: { type: Date, required: false }, // Due date of the chore
     recurringDays: { type: Number, default: 0 }, // Number of days between occurrences (0 = not recurring)
-    completed: { type: Boolean, default: false } // Indicates if the chore is done
+    completed: { type: Boolean, default: false }, // Indicates if the chore is done
+    difficulty: { type: String, default: "Easy"}, //indicates how difficult the chore is
+    comments: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'choreComment'}], default: []}
 });
+
+const choreCommentSchema = new mongoose.Schema({
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    comment: String
+});
+
+const choreComment = mongoose.model('choreComment', choreCommentSchema);
+
+choreSchema.methods.commentNotification = async function(message, path) {
+    try {
+        const notification = await Notification.create({
+            description: `Comment added to '${this.choreName}'. Description: '${message}'.`,
+            pageID: `/Chores/${path}`,
+            usersNotified: this.order,
+            notificationType: 'Chore Comment',
+            origin: this.creatorId
+        });
+        await notification.propagateNotification();
+    } catch (error) {
+        console.error("Error creating notification:", error);
+    }
+}
 
 choreSchema.methods.createNotification = async function(path) {
     console.log("creating notification");
@@ -304,6 +328,7 @@ const billSchema = new mongoose.Schema({
     customFrequency: { type: Number, default: null },
     isAmountPending: { type: Boolean, default: false },
     isPaid: { type: Boolean, default: false },
+    splitBill: { type: Boolean, default: true },
     // New field: whether a recurring bill has been finished.
     isFinished: { type: Boolean, default: false },
     priceHistory: [{
@@ -520,5 +545,5 @@ const Bill = Task.discriminator('Bill', billSchema);
  * Exports the task class so it can be used in other files.
  * Update this with each new subclass of tasks.
  */
-module.exports = { Task, Chore, Grocery, Bill };
+module.exports = { Task, Chore, Grocery, Bill, choreComment };
 
