@@ -19,6 +19,8 @@ const ChorePopup = ({ isOpen, onClose, chore, roomId }) => {
                 const response = await fetch(`http://localhost:5001/api/room/getMembers/${roomId}`);
                 const data = await response.json();
                 setUsers(data);
+                console.log(data);
+                console.log(users);
             } catch (error) {
                 console.error("Error fetching users:", error);
             }
