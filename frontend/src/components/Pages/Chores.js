@@ -5,6 +5,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import styles from "./Chores.module.css";
 import NotificationButton from '../Shared_components/NotificationBell/NotificationBell';
 import ChoreCommentsPopup from "../Shared_components/Chores/ChoreCommentsPopup";
+import ChoreSwapPopup from "../Shared_components/Chores/ChoreSwapPopup";
 
 function Chores() {
     const { roomId } = useParams(); // Gets the roomId from the URL
@@ -13,6 +14,7 @@ function Chores() {
     const [isChorePopupOpen, setChorePopupOpen] = useState(false);
     const [isPointsPopupOpen, setPointsPopupOpen] = useState(false);
     const [isCommentsPopupOpen, setCommentsPopupOpen] = useState(false);
+    const [isSwapPopupOpen, setSwapPopupOpen] = useState(false);
     const [chores, setChores] = useState([]); // Store fetched chores
     const [selectedChore, setSelectedChore] = useState(null); // Track selected chore for editing
 
@@ -113,11 +115,18 @@ function Chores() {
         setPointsPopupOpen(false);
     };
 
+    const closeSwapPopup = () => {
+        setSwapPopupOpen(false);
+    };
+
     return (
         <div className={styles.choresAppContainer}>
             <div className={styles.choresHeader}>
                 <button className={styles.addChore} onClick={handleNewChore}>
                     <h4>Add Chore</h4>
+                </button>
+                <button onClick={() => setSwapPopupOpen(true)}>
+                    <h4>Chore Swaps</h4>
                 </button>
                 <NotificationButton/>
                 <h1 className={styles.titleText}>Chores</h1>
@@ -186,6 +195,12 @@ function Chores() {
                 isOpen={isCommentsPopupOpen}
                 onClose={closeCommentsPopup}
                 chore={selectedChore}
+                roomId={roomId}
+            />
+            <ChoreSwapPopup
+                isOpen={isSwapPopupOpen}
+                onClose={closeSwapPopup}
+                chores={chores}
                 roomId={roomId}
             />
         </div>
