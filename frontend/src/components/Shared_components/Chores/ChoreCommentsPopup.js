@@ -80,7 +80,7 @@ const ChoreCommentsPopup = ({ isOpen, onClose, chore, roomId }) => {
             <div className={styles.modal}>
                 <h6>New Comment</h6>
                 <label>
-                    <p>notify group</p>
+                    <p className={styles.PopupText}>notify group</p>
                     <input type="checkbox" value={notify} onChange={(e) => setNotify(e.target.checked)}/>
                 </label>
                 <input type="text" placeholder="new Comment" className={styles.inputField} value={desc} onChange={(e) => setDesc(e.target.value)}/>
@@ -90,7 +90,7 @@ const ChoreCommentsPopup = ({ isOpen, onClose, chore, roomId }) => {
                 {Comments.map((comment) => (
                     <div>
                         <h6>{comment.creator.username}</h6>
-                        <p>{comment.comment}</p>
+                        <p className={styles.PopupText}>{comment.comment}</p>
                         <button onClick={() => handleRemoveComment(comment)}>Resolve</button>
                     </div>
                 ))}

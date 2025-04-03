@@ -56,6 +56,77 @@ const choreSchema = new mongoose.Schema({
     comments: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'choreComment'}], default: []}
 });
 
+const choreSwapSchema = new mongoose.Schema({
+    accepted: { type: Boolean, default: false},
+    initiator: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    receiver: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    initiatorChores: [{chore: { type: mongoose.Schema.Types.ObjectId, ref: 'Chore'}, order: Number, count: {type: Number, default: 1}}],
+    receiverChores: [{chore: { type: mongoose.Schema.Types.ObjectId, ref: 'Chore'}, order: Number, count: {type: Number, default: 1}}],
+    permanent: {type: Boolean, default: false}
+});
+
+choreSwapSchema.methods.requestNotification = async function(path) {
+  try {
+    const notification = await Notification.create({
+        description: `You have an incoming chore swap request`,
+        pageID: `/Chores/${path}`,
+        usersNotified: this.receiver,
+        notificationType: 'Chore Swap',
+        origin: this.initiator
+    });
+    await notification.propagateNotification();
+  } catch (error) {
+      console.error("Error creating notification:", error);
+  }
+}
+
+choreSwapSchema.methods.acceptNotification = async function(path) {
+  try {
+    const notification = await Notification.create({
+        description: `Your chore swap request has been accepted`,
+        pageID: `/Chores/${path}`,
+        usersNotified: this.initiator,
+        notificationType: 'Chore Swap',
+        origin: this.receiver
+    });
+    await notification.propagateNotification();
+  } catch (error) {
+      console.error("Error creating notification:", error);
+  }
+}
+
+choreSwapSchema.methods.declineNotification = async function(path) {
+  try {
+    const notification = await Notification.create({
+        description: `Your chore swap request has been denied`,
+        pageID: `/Chores/${path}`,
+        usersNotified: this.initiator,
+        notificationType: 'Chore Swap',
+        origin: this.receiver
+    });
+    await notification.propagateNotification();
+  } catch (error) {
+      console.error("Error creating notification:", error);
+  }
+}
+
+choreSwapSchema.methods.completeNotification = async function(path) {
+  try {
+    const notification = await Notification.create({
+        description: `You're chore swap has been completed`,
+        pageID: `/Chores/${path}`,
+        usersNotified: [this.initiator, this.receiver],
+        notificationType: 'Chore Swap',
+        origin: this.initiator
+    });
+    await notification.propagateNotification();
+  } catch (error) {
+      console.error("Error creating notification:", error);
+  }
+}
+
+const choreSwap = mongoose.model('choreSwap', choreSwapSchema);
+
 const choreCommentSchema = new mongoose.Schema({
     creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
     comment: String
@@ -545,5 +616,5 @@ const Bill = Task.discriminator('Bill', billSchema);
  * Exports the task class so it can be used in other files.
  * Update this with each new subclass of tasks.
  */
-module.exports = { Task, Chore, Grocery, Bill, choreComment };
+module.exports = { Task, Chore, Grocery, Bill, choreComment, choreSwap };
 
