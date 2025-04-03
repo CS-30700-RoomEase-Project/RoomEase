@@ -10,6 +10,7 @@ function GroceryPage({room}) {
   const [isGroceryListOpen, setGroceryListOpen] = useState(true);
 
   const quantityRef = useRef(null);
+  const userData = JSON.parse(localStorage.getItem("userData"));
 
   const addItem = () => {
     if (input.trim() !== "" && quantity > 0 && quantity <= 999) {
@@ -31,10 +32,17 @@ const itemResponseHandler = (data) => {
 
 // Fetch groceryList
 useEffect(() => {
-  CallService("grocery/getList/" + room._id, {}, (data) => {
-    // Reverse the fetched items so that the newest are first
-    setItems(data.reverse());
-  });
+  if (!room) { // If in the master room, agregate all grocery lists
+    CallService("grocery/getListMaster/" + userData.userId, {}, (data) => {
+      // Reverse the fetched items so that the newest are first
+      setItems(data.reverse());
+    });
+  } else { // Otherwise, just get from this room 
+    CallService("grocery/getList/" + room._id, {}, (data) => {
+      // Reverse the fetched items so that the newest are first
+      setItems(data.reverse());
+    });
+  }
 }, []);
 
 const toggleAllPaid = () => {
@@ -60,6 +68,7 @@ const toggleAllPaid = () => {
         <p className={styles.groceryTitleDescription}>
           A shared grocery list to add and track items easily.
         </p>
+        {room && (
         <div className={styles.inputContainer}>
           <input
             type="text"
@@ -89,7 +98,7 @@ const toggleAllPaid = () => {
           <button onClick={toggleAllPaid} className={styles.Button}>
             All Paid
           </button>
-        </div>
+        </div>)}
         <p className={styles.purchasedText} style={{ visibility: items.length > 0 ? "visible" : "hidden" }}>
           Purchased
         </p>

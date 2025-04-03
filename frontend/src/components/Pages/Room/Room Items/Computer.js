@@ -9,16 +9,16 @@ function Computer({ handleSettingsClick, handleInviteClick, roomId, roomData }) 
   const navigate = useNavigate();
 
   const handleGoToBills = () => {
-    navigate(`/room/${roomId}/bills`);
+      navigate(`/room/${roomId}/bills`);
   };
 
   return (
     <div className="computer-container">
       <div className="monitor-frame">
         <div className="monitor-screen">
-          <RoomSettingsIcon onClick={handleSettingsClick} />
-          <InviteIcon onClick={handleInviteClick} />
-          {roomData.settings[1] && <BillsIcon onClick={handleGoToBills} />}
+          {(roomId != "master-room") && <RoomSettingsIcon onClick={handleSettingsClick} />}
+          {(roomId != "master-room") && <InviteIcon onClick={handleInviteClick} />}
+          {(roomId == "master-room" || roomData.settings[1]) && <BillsIcon onClick={handleGoToBills} />}
         </div>
       </div>
       <div className="computer-stand"></div>

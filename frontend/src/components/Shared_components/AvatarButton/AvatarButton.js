@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import Popup from 'reactjs-popup';
 import ProfilePopUp from '../Profile/ProfilePopUp';
 import MyReview from '../myReviews/MyReview';
@@ -10,6 +10,7 @@ const AvatarButton = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showReviews, setShowReviews] = useState(false);  // New state for MyReview modal
+  let location = useLocation();
 
   const [userData, setUserData] = useState(() => {
     const savedData = localStorage.getItem('userData');
@@ -78,7 +79,7 @@ const AvatarButton = () => {
       >
         <div className='dropdown'>
           <button onClick={handleSettingsClick} className='Button1'>Settings</button>
-          <button onClick={handleReviewsClick} className='Button2'>My Reviews</button>
+          {!location.pathname.includes("dashboard") && <button onClick={handleReviewsClick} className='Button2'>My Reviews</button>}
           <button onClick={handleLogout} className='signoutButton'>Logout</button>
         </div>
       </Popup>

@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const RoomState = require("../models/State"); // Import RoomState model
 const User = require("../models/User");
+const Room = require("../models/Room"); // Import Room model
 const Notification = require("../models/Notification");
 
 // POST: Add a new room state request and notify users
@@ -44,6 +45,24 @@ router.get("/getRoomStateQueue", async (req, res) => {
         res.json(queue);
     } catch (error) {
         console.error("Error fetching room state queue:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
+router.get("/getAllRoomStates/:userId", async (req, res) => {
+    try {
+        const  { userId } = req.params; // Extract userId from request parameters
+
+        const user = await User.findOne({ userId: userId });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        let rooms = await Room.find({ userId: user._id });
+
+        // TODO: READ THE CURRENT ROOM STATE FROM THE DATABASE AND RETURN IT TO THE FRONTEND
+    } catch (error) {
+        console.error("Error fetching all room states:", error);
         res.status(500).json({ message: "Internal Server Error" });
     }
 });

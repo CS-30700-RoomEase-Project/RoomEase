@@ -1,13 +1,13 @@
 import React from "react";
 import './RoomItems.css';
 
-function BulltinBoard({ onClick, settings }) {
+function BulltinBoard({ onClick, enabled }) {
     return (
         <div 
             className="bulletinBoard" 
             title={ ("Bulletin Board") } 
             onClick={onClick} 
-            style={{ cursor: 'pointer', pointerEvents: "auto" }}
+            style={{ cursor: 'pointer', pointerEvents: ((enabled) ? "auto" : "none") }}
         >
             <div className="bulletinBoardFrame">
                 <div className="bulletinBoardContent"/>

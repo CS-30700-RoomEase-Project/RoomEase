@@ -76,7 +76,6 @@ router.post('/register', async (req, res) => {
 
 router.get('/getUser', async (req, res) => {
     const { userId } = req.query;
-    console.log(userId);
     try {
         let user = await User.findOne({ userId });
         if (!user) {
