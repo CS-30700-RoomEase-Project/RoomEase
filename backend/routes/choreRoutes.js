@@ -146,7 +146,6 @@ router.get('/getPoints/:roomId', async (req, res) => {
 
 router.get('/getChores/:roomId/', async (req, res) => {
     try {
-        console.log("____________________________--")
         const { roomId } = req.params;
 
         // Find the room and get its tasks array
