@@ -16,7 +16,7 @@ const RoomSchema = new mongoose.Schema({
     points: { type: Map, of: Number, default: () => ({})},
     houseRules: [{ type: String, default: [] }],
     completedTasks: [],
-    bulletinNotes: [{ type: Array, default: [] }],
+    bulletinNotes: { type: [String], default: [] },
     bulletinPhotos: [{ type: Array, default: [] }],
     outGoingInvites: { type: Array, default: [] },
     quietHours: [{ type: Array, default: [] }],

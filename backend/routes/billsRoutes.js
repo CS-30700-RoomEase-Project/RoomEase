@@ -188,7 +188,7 @@ router.put('/finishRecurring/:billId/:roomId', async (req, res) => {
 router.delete('/clearHistory/:roomId', async (req, res) => {
   try {
     const { roomId } = req.params;
-    const room = await Room.findById(roomId).select('tasks');
+    const room = await Room.findById(roomId).select('tasks');  //TODO: ADD FUNCTIONALITY TO HANDLE MASTER ROOM
     if (!room) {
       return res.status(404).json({ message: "Room not found." });
     }
@@ -206,6 +206,79 @@ router.delete('/clearHistory/:roomId', async (req, res) => {
     res.json({ message: "Bill history cleared." });
   } catch (error) {
     console.error("Error clearing bill history:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+// GET bills for all rooms (aggregated for master-room)
+router.get('/getBillsMaster/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    const roomIds = user.rooms.map(room => room._id);
+    const rooms = await Room.find({ _id: { $in: roomIds } }).select('tasks name').lean();
+    let aggregatedBills = [];
+
+    // Iterate over fetched rooms and aggregate bills using each room's tasks array
+    for (const room of rooms) {
+      if (room.tasks && room.tasks.length > 0) {
+        const bills = await Task.find({
+          _id: { $in: room.tasks },
+          type: 'Bill',
+          isPaid: false
+        }).lean();
+        // Add the room name for each bill
+        const billsWithRoom = bills.map(bill => ({
+          ...bill,
+          roomName: room.name
+        }));
+        aggregatedBills = aggregatedBills.concat(billsWithRoom);
+      }
+    }
+
+    res.json(aggregatedBills);
+  } catch (error) {
+    console.error("Error fetching aggregated bills:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+
+});
+
+// GET history bills for all rooms (aggregated for master-room)
+router.get('/historyMaster/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findOne({userId: userId});
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
+    }
+    const roomIds = user.rooms.map(room => room._id);
+    const rooms = await Room.find({ _id: { $in: roomIds } }).select('tasks name').lean();
+    let aggregatedHistoryBills = [];
+
+    // Iterate over fetched rooms and aggregate history bills using each room's tasks array
+    for (const room of rooms) {
+      if (room.tasks && room.tasks.length > 0) {
+        const historyBills = await Task.find({
+          _id: { $in: room.tasks },
+          type: 'Bill',
+          isPaid: true
+        }).lean();
+        // Add the room name for each bill
+        const historyBillsWithRoom = historyBills.map(bill => ({
+          ...bill,
+          roomName: room.name
+        }));
+        aggregatedHistoryBills = aggregatedHistoryBills.concat(historyBillsWithRoom);
+      }
+    }
+    
+    res.json(aggregatedHistoryBills);
+  } catch (error) {
+    console.error("Error fetching aggregated history bills:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 });

@@ -14,12 +14,14 @@ import Gavel from './Room Items/Gavel';
 
 import style from './Room.module.css';
 import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
+import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
 
 function Room() {
     const { roomId } = useParams(); // Gets the roomId from the URL
     const navigate = useNavigate();
 
     const [showBulletin, setShowBulletin] = useState(false);
+    const [showNotesPopup, setShowNotesPopup] = useState(false);
     const [roomData, setRoomData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -75,11 +77,6 @@ function Room() {
         navigate(`/chores/${roomId}`);
     }
 
-    const handleGoToHours = (roomId) => {
-        console.log("Navigating to quiet-hours with roomId:", roomId); // Debugging
-        navigate(`/quiet-hours/${roomId}`);
-    }
-
     const handleGoToState = (roomId) => {
         console.log("Navigating to state with roomId:", roomId); // Debugging
         navigate(`/room-state/${roomId}`);
@@ -107,8 +104,8 @@ function Room() {
                 <h1 className={style.roomTitle}>{roomData.roomName}</h1>
                 {/* <Message onClick={() => handleGoToState(roomId)/> */}
                 <div className={style.roomBannerMini}>
-                    <RateButton/>
-                    <GroupChat roomId={roomId} userName={username}/>
+                    {roomData.settings[7] && (<RateButton/>)}
+                    {roomData.settings[6] && (<GroupChat roomId={roomId} userName={username}/>)}
                     <Avatar />
                 </div> 
             </div>
@@ -141,7 +138,13 @@ function Room() {
             </div>
             <div className={style.roomFloor}/>
         </div>
-        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={roomData.settings} />
+        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={roomData.settings} roomId={roomId} onOpenNotes={() => setShowNotesPopup(true)} />
+        <NotesPopup
+            room={roomData}
+            isOpen={showNotesPopup}
+            onClose={() => setShowNotesPopup(false)}
+            initialNotes={roomData.bulletinNotes}
+        />
         </>
     )
 };

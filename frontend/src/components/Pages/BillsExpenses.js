@@ -62,25 +62,41 @@ const BillsExpenses = () => {
   // Fetch active bills
   useEffect(() => {
     if (roomId) {
-      fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
-        .then((res) => res.json())
-        .then((data) => {
-          if (Array.isArray(data)) {
-            setBills(data);
-          } else if (Array.isArray(data.bills)) {
-            setBills(data.bills);
-          } else {
-            console.error("Unexpected active bills response structure", data);
-            setBills([]);
-          }
-        })
-        .catch((err) => console.error(err));
+      if (roomId === "master-room") {
+        fetch(`http://localhost:5001/api/bills/getBillsMaster/${userData.userId}`)
+          .then((res) => res.json())
+          .then((data) => {
+            console.log("Fetched aggregated active bills data:", data);
+            // Expecting an array with each bill containing a roomName property
+            if (Array.isArray(data)) {
+              setBills(data);
+            } else {
+              console.error("Unexpected aggregated bills response structure", data);
+              setBills([]);
+            }
+          })
+          .catch((err) => console.error(err));
+      } else {
+        fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
+          .then((res) => res.json())
+          .then((data) => {
+            if (Array.isArray(data)) {
+              setBills(data);
+            } else if (Array.isArray(data.bills)) {
+              setBills(data.bills);
+            } else {
+              console.error("Unexpected active bills response structure", data);
+              setBills([]);
+            }
+          })
+          .catch((err) => console.error(err));
+      }
     }
   }, [roomId]);
 
   // Fetch room users
   useEffect(() => {
-    if (roomId) {
+    if (roomId && roomId !== "master-room") {
       fetch(`http://localhost:5001/api/room/getUsers/${roomId}`)
         .then((res) => res.json())
         .then((data) => {
@@ -95,10 +111,17 @@ const BillsExpenses = () => {
   }, [roomId]);
 
   const fetchHistoryBills = () => {
-    fetch(`http://localhost:5001/api/bills/history/${roomId}`)
-      .then((res) => res.json())
-      .then((data) => setHistoryBills(data))
-      .catch((err) => console.error(err));
+    if (roomId === 'master-room') {
+      fetch(`http://localhost:5001/api/bills/historyMaster/${userData.userId}`)
+        .then((res) => res.json())
+        .then((data) => setHistoryBills(data))
+        .catch((err) => console.error(err));
+    } else {
+      fetch(`http://localhost:5001/api/bills/history/${roomId}`)
+        .then((res) => res.json())
+        .then((data) => setHistoryBills(data))
+        .catch((err) => console.error(err));
+    }
   };
 
   const parseDueDate = (dateString) => {
@@ -377,6 +400,7 @@ const BillsExpenses = () => {
     );
   };
 
+
   const exportPriceHistoryCSV = () => {
     if (!currentPriceHistory || currentPriceHistory.length === 0) {
       alert("No price history available to export.");
@@ -423,15 +447,19 @@ const BillsExpenses = () => {
       {/* Main Content */}
       <div className={styles.mainContent}>
         <div className={styles.topActions}>
-          <button className={styles.addButton} onClick={() => setShowAddModal(true)}>
-            Add New Bill/Expense
-          </button>
+        {roomId !== "master-room" && (
+            <button className={styles.addButton} onClick={() => setShowAddModal(true)}>
+              Add New Bill/Expense
+            </button>
+          )}
           <button className={styles.historyButton} onClick={handleOpenHistory}>
             Bills/Expenses History
           </button>
+          {roomId !== "master-room" && (
           <button className={styles.balanceButton} onClick={() => setShowBalancePopup(true)}>
             Balance Owed
           </button>
+          )}
         </div>
 
         <h3>All Bills & Expenses</h3>
@@ -490,7 +518,7 @@ const BillsExpenses = () => {
       </footer>
 
       {/* Portals for Modals */}
-      {showAddModal &&
+      {roomId !== "master-room" && showAddModal &&
         createPortal(
           <div className={styles.popupOverlay}>
             <div className={styles.popupMenu}>

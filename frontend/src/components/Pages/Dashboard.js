@@ -167,7 +167,6 @@ function Dashboard() {
           <div className={styles.contentDivider}></div>
           <p className={styles.subheading}>Manage and access your personal and shared spaces</p>
         </div>
-
         {isLoading ? (
           <div className={styles.loadingContainer}>
             <div className={styles.loadingSpinner}></div>
@@ -185,9 +184,11 @@ function Dashboard() {
                     <RoomCreationDoor />
                   </div>
                   
+                  {/* Display the Master Room Door if there are more than 1 rooms */}
+                  {Array.isArray(userData.rooms) && userData.rooms.length > 1 && (
                   <div className={styles.roomWrapper}>
-                    <RoomDoor roomName="Master Room" />
-                  </div>
+                    <RoomDoor roomName="Master Room" onClick={() => navigate(`/room/master-room`)}/>
+                  </div>)}
 
                   {/* Your Rooms Button */}
                   

@@ -144,7 +144,7 @@ router.get('/getPoints/:roomId', async (req, res) => {
     }
 });
 
-router.get('/getChores/:roomId', async (req, res) => {
+router.get('/getChores/:roomId/', async (req, res) => {
     try {
         const { roomId } = req.params;
 
@@ -163,6 +163,38 @@ router.get('/getChores/:roomId', async (req, res) => {
                     path: 'creator',
                     select: 'username' // Select only the username of the creator
                 }
+            });
+
+        if (!chores.length) {
+            return res.status(404).json({ message: "No chores found for this room." });
+        }
+
+        res.json(chores);
+    } catch (error) {
+        console.error("Error fetching chores:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.get('/getChoreMaster/:userId', async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const rooms = await User.findOne({ userId: userId }).populate('rooms');
+        if (!rooms) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        
+        // Find only the tasks that are in the rooms' tasks arrays and are of type 'Chore'
+        // Gather all tasks arrays from each room into one array
+        const allRoomTasks = rooms.rooms.reduce((acc, room) => acc.concat(room.tasks), []);
+        const chores = await Task.find({ _id: { $in: allRoomTasks }, type: 'Chore' })
+            .populate('order', 'username') // Populate order field with usernames
+            .populate({
+            path: 'comments',
+            populate: {
+                path: 'creator',
+                select: 'username' // Select only the username of the creator
+            }
             });
 
         if (!chores.length) {
