@@ -90,7 +90,11 @@ function Room() {
     }
 
     const handleBulletinClick = () => {
-        setShowBulletin(true);
+        if (roomData.settings[3] || roomData.settings[9] || roomData.settings[8]) {
+            setShowBulletin(true);
+        } else {
+            return
+        }
     };
 
     if (loading) return <div>Loading...</div>;
@@ -129,6 +133,7 @@ function Room() {
                 <Clock onClick={() => handleGoToState(roomId)} enabled={roomData.settings[4]} />
                 <BulletinBoard 
                     onClick={handleBulletinClick}
+                    enabled={roomData.settings[3] || roomData.settings[9] || roomData.settings[8]}
                 />
 
                 <ChoreItems 
@@ -138,7 +143,7 @@ function Room() {
             </div>
             <div className={style.roomFloor}/>
         </div>
-        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={roomData.settings} roomId={roomId} onOpenNotes={() => setShowNotesPopup(true)} />
+        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={[roomData.settings[3], roomData.settings[9], roomData.settings[8]]} roomId={roomId} onOpenNotes={() => setShowNotesPopup(true)} />
         <NotesPopup
             room={roomData}
             isOpen={showNotesPopup}

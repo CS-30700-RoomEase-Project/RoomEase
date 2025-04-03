@@ -94,109 +94,135 @@ const CreateRoom = ({ onClose }) => {
           </div>
           <div className="checkbox-section">
 
-          <div className="input-group">
-            <label htmlFor="grocery">
-              <input
-                type="checkbox"
-                id="grocery"
-                name="grocery"
-                checked={roomData.roomSettings[0]}
-                onChange={handleCheckboxChange(0)}
-              />
-              Enable Grocery List Sharing
-            </label>
-          </div>
+            <div className="input-group">
+              <label htmlFor="grocery">
+                <input
+                  type="checkbox"
+                  id="grocery"
+                  name="grocery"
+                  checked={roomData.roomSettings[0]}
+                  onChange={handleCheckboxChange(0)}
+                />
+                Enable Grocery List Sharing
+              </label>
+            </div>
 
-          <div className="input-group">
-            <label htmlFor="expense">
-              <input
-                type="checkbox"
-                id="expense"
-                name="expense"
-                checked={roomData.roomSettings[1]}
-                onChange={handleCheckboxChange(1)}
-              />
-              Enable Expense Sharing
-            </label>
-          </div>
+            <div className="input-group">
+              <label htmlFor="expense">
+                <input
+                  type="checkbox"
+                  id="expense"
+                  name="expense"
+                  checked={roomData.roomSettings[1]}
+                  onChange={handleCheckboxChange(1)}
+                />
+                Enable Expense Sharing
+              </label>
+            </div>
 
-          <div className="input-group">
-            <label htmlFor="dispute">
-              <input
-                type="checkbox"
-                id="dispute"
-                name="dispute"
-                checked={roomData.roomSettings[2]}
-                onChange={handleCheckboxChange(2)}
-              />
-              Enable Disputes
-            </label>
-          </div>
+            <div className="input-group">
+              <label htmlFor="dispute">
+                <input
+                  type="checkbox"
+                  id="dispute"
+                  name="dispute"
+                  checked={roomData.roomSettings[2]}
+                  onChange={handleCheckboxChange(2)}
+                />
+                Enable Disputes
+              </label>
+            </div>
 
-          <div className="input-group">
-            <label htmlFor="quiet-hours">
-              <input
-                type="checkbox"
-                id="quiet-hours"
-                name="quiet-hours"
-                checked={roomData.roomSettings[3]}
-                onChange={handleCheckboxChange(3)}
-              />
-              Enable Quiet Hours
-            </label>
-          </div>
+            <div className="input-group">
+              <label htmlFor="quiet-hours">
+                <input
+                  type="checkbox"
+                  id="quiet-hours"
+                  name="quiet-hours"
+                  checked={roomData.roomSettings[3]}
+                  onChange={handleCheckboxChange(3)}
+                />
+                Enable Quiet Hours
+              </label>
+            </div>
 
-          <div className="input-group">
-            <label htmlFor="room-state">
-              <input
-                type="checkbox"
-                id="room-state"
-                name="room-state"
-                checked={roomData.roomSettings[4]}
-                onChange={handleCheckboxChange(4)}
-              />
-              Enable Room State
-            </label>
-          </div>
+            <div className="input-group">
+              <label htmlFor="room-state">
+                <input
+                  type="checkbox"
+                  id="room-state"
+                  name="room-state"
+                  checked={roomData.roomSettings[4]}
+                  onChange={handleCheckboxChange(4)}
+                />
+                Enable Room State
+              </label>
+            </div>
 
-          <div className="input-group">
-            <label htmlFor="chores">
-              <input
-                type="checkbox"
-                id="chores"
-                name="chores"
-                checked={roomData.roomSettings[5]}
-                onChange={handleCheckboxChange(5)}
-              />
-              Enable Chores Splitting
-            </label>
-          </div>
+            <div className="input-group">
+              <label htmlFor="chores">
+                <input
+                  type="checkbox"
+                  id="chores"
+                  name="chores"
+                  checked={roomData.roomSettings[5]}
+                  onChange={handleCheckboxChange(5)}
+                />
+                Enable Chores Splitting
+              </label>
+            </div>
 
-          <div className="input-group">
-            <label htmlFor="group-chat">
-              <input
-                type="checkbox"
-                id="group-chat"
-                name="group-chat"
-                checked={roomData.roomSettings[6]}
-                onChange={handleCheckboxChange(6)}
-              />
-              Enable Group Chat
-            </label>
-          </div>
+            <div className="input-group">
+              <label htmlFor="group-chat">
+                <input
+                  type="checkbox"
+                  id="group-chat"
+                  name="group-chat"
+                  checked={roomData.roomSettings[6]}
+                  onChange={handleCheckboxChange(6)}
+                />
+                Enable Group Chat
+              </label>
+            </div>
 
-          <div className="input-group">
-            <label htmlFor="roomate-reviews">
-              <input
-                type="checkbox"
-                id="roomate-reviews"
-                name="roomate-reviews"
-                checked={roomData.roomSettings[7]}
-                onChange={handleCheckboxChange(7)}
-              />
-              Enable Roommate Reviews
-            </label>
-          </div>
+            <div className="input-group">
+              <label htmlFor="roomate-reviews">
+                <input
+                  type="checkbox"
+                  id="roomate-reviews"
+                  name="roomate-reviews"
+                  checked={roomData.roomSettings[7]}
+                  onChange={handleCheckboxChange(7)}
+                />
+                Enable Roommate Reviews
+              </label>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="room-notes">
+                <input
+                  type="checkbox"
+                  id="room-notes"
+                  name="room-notes"
+                  checked={roomData.roomSettings[8]}
+                  onChange={handleCheckboxChange(8)}
+                />
+                Enable Room Notes
+              </label>
+            </div>
+
+            <div className="input-group">
+              <label htmlFor="room-clauses">
+                <input
+                  type="checkbox"
+                  id="room-clauses"
+                  name="room-clauses"
+                  checked={roomData.roomSettings[9]}
+                  onChange={handleCheckboxChange(9)}
+                />
+                Enable Room Clauses
+              </label>
+            </div>
           </div>
 
             <div className="button-group">
