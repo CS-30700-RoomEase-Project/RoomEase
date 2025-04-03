@@ -116,9 +116,9 @@
 /* Quiet hours logo css */
 .quietHours {
     width: 30%;
-    height: 70%;
+    height:auto;
     position: relative;
-    left: 20%;
+    margin-right: auto;
 }
 
 .quietHours:hover {
@@ -131,10 +131,62 @@
     width: 20%;    /* Scale the image to 10% of its original size */
     height: auto;  /* Maintain the aspect ratio */
     position: relative;
-    right: 50%;     /* Same as quiet hours logo for alignment */
+    right: 0;     /* Same as quiet hours logo for alignment */
+    cursor: pointer;
 }
 
 .roomClauses:hover {
-    cursor: pointer;
     transform: scale(1.1);
 }
+
+.roomClauses::after {
+    content: "Quiet Hours";
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.roomClauses:hover::after {
+    opacity: 1;
+}
+
+.clausesBox {
+    background-color: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    width: 250px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    position: relative;
+    margin-left: auto;
+}
+
+.clausesBox:hover {
+    transform: scale(1.05);
+}
+
+.clausesBox::after {
+    content: "Room Clauses";
+    position: absolute;
+    top: -10%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.clausesBox:hover::after {
+    opacity: 1;
+}
+

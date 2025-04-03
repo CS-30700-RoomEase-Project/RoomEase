@@ -20,7 +20,8 @@ const RoomSchema = new mongoose.Schema({
     bulletinPhotos: [{ type: Array, default: [] }],
     outGoingInvites: { type: Array, default: [] },
     quietHours: [{ type: Array, default: [] }],
-    chorePoints: { type: Map, of: Number, default: () => ({Easy: 3,Medium: 5,Hard: 7})}
+    chorePoints: { type: Map, of: Number, default: () => ({Easy: 3,Medium: 5,Hard: 7})},
+    clauses: [{ type: String, default: ["Leave the toilet seat up", "Play your music as loud as possible", "Keep all doors open"] }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Room', RoomSchema);
