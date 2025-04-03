@@ -12,10 +12,13 @@ import Gavel from '../Room/Room Items/Gavel';
 
 import style from './MasterRoom.module.css';
 import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
+import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
 
 function MasterRoom() {
     const navigate = useNavigate();
 
+    const [showBulletin, setShowBulletin] = useState(false);
+    const [showNotesPopup, setShowNotesPopup] = useState(false);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userData, setUserData] = useState({});
@@ -72,13 +75,14 @@ function MasterRoom() {
     }
 
     const handleBulletinClick = () => {
-        //setShowBulletin(true);
+        setShowBulletin(true);
     };
 
     if (loading) return <div>Loading...</div>;
     if (error) return <div>Error: {error}</div>;
 
     return (
+        <>
         <div className={style.appContainer}>
             <div className={style.roomBanner}>
                 <ExitRoom onClick={() => navigate('/dashboard')} />
@@ -106,7 +110,8 @@ function MasterRoom() {
                 </Desk>
                 <Clock onClick={() => handleGoToState()} enabled={true} />
                 <BulletinBoard 
-                    onClick={handleGoToHours}
+                    onClick={handleBulletinClick}
+                    enabled={true}
                 />
 
                 <ChoreItems 
@@ -116,6 +121,14 @@ function MasterRoom() {
             </div>
             <div className={style.roomFloor}/>
         </div>
+        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={[true, true, true]} roomId={1} onOpenNotes={() => setShowNotesPopup(true)} />
+        <NotesPopup
+            room={null}
+            isOpen={showNotesPopup}
+            onClose={() => setShowNotesPopup(false)}
+            initialNotes={null}
+        />
+        </>
     )
 };
 
