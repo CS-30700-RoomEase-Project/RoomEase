@@ -37,7 +37,35 @@ router.post('/getList/:roomID', async (req, res) => {
       console.error('Error fetching bulletin notes list', error);
       res.status(500).json({ error: 'Server error while fetching bulletin notes list' });
     }
-  });
+});
+
+router.post('/getListMaster/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const user = await User.findOne({ userId: userId });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    // Assuming user.rooms is an array of room references (with _id)
+    const roomIds = user.rooms.map(room => (room._id ? room._id : room));
+    // Fetch all rooms that the user is in
+    const rooms = await Room.find({ _id: { $in: roomIds } }).select('roomName bulletinNotes');
+    
+    // Group notes by room
+    const aggregatedNotes = {};
+    rooms.forEach(room => {
+      aggregatedNotes[room._id] = {
+        roomName: room.roomName,
+        notes: room.bulletinNotes // assuming bulletinNotes is an array
+      };
+    });
+    
+    res.json(aggregatedNotes);
+  } catch (error) {
+    console.error('Error fetching aggregated bulletin notes:', error);
+    res.status(500).json({ error: 'Server error while fetching aggregated bulletin notes' });
+  }
+});
 
 router.post('/remove/:roomID/', async (req, res) => {
     try {

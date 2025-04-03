@@ -59,7 +59,7 @@
 }
 
 .checkbox-section {
-    max-height: 60vh; /* Adjust height as needed */
+    max-height: 40vh; /* Adjust height as needed */
     overflow-y: auto;
     padding-right: 10px; /* Optional, for scroll bar spacing */
     margin-bottom: 20px; /* Space below checkboxes */

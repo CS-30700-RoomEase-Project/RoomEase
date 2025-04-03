@@ -36,9 +36,9 @@ export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpe
                 <div className={style.board}>
                     <div className={style.frame}>
                         <div className={style.content}>
-                            {settings[3] && <img onClick={() => handleGoToHours()} className={style.quietHours} src={QHLogo} title="Quiet Hours"/>}
-                            {settings[4] && <img className={style.roomClauses} src={RoomClausesImage} title="Room Clauses" />} {/* Add RoomClauses image */}
-                            {<img onClick={onOpenNotes} className={style.notesImage} src={notesImage} title="Room Notes"/>}
+                            {settings[0] && <img onClick={() => handleGoToHours()} className={style.quietHours} src={QHLogo} title="Quiet Hours"/>}
+                            {settings[1] && <img className={style.roomClauses} src={RoomClausesImage} title="Room Clauses" />} {/* Add RoomClauses image */}
+                            {settings[2] && <img onClick={onOpenNotes} className={style.notesImage} src={notesImage} title="Room Notes"/>}
                         </div>
                     </div>
                 </div>
