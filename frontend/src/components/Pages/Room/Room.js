@@ -104,8 +104,8 @@ function Room() {
                 <h1 className={style.roomTitle}>{roomData.roomName}</h1>
                 {/* <Message onClick={() => handleGoToState(roomId)/> */}
                 <div className={style.roomBannerMini}>
-                    <RateButton/>
-                    <GroupChat roomId={roomId} userName={username}/>
+                    {roomData.settings[7] && (<RateButton/>)}
+                    {roomData.settings[6] && (<GroupChat roomId={roomId} userName={username}/>)}
                     <Avatar />
                 </div> 
             </div>
