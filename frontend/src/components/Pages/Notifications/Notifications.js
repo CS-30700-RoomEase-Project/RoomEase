@@ -39,7 +39,21 @@ function Notifications() {
             setLoading(false);
         };
 
+        const fetchUnaffiliatedNotifications = async () => {
+            try {
+                const response = await fetch("http://localhost:5001/api/notifications/unaffiliatedNotifications");
+                if (!response.ok) {
+                    throw new Error("Failed to fetch unaffiliated notifications");
+                }
+                const data = await response.json();
+                console.log("Unaffiliated Notifications:", data);
+            } catch (error) {
+                console.error("Error fetching unaffiliated notifications:", error);
+            }
+        };
+
         fetchNotifications();
+        fetchUnaffiliatedNotifications();
     }, []);
 
     const handleGoToDashboard = () => {

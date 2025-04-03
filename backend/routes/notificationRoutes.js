@@ -3,6 +3,36 @@ const router = express.Router();
 const User = require("../models/User"); // Import User model
 const Notification = require("../models/Notification");
 
+// GET unaffiliated notifications (for debugging)
+router.get("/unaffiliatedNotifications", async (req, res) => {
+    try {
+        const notifications = await Notification.find();
+        const users = await User.find();
+        const notificationCountMap = {};
+
+        for (const notification of notifications) {
+            let isAffiliated = false;
+            
+            for (const user of users) {
+                if (user.notifications.includes(notification._id)) {
+                    isAffiliated = true;
+                    break;
+                }
+            }
+            
+            if (!isAffiliated) {
+                notificationCountMap[notification.notificationType] = 
+                    (notificationCountMap[notification.notificationType] || 0) + 1;
+            }
+        }
+
+        res.json({ unaffiliatedNotificationCounts: notificationCountMap });
+    } catch (error) {
+        console.error("Error fetching unaffiliated notifications:", error);
+        res.status(500).json({ message: "Internal Server Error" });
+    }
+});
+
 //delete notification from a user's inbox
 router.delete("/removeNotification/:userId/:notifId", async (req, res) => {
     const { userId, notifId } = req.params;
