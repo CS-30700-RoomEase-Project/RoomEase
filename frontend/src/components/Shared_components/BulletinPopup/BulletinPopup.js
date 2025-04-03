@@ -8,13 +8,13 @@ import QHLogo from './QuietHoursIcon.png';
 import RoomClausesImage from './RoomClauses.png';  // Import RoomClauses image
 import notesImage from './notes.png';
 
-export default function BulletinPopup({ isOpen, onClose, settings, onOpenNotes }) {
+export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpenNotes }) {
     const navigate = useNavigate();
     const [showNotesPopup, setShowNotesPopup] = useState(false);
 
-    const handleGoToHours = (roomId) => {
+    const handleGoToHours = () => {
         console.log("Navigating to quiet-hours with roomId:", roomId); // Debugging
-        navigate(`/quiet-hours/`);
+        navigate(`/quiet-hours/${roomId}`);
     }
 
     const handleNotesPopup = (roomId) => {
@@ -36,7 +36,7 @@ export default function BulletinPopup({ isOpen, onClose, settings, onOpenNotes }
                 <div className={style.board}>
                     <div className={style.frame}>
                         <div className={style.content}>
-                            {settings[3] && <img onClick={handleGoToHours} className={style.quietHours} src={QHLogo} title="Quiet Hours"/>}
+                            {settings[3] && <img onClick={() => handleGoToHours()} className={style.quietHours} src={QHLogo} title="Quiet Hours"/>}
                             {settings[4] && <img className={style.roomClauses} src={RoomClausesImage} title="Room Clauses" />} {/* Add RoomClauses image */}
                             {<img onClick={onOpenNotes} className={style.notesImage} src={notesImage} title="Room Notes"/>}
                         </div>

@@ -1,7 +1,7 @@
 import React from 'react';
 import '../ComputerIcons.css';
 
-function InviteIcon({ onClick }) {
+function BillsIcon({ onClick }) {
     return (
         <div className="bill-icon" onClick={onClick} title='Manage Bills and Expenses'>
             <div className="vertical-dollar-line">
@@ -11,4 +11,4 @@ function InviteIcon({ onClick }) {
     )
 }
 
-export default InviteIcon;
+export default BillsIcon;

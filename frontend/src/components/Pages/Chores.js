@@ -15,19 +15,33 @@ function Chores() {
     const [isCommentsPopupOpen, setCommentsPopupOpen] = useState(false);
     const [chores, setChores] = useState([]); // Store fetched chores
     const [selectedChore, setSelectedChore] = useState(null); // Track selected chore for editing
+    const [userData, setUserData] = useState({}); // Store user data
 
     // Fetch chores from API
     const fetchChores = async () => {
         try {
-            const response = await fetch(`http://localhost:5001/api/chores/getChores/${roomId}`); // Ensure API is working
-            if (!response.ok) throw new Error("Failed to fetch chores");
+            if (roomId !== "master-room") {
+                const response = await fetch(`http://localhost:5001/api/chores/getChores/${roomId}`); // Ensure API is working
+                if (!response.ok) throw new Error("Failed to fetch chores");
 
-            const data = await response.json();
+                const data = await response.json();
+                
+                // Sort chores: Incomplete first, then completed
+                const sortedChores = data.sort((a, b) => a.completed - b.completed);
 
-            // Sort chores: Incomplete first, then completed
-            const sortedChores = data.sort((a, b) => a.completed - b.completed);
+                setChores(sortedChores); // Update state with sorted chores
+            } else {
+                const response = await fetch(`http://localhost:5001/api/chores/getMasterChores/${userData.userId}`); // Ensure API is working
+                if (!response.ok) throw new Error("Failed to fetch chores");
 
-            setChores(sortedChores); // Update state with sorted chores
+                const data = await response.json();
+
+                // Sort chores: Incomplete first, then completed
+                const sortedChores = data.sort((a, b) => a.completed - b.completed);
+
+                setChores(sortedChores); // Update state with sorted chores
+            }
+
         } catch (error) {
             console.error("Error fetching chores:", error);
         }
@@ -35,6 +49,7 @@ function Chores() {
 
 
     useEffect(() => {
+        setUserData(JSON.parse(localStorage.getItem("userData"))); // Get user data from local storage
         if (roomId) {
             fetchChores();
         }
