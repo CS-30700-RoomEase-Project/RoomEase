@@ -31,7 +31,7 @@ function Chores() {
 
                 setChores(sortedChores); // Update state with sorted chores
             } else {
-                const response = await fetch(`http://localhost:5001/api/chores/getMasterChores/${userData.userId}`); // Ensure API is working
+                const response = await fetch(`http://localhost:5001/api/chores/getChoresMaster/${userData.userId}`); // Ensure API is working
                 if (!response.ok) throw new Error("Failed to fetch chores");
 
                 const data = await response.json();

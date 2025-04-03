@@ -147,13 +147,11 @@ router.get('/getPoints/:roomId', async (req, res) => {
 router.get('/getChores/:roomId/', async (req, res) => {
     try {
         const { roomId } = req.params;
-
         // Find the room and get its tasks array
         const room = await Room.findById(roomId).select('tasks');
         if (!room) {
             return res.status(404).json({ message: "Room not found." });
         }
-
         // Find only the tasks that are in the room's tasks array and are of type 'Chore'
         const chores = await Task.find({ _id: { $in: room.tasks }, type: 'Chore' })
             .populate('order', 'username') // Populate order field with usernames
@@ -176,7 +174,7 @@ router.get('/getChores/:roomId/', async (req, res) => {
     }
 });
 
-router.get('/getChoreMaster/:userId', async (req, res) => {
+router.get('/getChoresMaster/:userId', async (req, res) => {
     const { userId } = req.params;
     try {
         const rooms = await User.findOne({ userId: userId }).populate('rooms');
