@@ -71,7 +71,6 @@ const CreateRoom = ({ onClose }) => {
       <div className="modal">
         <div className="content">
           <h4>Create Room</h4>
-  
           <div className="input-group">
             <label htmlFor="roomName">Room Name:</label>
             <input
@@ -93,7 +92,8 @@ const CreateRoom = ({ onClose }) => {
               onChange={handleChange}
             />
           </div>
-  
+          <div className="checkbox-section">
+
           <div className="input-group">
             <label htmlFor="grocery">
               <input
@@ -170,6 +170,33 @@ const CreateRoom = ({ onClose }) => {
               />
               Enable Chores Splitting
             </label>
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="group-chat">
+              <input
+                type="checkbox"
+                id="group-chat"
+                name="group-chat"
+                checked={roomData.roomSettings[6]}
+                onChange={handleCheckboxChange(6)}
+              />
+              Enable Group Chat
+            </label>
+          </div>
+
+          <div className="input-group">
+            <label htmlFor="roomate-reviews">
+              <input
+                type="checkbox"
+                id="roomate-reviews"
+                name="roomate-reviews"
+                checked={roomData.roomSettings[7]}
+                onChange={handleCheckboxChange(7)}
+              />
+              Enable Roommate Reviews
+            </label>
+          </div>
           </div>
 
             <div className="button-group">
