@@ -53,7 +53,7 @@ function Chores() {
         if (roomId) {
             fetchChores();
         }
-    }, ); // Refetch chores when roomId changes
+    }, [roomId]); // Refetch chores when roomId changes
 
     // Mark chore as complete and switch to next person
     const handleMarkAsComplete = async (chore) => {
