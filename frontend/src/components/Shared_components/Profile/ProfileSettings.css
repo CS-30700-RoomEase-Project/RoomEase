@@ -1,147 +1,144 @@
 .modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-    background-color: rgba(0, 0, 0, 0);
-    
-  }
-  
-  .content {
-    background-color: rgba(0, 0, 0, 0.7);
-    overflow: hidden;
-    padding: 2rem;
-    border-radius: 12px;
-    content: left;
-    /* box-shadow: 0 8px 32px rgba(0, 0, 0, ); */
-    width: 100%;
-    max-width: 400px;
-    animation: fadeIn 0.3s ease;
-  }
-  
-  @keyframes fadeIn {
-    from {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0); /* Keep transparent */
+}
+
+.content {
+  background-color: rgba(15, 23, 42, 0.95); /* Deep bluish-gray from first CSS */
+  overflow: hidden;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  animation: fadeIn 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
+}
+
+@keyframes fadeIn {
+  from {
       opacity: 0;
       transform: translateY(-10px);
-    }
-    to {
+  }
+  to {
       opacity: 1;
       transform: translateY(0);
-    }
   }
-  
-  h4 {
-    color: #e7e7e7;
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    text-align: center;
-  }
-  
-  .input-group {
-    margin-bottom: 1rem;
-  }
-  
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #e7e7e7;
-    font-weight: 500;
-  }
-  
-  input[type="text"],
-  input[type="number"] {
-    width: 100%;
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.2s ease;
-  }
-  
-  input[type="text"]:focus,
-  input[type="number"]:focus {
-    outline: none;
-    border-color: #4CAF50;
-    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
-  }
-  
-  input[type="checkbox"] {
-    margin-right: 0.5rem;
-    width: 16px;
-    height: 16px;
-  }
-  
-  .button-group {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 2rem;
-  }
-  
-  button {
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s ease;
-  }
-  
-  button:hover {
-    transform: translateY(-1px);
-  }
-  
-  button:active {
-    transform: translateY(0);
-  }
-  
-  .save-button {
-    background-color: #4CAF50;
-    color: white;
-  }
-  
-  .save-button:hover {
-    background-color: #bcfebf;
-  }
-  
-  .close-button {
-    background-color: #b56565;
-    color: #ffffff;
-  }
-  
-  .close-button:hover {
-    background-color: #e9ecef;
-  }
-  
-  .read-only {
-    background-color: #f8f9fa;
-    color: #777;
-    cursor: not-allowed;
-  }
-  
-  /* Optional: Add a subtle border around the entire modal */
-  .content {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
- 
-  .chat-filter-toggle {
-    cursor: pointer;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    display: inline-block;
-    margin-top: 10px;
-  }
-  
-  .chat-filter-toggle.enabled {
-    background-color: #4CAF50;
-    color: white;
-  }
-  
-  .chat-filter-toggle.disabled {
-    background-color: #f44336;
-    color: white;
-  }
-  
+}
+
+h4 {
+  color: #e7e7e7;
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  font-family: 'Inter', sans-serif; /* Matching font */
+}
+
+.input-group {
+  margin-bottom: 1rem;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #e7e7e7;
+  font-weight: 500;
+}
+
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #334155; /* Darker border */
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  background-color: #1e293b; /* Darker input field */
+  color: #e7e7e7;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  outline: none;
+  border-color: #3b82f6; /* Blue focus */
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+}
+
+input[type="checkbox"] {
+  margin-right: 0.5rem;
+  width: 16px;
+  height: 16px;
+}
+
+.button-group {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+button {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+.save-button {
+  background-color: #3b82f6; /* Blue to match original theme */
+  color: white;
+}
+
+.save-button:hover {
+  background-color: #60a5fa; /* Lighter blue */
+}
+
+.close-button {
+  background-color: #ef4444; /* Red to match first CSS */
+  color: #ffffff;
+}
+
+.close-button:hover {
+  background-color: #f87171;
+}
+
+.read-only {
+  background-color: #334155;
+  color: #777;
+  cursor: not-allowed;
+}
+
+.chat-filter-toggle {
+  cursor: pointer;
+  padding: 10px;
+  background-color: #1e293b; /* Darker gray for toggle */
+  border-radius: 5px;
+  display: inline-block;
+  margin-top: 10px;
+  color: white;
+}
+
+.chat-filter-toggle.enabled {
+  background-color: #3b82f6; /* Blue */
+  color: white;
+}
+
+.chat-filter-toggle.disabled {
+  background-color: #ef4444; /* Red */
+  color: white;
+}

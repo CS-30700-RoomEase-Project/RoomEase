@@ -10,6 +10,7 @@ router.post('/add/:roomID', async (req, res) => {
       const item = new Grocery({...req.body});
       const roomID = req.params.roomID;
       const room = await Room.findById(roomID);
+      
       if (!room) {
         return res.status(404).json({ error: 'Room not found' });
       }
@@ -36,35 +37,22 @@ router.post('/add/:roomID', async (req, res) => {
     }
   });
 
-  router.post('/remove/:roomID/:itemID', async (req, res) => {
+  router.post('/remove/:itemID', async (req, res) => {
     try {
-
-      const roomID = req.params.roomID;
-      const room = await Room.findById(roomID);
-
-      if (!room) {
-        return res.status(404).json({ error: 'Room not found' });
-      }
-
       const itemID = req.params.itemID;
       const item = await Grocery.findById(itemID);
-
       if (!item) {
         return res.status(404).json({ error: 'Item not found' });
       }
-      
-      const deletedItem = await Grocery.findByIdAndDelete(item._id);
 
+      // Delete the grocery item
+      const deletedItem = await Grocery.findByIdAndDelete(itemID);
       if (!deletedItem) {
         return res.status(404).json({ error: 'Grocery not found' });
       }
 
-      let itemIndex = room.tasks.indexOf(item._id);
-      if (itemIndex > -1) {
-        room.tasks.splice(itemIndex, 1);
-      }
-
-      await Room.findByIdAndUpdate(roomID, room);
+      // Remove the deleted grocery from the tasks array in any room that contains it
+      await Room.updateMany({ tasks: itemID }, { $pull: { tasks: itemID } });
 
       res.json({ message: 'Grocery removed successfully' });
     } catch (error) {
@@ -73,7 +61,7 @@ router.post('/add/:roomID', async (req, res) => {
     }
   });
 
-  // Return the grocery list
+  // Return the grocery list for a specific room
   router.post('/getList/:roomID', async (req, res) => {
     try {
       const roomID = req.params.roomID;
@@ -101,8 +89,42 @@ router.post('/add/:roomID', async (req, res) => {
     }
   });
 
+  // Return the grocery list for the master room
+  router.post('/getListMaster/:userId', async (req, res) => {
+    try {
+      const userId = req.params.userId;
+      const user = await User.findOne({ userId });
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+
+      const rooms = await Room.find({ roomMembers: user.userId }).populate('tasks');
+      if (!rooms || rooms.length === 0) {
+        return res.status(404).json({ error: 'No rooms found for user' });
+      }
+
+      // Combine tasks from all rooms into a single array
+      const tasks = rooms.reduce((acc, room) => acc.concat(room.tasks), []);
+      
+      let groceries = [];
+
+      for (let i = 0; i < tasks.length; i++) {
+        let task = tasks[i];
+        if (task.type === 'Grocery') {
+          task = await task.populate('requesters', 'username');
+          groceries.push(task);
+        }
+      }
+      
+      res.json(groceries);
+    } catch (error) {
+      console.error('Error fetching grocery list', error);
+      res.status(500).json({ error: 'Server error while fetching grocery list' });
+    }
+  });
+
   router.post('/request/:roomId/:itemId', async (req, res) => {
-    const { roomId, itemId } = req.params;
+    const { roomId, itemId } = req.params; // Since roomId is not used in the function, you can remove it if not needed
     const { userId, description } = req.body; // userId is the custom string from the client
   
     try {
@@ -150,6 +172,8 @@ router.post('/add/:roomID', async (req, res) => {
       res.status(500).json({ error: 'Server error' });
     }
   });
+
+  
 
   router.post("/notifyPurchased/:roomId/:itemId/", async (req, res) => {
     const { userId, description, pageID } = req.body;

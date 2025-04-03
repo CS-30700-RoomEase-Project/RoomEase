@@ -13,13 +13,14 @@ const RoomSchema = new mongoose.Schema({
     }],
     roomMembers: [{ type: String, default: [] }],
     monthlyRatings: [{ type: String, default: [] }],
-    points: [{ type: Number, default: [] }],
+    points: { type: Map, of: Number, default: () => ({})},
     houseRules: [{ type: String, default: [] }],
     completedTasks: [],
-    bulletinNotes: [{ type: Array, default: [] }],
+    bulletinNotes: { type: [String], default: [] },
     bulletinPhotos: [{ type: Array, default: [] }],
     outGoingInvites: { type: Array, default: [] },
-    quietHours: [{ type: Array, default: [] }]
+    quietHours: [{ type: Array, default: [] }],
+    chorePoints: { type: Map, of: Number, default: () => ({Easy: 3,Medium: 5,Hard: 7})}
 }, { timestamps: true });
 
 module.exports = mongoose.model('Room', RoomSchema);

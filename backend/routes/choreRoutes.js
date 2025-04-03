@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { Task, Chore } = require('../models/Tasks'); // Import Chore and task models
+const { Task, Chore, choreComment } = require('../models/Tasks'); // Import Chore and task models
 const User = require('../models/User'); // Import User model
 const Room = require('../models/Room'); // Import the Room model
 
@@ -14,6 +14,28 @@ router.put('/markComplete/:id/:roomId', async (req, res) => {
             return res.status(404).json({ message: "Chore not found" });
         }
 
+        if (!chore.completed) {
+            const room = await Room.findById(roomId);
+            if (!room) {
+                return res.status(404).json({ message: "Room not found" });
+            }
+
+            const userId = chore.order[chore.whoseTurn];
+
+            if (!userId) {
+                return res.status(400).json({ message: "Invalid turn order" });
+            }
+
+            // Step 4: Get the difficulty-based points
+            const difficultyPoints = room.chorePoints.get(chore.difficulty) || 0;
+
+            room.points.set(userId, (room.points.get(userId) || 0) + difficultyPoints);
+
+            console.log(room.points);
+            // Save the updated room document
+            await room.save();
+        }
+
         // Call the complete method
         await chore.complete(roomId);
 
@@ -24,37 +46,49 @@ router.put('/markComplete/:id/:roomId', async (req, res) => {
     }
 });
 
+router.put('/putPoints/:roomId', async (req, res) => {
+    try {
+        const { roomId } = req.params;
+        const updatedPoints = req.body; // Expecting an object { Easy: X, Medium: Y, Hard: Z }
 
+        const updatedRoom = await Room.findByIdAndUpdate(
+            roomId,
+            { chorePoints: updatedPoints }, 
+            { new: true } // Returns the updated document
+        );
+
+        if (!updatedRoom) {
+            return res.status(404).json({ message: "Room not found." });
+        }
+
+        res.json({ message: "Chore points updated successfully!" });
+    } catch (error) {
+        console.error("Error updating points:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
 
 
 //route to update a chore by id
 router.put('/updateChore/:id', async (req, res) => {
     console.log("Updating chore");
+    const { id } = req.params;
+    console.log(id);
 
-    const { name, description, id, turns, firstTurn, dueDate, frequency } = req.body;
+    const { name, description, turns, firstTurn, dueDate, recurrenceDays, difficulty } = req.body;
 
     try {
-        // Convert user names to ObjectIds
-        const users = await Promise.all(
-            turns.map(async (name) => await User.findOne({ username: name }).select('_id'))
-        );
-        const firstUser = await User.findOne({ username: firstTurn }).select('_id');
-
-        if (!users.length || !firstUser) {
-            console.log("Invalid users provided");
-            return res.status(400).json({ error: "Invalid users provided" });
-        }
-
         // Find and update the chore
         const updatedChore = await Chore.findByIdAndUpdate(
             id,
             { 
                 choreName: name, 
                 description: description, 
-                order: users, 
-                whoseTurn: users.findIndex(user => user._id.toString() === firstUser._id.toString()),
+                order: turns, 
+                whoseTurn: firstTurn,
                 dueDate, // Directly storing the ISO-formatted due date
-                recurringDays: frequency || 0 // Default to non-recurring if not provided
+                recurringDays: recurrenceDays || 0, // Default to non-recurring if not provided
+                difficulty: difficulty
             },
             { new: true } // Return the updated document
         );
@@ -93,7 +127,24 @@ router.delete('/delete/:id/:roomId', async (req, res) => {
     }
 });
 
-router.get('/getChores/:roomId', async (req, res) => {
+router.get('/getPoints/:roomId', async (req, res) => {
+    try {
+        const { roomId } = req.params;
+
+        const points = await Room.findById(roomId).select('-_id chorePoints');
+        if (!points) {
+            return res.status(404).json({ message: "Room not found." });
+        }
+
+        //return chorePoints
+        res.json(points);
+    } catch (error) {
+        console.error("Error fetching points:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.get('/getChores/:roomId/', async (req, res) => {
     try {
         const { roomId } = req.params;
 
@@ -105,7 +156,46 @@ router.get('/getChores/:roomId', async (req, res) => {
 
         // Find only the tasks that are in the room's tasks array and are of type 'Chore'
         const chores = await Task.find({ _id: { $in: room.tasks }, type: 'Chore' })
-            .populate('order', 'username'); // Populate order field with usernames
+            .populate('order', 'username') // Populate order field with usernames
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'creator',
+                    select: 'username' // Select only the username of the creator
+                }
+            });
+
+        if (!chores.length) {
+            return res.status(404).json({ message: "No chores found for this room." });
+        }
+
+        res.json(chores);
+    } catch (error) {
+        console.error("Error fetching chores:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.get('/getChoreMaster/:userId', async (req, res) => {
+    const { userId } = req.params;
+    try {
+        const rooms = await User.findOne({ userId: userId }).populate('rooms');
+        if (!rooms) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        
+        // Find only the tasks that are in the rooms' tasks arrays and are of type 'Chore'
+        // Gather all tasks arrays from each room into one array
+        const allRoomTasks = rooms.rooms.reduce((acc, room) => acc.concat(room.tasks), []);
+        const chores = await Task.find({ _id: { $in: allRoomTasks }, type: 'Chore' })
+            .populate('order', 'username') // Populate order field with usernames
+            .populate({
+            path: 'comments',
+            populate: {
+                path: 'creator',
+                select: 'username' // Select only the username of the creator
+            }
+            });
 
         if (!chores.length) {
             return res.status(404).json({ message: "No chores found for this room." });
@@ -125,19 +215,9 @@ router.post('/addChore/:roomId', async (req, res) => {
         const { roomId } = req.params
 
         console.log("adding");
-        const { name, description, turns, firstTurn, dueDate, recurrenceDays } = req.body;
+        const { name, description, turns, firstTurn, dueDate, recurrenceDays, difficulty } = req.body;
         console.log("recurrenceDays");
         console.log(recurrenceDays);
-
-        // Convert user names to ObjectIds
-        const users = await Promise.all(
-            turns.map(async (name) => await User.findOne({ username: name }).select('_id'))
-        );
-        const firstUser = await User.findOne({ username: firstTurn }).select('_id');
-
-        if (!users.length || !firstUser) {
-            return res.status(400).json({ error: "Invalid users provided" });
-        }
 
         // Ensure dueDate is a valid Date object
         const parsedDueDate = dueDate ? new Date(dueDate) : null;
@@ -147,13 +227,14 @@ router.post('/addChore/:roomId', async (req, res) => {
 
         const newChore = new Chore({
             taskId: Math.floor(Math.random() * 1000000),
-            creatorId: users[0]._id,
+            creatorId: turns[0],
             choreName: name,
-            order: users.map(user => user._id),
+            order: turns,
             description: description,
-            whoseTurn: users.findIndex(user => user._id.toString() === firstUser._id.toString()),
+            whoseTurn: firstTurn,
             dueDate: parsedDueDate,
             recurringDays: recurrenceDays || 0, // Default to non-recurring if not provided
+            difficulty: difficulty,
             isComplete: false // Initialize as not completed
         });
 
@@ -180,6 +261,78 @@ router.post('/addChore/:roomId', async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+router.post('/addComment', async (req, res) => {
+    try {
+        const {chore, creator, message, notify, roomId} = req.body;
+
+        ///console.log("creator:", creator);
+
+        const user = await User.findOne({userId: creator}).populate();
+
+        console.log("userid:", user._id);
+        console.log("user:", user);
+
+        const newComment = new choreComment({
+            creator: user._id,
+            comment: message   
+        });
+
+        await newComment.save();
+
+        console.log("chore:", chore);
+
+        const updatedChore = await Chore.findByIdAndUpdate(
+            chore,
+            { $push: { comments: newComment._id }},
+            { new: true, useFindAndModify: false }
+        );
+
+        if (!updatedChore) {
+            return res.status(404).json({ error: "chore not found" });
+        }
+
+        if (notify) {
+            target = await Chore.findById(chore);
+            if (!target) {
+                console.log("null target");
+            }
+            await target.commentNotification(message, roomId);
+        }
+
+
+        res.status(201).json({ message: "comment added successfully!", comment: newComment });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+router.delete('/deleteComment', async (req, res) => {
+    try {
+        const { commentId, choreId } = req.body;
+
+        if (!commentId || !choreId) {
+            return res.status(400).json({ error: "Comment ID and Chore ID are required." });
+        }
+
+        // Remove the comment from the database
+        const deletedComment = await choreComment.findByIdAndDelete(commentId);
+        if (!deletedComment) {
+            return res.status(404).json({ error: "Comment not found." });
+        }
+
+        // Remove the comment reference from the Chore document
+        await Chore.findByIdAndUpdate(choreId, { $pull: { comments: commentId } });
+
+        res.status(200).json({ message: "Comment deleted successfully.", commentId });
+    } catch (error) {
+        console.error("Error deleting comment:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
 
 router.post('/checkOverdue/:userId', async (req, res) => {
     try {

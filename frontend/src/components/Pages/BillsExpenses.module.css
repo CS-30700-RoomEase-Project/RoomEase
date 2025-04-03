@@ -1,157 +1,278 @@
-/* Container with a gradient background (same style as dashboard) */
+/* Global Reset */
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  background: #0d0a1a; /* Dark theme */
+  overflow-x: hidden;   /* Avoid horizontal scroll */
+}
+
+/* Container: Sticky Footer Layout */
 .billsAppContainer {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  height: 100vh;
-  width: 100%;
-  overflow: auto;
+  min-height: 100vh;  /* Fill the viewport */
+  background: linear-gradient(135deg, #120a24, #1a1133, #0d0a1a);
+  background-size: 400% 400%;
+  animation: gradientBackground 15s ease infinite;
+  color: #f8fafc;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  position: relative;
   overflow-x: hidden;
-  background: linear-gradient(to right, #bc9974, #f7e4d2);
-  box-sizing: border-box;
 }
 
-/* Top banner area */
-.billsBanner {
+@keyframes gradientBackground {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Decorative Elements */
+.decorCircle1,
+.decorCircle2,
+.decorCircle3 {
+  position: fixed;      /* Fixed positioning so they don't expand page height */
+  pointer-events: none; /* Don't block clicks/scrolling */
+  z-index: 0;           /* Behind main content */
+}
+
+.decorCircle1 {
+  width: 300px;
+  height: 300px;
+  top: -100px;    /* Negative offset */
+  left: -100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(139,92,246,0.3) 0%, rgba(99,102,241,0.15) 50%, transparent 70%);
+}
+
+.decorCircle2 {
+  width: 400px;
+  height: 400px;
+  bottom: -200px; /* Negative offset */
+  right: -150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(167,139,250,0.3) 0%, rgba(129,140,248,0.15) 50%, transparent 70%);
+}
+
+.decorCircle3 {
+  width: 300px;
+  height: 300px;
+  top: 30%;
+  left: 60%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(129,140,248,0.15), transparent);
+}
+
+/* Navbar */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 2.5rem;
+  background: rgba(180,190,255,0.8);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.navContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 10px;
-  background: rgba(219, 149, 20, 0.495);
-  box-sizing: border-box;
 }
 
-/* Header inside the banner */
-.header {
-  flex-grow: 1;
-  text-align: center;
-}
-
-/* Main content area */
-.billsContent {
-  flex-grow: 1;
-  padding: 30px;
-  margin: 0 auto;
-  /* The container will take up 80% of the viewport width up to a max of 1200px */
-  width: 80%;
-  max-width: 1200px;
-  box-sizing: border-box;
-
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-/* Form styling */
-.billForm {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 20px;
-  /* Let the form fill the container but limit how wide it can grow */
-  width: 100%;
-  max-width: 800px;
-}
-
-.billForm input {
-  width: 100%;
-  box-sizing: border-box;
-}
-
-.formGroup {
-  display: flex;
-  flex-direction: column;
-  margin-bottom: 10px;
-}
-
-.formGroup label {
-  font-weight: bold;
-  margin-bottom: 5px;
-}
-
-.formGroup input {
-  padding: 8px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-}
-
-/* Row layout for input + button fields */
-.formGroupRow {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.formGroupRow input {
-  flex: 1;
-  box-sizing: border-box;
-}
-
-/* Submit button style */
-.submitButton {
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+.navBackButton {
+  background: transparent;
   border: none;
-  border-radius: 4px;
+  color: #f8fafc;
+  font-size: 1rem;
   cursor: pointer;
 }
 
-.submitButton:hover {
-  background-color: #0056b3;
+.navTitle {
+  font-size: 2rem;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  letter-spacing: -0.5px;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* Bills list */
+.navRight {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Main Content */
+.mainContent {
+  flex: 1;  /* Grow to push footer to bottom */
+  padding: 2rem;
+  position: relative;
+  z-index: 2;
+}
+
+/* Top Action Buttons */
+.topActions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.addButton,
+.historyButton,
+.balanceButton {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: #8b5cf6;
+  color: #f8fafc;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.addButton:hover,
+.historyButton:hover,
+.balanceButton:hover {
+  background: #6366f1;
+}
+
+/* Bills List */
 .billList {
   list-style: none;
   padding: 0;
-  width: 100%;
-  max-width: 800px; /* match or differ from .billForm if you like */
 }
 
 .billItem {
-  background: #f8f8f8;
-  margin-bottom: 8px;
-  padding: 10px;
-  border-radius: 4px;
+  background: rgba(255,255,255,0.1);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
-/* Popup overlay */
+.billItem:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* Popup Overlay & Menu */
 .popupOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  background: rgba(0,0,0,0.5);
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 99999 !important;
+  padding: 1rem;
+  overflow-y: auto;
 }
 
-/* Popup menu */
 .popupMenu {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 400px;
-  color: #000; /* Ensure text is black */
+  position: relative;
+  background: #1a1133;
+  padding: 2rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  max-width: 500px;
+  color: #f8fafc;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 100000;
 }
 
-/* Button group styling */
-.buttonGroup button {
-  margin-right: 10px;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+/* Form Elements in Popups */
+.popupMenu input,
+.popupMenu select {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 0.375rem;
+  text-align: left;
+  background: rgba(255,255,255,0.1);
+  color: #f8fafc;
 }
 
-/* Force popup labels to black */
-.popupMenu .formGroup label {
+.popupMenu select option {
+  background: #fff;
   color: #000;
+}
+
+.popupMenu input:focus,
+.popupMenu select:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 5px rgba(139,92,246,0.5);
+}
+
+.popupMenu label {
+  display: block;
+  text-align: left;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+/* Tables */
+.userTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+
+.userTable th,
+.userTable td {
+  padding: 0.3rem;
+  border: 1px solid rgba(255,255,255,0.2);
+  text-align: left;
+  color: #f8fafc;
+}
+
+.userTable th {
+  background: rgba(139,92,246,0.2);
+}
+
+/* Footer */
+.footer {
+  background: rgba(17,24,39,0.9);
+  backdrop-filter: blur(8px);
+  border-top: 1px solid rgba(99,102,241,0.2);
+  padding: 1.5rem;
+  text-align: center;
+  color: #94a3b8;
+  z-index: 10;
+  margin-top: 0;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .mainContent {
+    padding: 1rem;
+  }
+  .navTitle {
+    font-size: 1.5rem;
+  }
+}
+
+/* Add spacing between adjacent buttons */
+button + button {
+  margin-left: 0.5rem;
 }

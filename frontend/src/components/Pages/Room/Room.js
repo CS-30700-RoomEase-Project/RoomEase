@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Avatar from '../../Shared_components/AvatarButton/AvatarButton';
 import GroupChat from '../../Shared_components/Messages/GroupChat';
+import RateButton from '../../Shared_components/RoomRating/RateButton';
 import ExitRoom from './Room Icons/ExitRoom';
 import BulletinBoard from './Room Items/BulletinBoard';
 import ChoreItems from './Room Items/ChoreItems';
@@ -13,12 +14,14 @@ import Gavel from './Room Items/Gavel';
 
 import style from './Room.module.css';
 import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
+import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
 
 function Room() {
     const { roomId } = useParams(); // Gets the roomId from the URL
     const navigate = useNavigate();
 
     const [showBulletin, setShowBulletin] = useState(false);
+    const [showNotesPopup, setShowNotesPopup] = useState(false);
     const [roomData, setRoomData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -46,6 +49,8 @@ function Room() {
                 }
 
                 const data = await response.json();
+                localStorage.setItem('roommates', "");                localStorage.setItem('roommates', "");
+                localStorage.setItem('roommates', JSON.stringify(data.room.roomMembers)); // Store room data in local storage                localStorage.setItem('roommates', JSON.stringify(data.room.roomMembers)); // Store room data in local storage
                 setRoomData(data.room);
                 setLoading(false);
             } catch (err) {
@@ -71,12 +76,7 @@ function Room() {
         console.log("Navigating to chores with roomId:", roomId); // Debugging
         navigate(`/chores/${roomId}`);
     }
-    
-    const handleGoToHours = (roomId) => {
-        console.log("Navigating to quiet-hours with roomId:", roomId); // Debugging
-        navigate(`/quiet-hours/${roomId}`);
-    }
-    
+
     const handleGoToState = (roomId) => {
         console.log("Navigating to state with roomId:", roomId); // Debugging
         navigate(`/room-state/${roomId}`);
@@ -90,7 +90,11 @@ function Room() {
     }
 
     const handleBulletinClick = () => {
-        setShowBulletin(true);
+        if (roomData.settings[3] || roomData.settings[9] || roomData.settings[8]) {
+            setShowBulletin(true);
+        } else {
+            return
+        }
     };
 
     if (loading) return <div>Loading...</div>;
@@ -104,11 +108,12 @@ function Room() {
                 <h1 className={style.roomTitle}>{roomData.roomName}</h1>
                 {/* <Message onClick={() => handleGoToState(roomId)/> */}
                 <div className={style.roomBannerMini}>
-                    <GroupChat roomId={roomId} userName={username}/>
+                    {roomData.settings[7] && (<RateButton/>)}
+                    {roomData.settings[6] && (<GroupChat roomId={roomId} userName={username}/>)}
                     <Avatar />
                 </div> 
             </div>
-            
+
 
             <div className={style.roomBackground}>
                 <Fridge 
@@ -128,6 +133,7 @@ function Room() {
                 <Clock onClick={() => handleGoToState(roomId)} enabled={roomData.settings[4]} />
                 <BulletinBoard 
                     onClick={handleBulletinClick}
+                    enabled={roomData.settings[3] || roomData.settings[9] || roomData.settings[8]}
                 />
 
                 <ChoreItems 
@@ -137,7 +143,13 @@ function Room() {
             </div>
             <div className={style.roomFloor}/>
         </div>
-        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={roomData.settings} />
+        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={[roomData.settings[3], roomData.settings[9], roomData.settings[8]]} roomId={roomId} onOpenNotes={() => setShowNotesPopup(true)} />
+        <NotesPopup
+            room={roomData}
+            isOpen={showNotesPopup}
+            onClose={() => setShowNotesPopup(false)}
+            initialNotes={roomData.bulletinNotes}
+        />
         </>
     )
 };

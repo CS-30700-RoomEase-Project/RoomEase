@@ -41,7 +41,7 @@ function GroceryItem(props) {
         pageID: "/grocery",
       };
       CallService(
-        "grocery/notifyPurchased/" + room._id + "/" + item._id,
+        "grocery/notifyPurchased/" + ((room) ? room._id : 1) + "/" + item._id,
         notificationData
       );
     }
@@ -51,7 +51,7 @@ function GroceryItem(props) {
     const updatedItems = items.filter((_, i) => i !== index);
     setItems(updatedItems);
     CallService(
-      "grocery/remove/" + room._id + "/" + item._id,
+      "grocery/remove/" + item._id,
       { description: "test" },
       (data) => console.log(data)
     );
@@ -59,9 +59,12 @@ function GroceryItem(props) {
 
   const requestItem = () => {
     console.log("Requesting item: " + item.itemName);
-    const userId = localStorage.getItem("userId");
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userId = userData.userId;
+
+    // Send a roomId of "1" to the backend to indicate that the request is coming from a master room
     CallService(
-      "grocery/request/" + room._id + "/" + item._id,
+      "grocery/request/" + (((room) ? room._id : 1) + "/" + item._id),
       {
         userId: userId,
       },

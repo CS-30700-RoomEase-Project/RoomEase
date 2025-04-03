@@ -51,8 +51,32 @@ const choreSchema = new mongoose.Schema({
     whoseTurn: Number,
     dueDate: { type: Date, required: false }, // Due date of the chore
     recurringDays: { type: Number, default: 0 }, // Number of days between occurrences (0 = not recurring)
-    completed: { type: Boolean, default: false } // Indicates if the chore is done
+    completed: { type: Boolean, default: false }, // Indicates if the chore is done
+    difficulty: { type: String, default: "Easy"}, //indicates how difficult the chore is
+    comments: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'choreComment'}], default: []}
 });
+
+const choreCommentSchema = new mongoose.Schema({
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    comment: String
+});
+
+const choreComment = mongoose.model('choreComment', choreCommentSchema);
+
+choreSchema.methods.commentNotification = async function(message, path) {
+    try {
+        const notification = await Notification.create({
+            description: `Comment added to '${this.choreName}'. Description: '${message}'.`,
+            pageID: `/Chores/${path}`,
+            usersNotified: this.order,
+            notificationType: 'Chore Comment',
+            origin: this.creatorId
+        });
+        await notification.propagateNotification();
+    } catch (error) {
+        console.error("Error creating notification:", error);
+    }
+}
 
 choreSchema.methods.createNotification = async function(path) {
     console.log("creating notification");
@@ -294,11 +318,163 @@ const billSchema = new mongoose.Schema({
     amount: { type: Number, required: true },
     dueDate: { type: Date },
     responsible: [{
+      userId: { type: String, required: true },
       name: { type: String, required: true },
       paid: { type: Boolean, default: false }
     }],
-    paymaster: { type: String, default: "" }
-});
+    paymaster: { type: String, default: "" },
+    isRecurring: { type: Boolean, default: false },
+    frequency: { type: String, enum: ['daily', 'weekly', 'biweekly', 'monthly', 'custom'], default: null },
+    customFrequency: { type: Number, default: null },
+    isAmountPending: { type: Boolean, default: false },
+    isPaid: { type: Boolean, default: false },
+    splitBill: { type: Boolean, default: true },
+    // New field: whether a recurring bill has been finished.
+    isFinished: { type: Boolean, default: false },
+    priceHistory: [{
+      date: Date,
+      amount: Number
+    }]
+  });
+
+  billSchema.methods.createNotification = async function(roomId) {
+    console.log("Creating bill notification");
+    try {
+      // Import models here to avoid circular dependencies
+      const User = require('./User');
+      const Notification = require('./Notification');
+      
+      // For each responsible person, look up the user by your custom userId field
+      const usersNotified = await Promise.all(
+        this.responsible.map(async (person) => {
+          const user = await User.findOne({ userId: person.userId });
+          return user ? user._id : null;
+        })
+      );
+      const validUsersNotified = usersNotified.filter(id => id !== null);
+      
+      // Create a notification for these users with the full URL for the bills page.
+      const notification = await Notification.create({
+        description: `A new bill "${this.title}" of $${this.amount} has been created with due date ${
+          this.dueDate ? this.dueDate.toLocaleDateString() : 'N/A'
+        } that you have been marked responsible for.`,
+        pageID: `/room/${roomId}/bills`, // Updated URL
+        usersNotified: validUsersNotified,
+        notificationType: 'Bill Created',
+        origin: this.creatorId || null
+      });
+      const output = await notification.propagateNotification();
+      return output;
+    } catch (error) {
+      console.error("Error creating bill notification:", error);
+      throw error;
+    }
+  };
+
+// Method to create an "edit" notification when a bill is modified
+billSchema.methods.createEditNotification = async function(roomId) {
+    console.log("Creating bill edit notification");
+    try {
+      const User = require('./User');
+      const Notification = require('./Notification');
+      // Look up each responsible user by their custom userId
+      const usersNotified = await Promise.all(
+        this.responsible.map(async (person) => {
+          const user = await User.findOne({ userId: person.userId });
+          return user ? user._id : null;
+        })
+      );
+      const validUsersNotified = usersNotified.filter(id => id !== null);
+      
+      // Create a notification for these users with the bills page URL.
+      const notification = await Notification.create({
+        description: `The bill "${this.title}" has been updated. Please review the changes.`,
+        pageID: `/room/${roomId}/bills`, // URL as in your fixed version
+        usersNotified: validUsersNotified,
+        notificationType: 'Bill Updated',
+        origin: this.creatorId || null
+      });
+      const output = await notification.propagateNotification();
+      return output;
+    } catch (error) {
+      console.error("Error creating bill edit notification:", error);
+      throw error;
+    }
+  };
+  
+  // Method to create a "delete" notification when a bill is deleted
+  billSchema.methods.createDeleteNotification = async function(roomId) {
+    console.log("Creating bill deletion notification");
+    try {
+      const User = require('./User');
+      const Notification = require('./Notification');
+      // Look up each responsible user by their custom userId
+      const usersNotified = await Promise.all(
+        this.responsible.map(async (person) => {
+          const user = await User.findOne({ userId: person.userId });
+          return user ? user._id : null;
+        })
+      );
+      const validUsersNotified = usersNotified.filter(id => id !== null);
+      
+      // Create a notification for these users with the bills page URL.
+      const notification = await Notification.create({
+        description: `The bill "${this.title}" has been deleted.`,
+        pageID: `/room/${roomId}/bills`,
+        usersNotified: validUsersNotified,
+        notificationType: 'Bill Deleted',
+        origin: this.creatorId || null
+      });
+      const output = await notification.propagateNotification();
+      return output;
+    } catch (error) {
+      console.error("Error creating bill deletion notification:", error);
+      throw error;
+    }
+  };
+
+  // Method to create a notification when a bill has been marked as paid
+billSchema.methods.createPaidNotification = async function(roomId) {
+    console.log("Creating paid notification for bill");
+    try {
+      const User = require('./User');
+      const Notification = require('./Notification');
+      
+      // Look up each responsible person using the custom userId and get their actual _id.
+      const usersNotified = await Promise.all(
+        this.responsible.map(async (person) => {
+          const user = await User.findOne({ userId: person.userId });
+          return user ? user._id : null;
+        })
+      );
+      const validUsersNotified = usersNotified.filter(id => id !== null);
+      
+      // Build an appropriate description.
+      let description;
+      if (this.isRecurring && !this.isFinished) {
+        description = `Payment for the recurring bill "${this.title}" has been processed. The next cycle is scheduled for ${
+          this.dueDate ? new Date(this.dueDate).toLocaleDateString() : 'N/A'
+        }.`;
+      } else {
+        description = `The bill "${this.title}" has been marked as paid.`;
+      }
+      
+      // Create the notification using the roomId to build the pageID.
+      const notification = await Notification.create({
+        description,
+        pageID: `/room/${roomId}/bills`,
+        usersNotified: validUsersNotified,
+        notificationType: 'Bill Paid',
+        origin: this.creatorId || null
+      });
+      const output = await notification.propagateNotification();
+      return output;
+    } catch (error) {
+      console.error("Error creating paid notification:", error);
+      throw error;
+    }
+  };
+  
 
 billSchema.methods.getFormattedDueDate = function() {
     return this.dueDate ? this.dueDate.toLocaleDateString() : "No due date";
@@ -308,11 +484,66 @@ billSchema.methods.getResponsible = function() {
     return this.responsible;
 };
 
+billSchema.methods.markAsPaid = async function () {
+    if (this.isRecurring) {
+      // For recurring bills, we follow the existing behavior
+      const currentDueDate = new Date(this.dueDate);
+      if (isNaN(currentDueDate.getTime())) {
+        throw new Error("Invalid due date");
+      }
+      // Record the current cycle in the price history
+      this.priceHistory.push({ date: currentDueDate, amount: this.amount || 0 });
+      
+      // Determine days to add based on frequency
+      let daysToAdd = 0;
+      switch (this.frequency) {
+        case 'daily': 
+          daysToAdd = 1; 
+          break;
+        case 'weekly': 
+          daysToAdd = 7; 
+          break;
+        case 'biweekly': 
+          daysToAdd = 14; 
+          break;
+        case 'monthly': 
+          daysToAdd = 30; 
+          break;
+        case 'custom': 
+          daysToAdd = Number(this.customFrequency) || 0; 
+          break;
+        default: 
+          daysToAdd = 0;
+      }
+      // Calculate new due date
+      const newDueDate = new Date(currentDueDate.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
+      this.dueDate = newDueDate;
+      this.amount = 0; // Reset amount for the next cycle
+      this.isAmountPending = true;
+      await this.save();
+      return this;
+    } else {
+      // For non-recurring bills, update responsible persons as paid
+      this.responsible = this.responsible.map(person => ({
+        ...person,
+        paid: true
+      }));
+      this.isPaid = true;
+      await this.save();
+      return this;
+    }
+  };
+  
+  
+  
+  
+
+
 const Bill = Task.discriminator('Bill', billSchema);
 
 /*
  * Exports the task class so it can be used in other files.
  * Update this with each new subclass of tasks.
  */
-module.exports = { Task, Chore, Grocery, Bill };
+module.exports = { Task, Chore, Grocery, Bill, choreComment };
 

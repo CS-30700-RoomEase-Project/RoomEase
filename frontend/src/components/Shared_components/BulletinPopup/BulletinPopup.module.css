@@ -101,6 +101,18 @@
     min-height: 250px;
 }
 
+.notesImage {
+    width: 25%;
+    height: 50%;
+    position: absolute;
+    left: 71%;
+}
+
+.notesImage:hover {
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
 /* Quiet hours logo css */
 .quietHours {
     width: 30%;

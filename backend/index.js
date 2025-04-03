@@ -8,6 +8,7 @@ const { Server } = require("socket.io");
 const userRoutes = require("./routes/userRoutes");
 const choreRoutes = require("./routes/choreRoutes");
 const groceryRoutes = require("./routes/groceryRoutes");
+const noteRoutes = require("./routes/roomNoteRoutes");
 const updateProfileRoutes = require("./routes/updateProfileRoutes");
 const billsRoutes = require("./routes/billsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
@@ -15,7 +16,9 @@ const roomRoutes = require("./routes/roomRoutes");
 const inviteRoutes = require("./routes/inviteRoutes");
 const stateRoutes = require("./routes/stateRoutes");
 const quietHoursRoutes = require("./routes/quietHoursRoutes");
-
+const roomStateRoutes = require("./routes/stateRoutes");
+const ratingRoutes = require("./routes/ratingRoutes"); // ✅ NEW ROUTE
+const fetchRatingRoutes = require("./routes/ratingFetchRoutes"); // ✅ NEW ROUTE
 // Initialize app and HTTP server
 const app = express();
 const server = http.createServer(app);
@@ -39,6 +42,7 @@ app.use(express.json());
 // Routes
 app.use("/api/chores", choreRoutes);
 app.use("/api/grocery", groceryRoutes);
+app.use("/api/notes", noteRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/users/profile", updateProfileRoutes);
 app.use("/api/bills", billsRoutes);
@@ -47,7 +51,10 @@ app.use("/api/room", roomRoutes);
 app.use("/api/invite", inviteRoutes);
 app.use("/api/roomstate", stateRoutes);
 app.use("/api/quiethours", quietHoursRoutes);
-
+app.use("/api/roomstate", roomStateRoutes);
+app.use("/api/rating", ratingRoutes); // ✅ CORRECTED TO /api/rating
+app.use("/api/ratingFetch", fetchRatingRoutes); // ✅ CORRECTED TO /api/ratingFetch
+app.use("/api/disputes", require("./routes/disputesRoutes")); // ✅ NEW ROUTE
 // Import and pass Socket.IO to group chat routes
 const groupChatRoutes = require("./routes/groupChatRoutes")(io);
 app.use("/api/groupchat", groupChatRoutes);
