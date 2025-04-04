@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./RoomState.module.css";
 
 const RoomState = () => {
@@ -6,7 +6,31 @@ const RoomState = () => {
   const [request, setRequest] = useState("");
   const [level, setLevel] = useState("Low");
   const [customLevel, setCustomLevel] = useState("");
-  const [timeFormat, setTimeFormat] = useState("24");
+  const [roomColor, setRoomColor] = useState("#FFFFFF");
+
+  // Fetch current room state from backend on load
+  useEffect(() => {
+    const fetchRoomState = async () => {
+      const userId = localStorage.getItem("userId");
+
+      try {
+        const response = await fetch(`http://localhost:5001/api/roomstate/getRoomState/${userId}`);
+        const data = await response.json();
+
+        if (response.ok && data.roomStatus && data.roomState) {
+          setRoomState({
+            request: data.roomStatus,
+            level: "N/A",
+            color: data.roomState,
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching room state:", err);
+      }
+    };
+
+    fetchRoomState();
+  }, []);
 
   const handleRequestChange = (e) => {
     setRequest(e.target.value);
@@ -21,34 +45,24 @@ const RoomState = () => {
     setCustomLevel(e.target.value);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const finalLevel = customLevel ? customLevel : level;
-
-    if (!roomState) {
-      setRoomState({ request, level: finalLevel });
-    }
-
-    setRequest("");
-    setCustomLevel("");
+  const handleColorChange = (e) => {
+    setRoomColor(e.target.value);
   };
 
   const handleClear = () => {
     setRoomState(null);
   };
 
-  const handleAddState = async () => {
+  const handleAddState = async (e) => {
+    e.preventDefault();
+
     if (!request.trim()) {
       alert("Request cannot be empty.");
       return;
     }
-  
+
     const finalLevel = customLevel ? customLevel : level;
-    const userId = localStorage.getItem("userId"); // Replace with actual user ID
-  
-    console.log(request);
-    console.log(finalLevel);
-    console.log(userId);
+    const userId = localStorage.getItem("userId");
 
     try {
       const response = await fetch("http://localhost:5001/api/roomstate/addRoomState", {
@@ -59,14 +73,15 @@ const RoomState = () => {
         body: JSON.stringify({
           request,
           level: finalLevel,
+          color: roomColor,
           userId,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
-        setRoomState({ request, level: finalLevel });
+        setRoomState({ request, level: finalLevel, color: roomColor });
         setRequest("");
         setCustomLevel("");
         alert("Room state added successfully!");
@@ -78,28 +93,30 @@ const RoomState = () => {
       alert("Failed to add room state.");
     }
   };
-  
 
   return (
     <div className={styles.container}>
       <h1>Room State</h1>
 
-      {roomState ? (
-        <div className={styles.roomState}>
+      {roomState && (
+        <div
+          className={styles.roomState}
+          style={{ backgroundColor: roomState.color || "#FFFFFF" }}
+        >
           <h2>Current Room State</h2>
-          <p><strong>Request:</strong> {roomState.request}</p>
-          <p><strong>Level:</strong> {roomState.level}</p>
+          <p>
+            <strong>Request:</strong> {roomState.request}
+          </p>
+          <p>
+            <strong>Level:</strong> {roomState.level}
+          </p>
           <button onClick={handleClear} className={styles.clearButton}>
             Clear Room State
           </button>
         </div>
-      ) : (
-        <div className={styles.noState}>
-          <h2>No room state yet</h2>
-        </div>
       )}
 
-      <form onSubmit={handleSubmit} className={styles.form}>
+      <form onSubmit={handleAddState} className={styles.form}>
         <div className={styles.formGroup}>
           <label htmlFor="request">Enter Request:</label>
           <input
@@ -136,7 +153,18 @@ const RoomState = () => {
           </div>
         )}
 
-        <button type="submit" className={styles.submitButton} onClick={handleAddState}>
+        <div className={styles.formGroup}>
+          <label htmlFor="roomColor">Select Room State Color:</label>
+          <input
+            type="color"
+            id="roomColor"
+            name="roomColor"
+            value={roomColor}
+            onChange={handleColorChange}
+          />
+        </div>
+
+        <button type="submit" className={styles.submitButton}>
           Submit Request
         </button>
       </form>
