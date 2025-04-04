@@ -1,34 +1,38 @@
 import React, { useEffect, useState } from "react";
 import "./RoomItems.css";
 
-function Clock({ onClick, enabled, roomState }) {
+function Clock({ onClick, enabled }) {
   const [time, setTime] = useState(new Date());
+  const [roomColor, setRoomColor] = useState("#FFFFFF");
+  const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(new Date()); // Update time every second
-    }, 1000);
-
-    return () => clearInterval(interval); // Cleanup interval on unmount
+    const interval = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(interval);
   }, []);
 
-  // Determine clock face color based on room state
-  const getColorByRoomState = (state) => {
-    switch (state) {
-      case "Low":
-        return "#90EE90"; // Light green
-      case "Medium":
-        return "#FFD700"; // Gold
-      case "High":
-        return "#FF4500"; // Red
-      default:
-        return "#FFFFFF"; // Default white
-    }
-  };
+  useEffect(() => {
+    const fetchRoomState = async () => {
+      const userId = localStorage.getItem("userId");
 
-  const clockFaceColor = getColorByRoomState(roomState);
+      try {
+        const response = await fetch(`http://localhost:5001/api/roomstate/getRoomState/${userId}`);
+        const data = await response.json();
 
-  // Calculate rotation angles
+        if (response.ok && data.roomState) {
+          const formattedColor = data.roomState.startsWith("#")
+            ? data.roomState
+            : `#${data.roomState}`;
+          setRoomColor(formattedColor);
+        }
+      } catch (error) {
+        console.error("Error fetching room color:", error);
+      }
+    };
+
+    fetchRoomState();
+  }, []);
+
   const hours = time.getHours() % 12;
   const minutes = time.getMinutes();
   const hoursDeg = hours * 30 + minutes * 0.5;
@@ -47,16 +51,18 @@ function Clock({ onClick, enabled, roomState }) {
       <div
         className="clock-face"
         style={{
-          backgroundColor: clockFaceColor,
-          borderRadius: "50%", // Ensures the clock remains a perfect circle
-          width: "100px", // Adjust size as needed
-          height: "100px", // Adjust size as needed
+          backgroundColor: isHovered ? roomColor : "#FFFFFF",  // Default is white
+          borderRadius: "50%",
+          width: "100px",
+          height: "100px",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           position: "relative",
-          border: "3px solid black", // Optional border for better visibility
+          border: "3px solid black",
         }}
+        onMouseEnter={() => setIsHovered(true)}  // On hover
+        onMouseLeave={() => setIsHovered(false)}  // On mouse leave
       >
         <div
           className="hour-hand"
@@ -70,7 +76,7 @@ function Clock({ onClick, enabled, roomState }) {
             left: "50%",
             transformOrigin: "bottom",
           }}
-        ></div>
+        />
         <div
           className="minute-hand"
           style={{
@@ -83,7 +89,7 @@ function Clock({ onClick, enabled, roomState }) {
             left: "50%",
             transformOrigin: "bottom",
           }}
-        ></div>
+        />
         <div
           className="center-point"
           style={{
@@ -96,7 +102,7 @@ function Clock({ onClick, enabled, roomState }) {
             left: "50%",
             transform: "translate(-50%, -50%)",
           }}
-        ></div>
+        />
       </div>
     </div>
   );

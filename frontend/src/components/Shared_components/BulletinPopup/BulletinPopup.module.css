@@ -156,6 +156,7 @@
     opacity: 1;
 }
 
+/* Styling for the clauses box */
 .clausesBox {
     background-color: white;
     padding: 15px;
@@ -169,8 +170,24 @@
     margin-left: auto;
 }
 
+/* Hover effect for the clauses box */
 .clausesBox:hover {
     transform: scale(1.05);
+}
+
+/* Adding the text inside the clauses box */
+.clausesBox .clausesText {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+    text-align: center;
+    padding: 5px;
+}
+
+/* Adding hover effect on the box */
+.clausesBox:hover .clausesText {
+    color: #5c3939; /* Change text color on hover */
 }
 
 .clausesBox::after {
@@ -189,4 +206,3 @@
 .clausesBox:hover::after {
     opacity: 1;
 }
-

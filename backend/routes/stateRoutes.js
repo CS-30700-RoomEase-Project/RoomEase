@@ -1,70 +1,47 @@
 const express = require("express");
 const router = express.Router();
-const RoomState = require("../models/State"); // Import RoomState model
-const User = require("../models/User");
-const Room = require("../models/Room"); // Import Room model
-const Notification = require("../models/Notification");
+const Room = require("../models/Room");
 
-// POST: Add a new room state request and notify users
+// Update room state: roomStatus (name), roomState (color)
 router.post("/addRoomState", async (req, res) => {
-    try {
-        const { request, level, userId } = req.body;
+  const { request, level, color, userId } = req.body;
 
-        // Create new RoomState entry
-        const newRoomState = new RoomState({
-            request,
-            level,
-            createdAt: new Date(),
-        });
-
-        await newRoomState.save();
-
-        // Create a notification for all users (or specific ones)
-        const notification = new Notification({
-            description: `New Current Room State: ${request} (Level: ${level})`,
-            usersNotified: await User.findOne({ userId }), // Notify the user who made the request
-            pageID: `/room-state`,
-            notificationType: "Room State Change",
-            origin: await User.findOne({ userId }),
-        });
-
-        await notification.save();
-        await notification.propagateNotification();
-
-        res.status(201).json({ message: "Room state request added and users notified." });
-    } catch (error) {
-        console.error("Error adding room state request:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+  try {
+    // Find the user's room
+    const room = await Room.findOne({ roomMembers: userId });
+    if (!room) {
+      return res.status(404).json({ message: "Room not found for user." });
     }
+
+    // Update room status and color
+    room.roomStatus = request;
+    room.roomState = color;
+    await room.save();
+
+    res.status(200).json({ message: "Room state updated successfully." });
+  } catch (error) {
+    console.error("Error updating room state:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
 });
 
-// GET: Retrieve all room state requests (queue)
-router.get("/getRoomStateQueue", async (req, res) => {
+router.get("/getRoomState/:userId", async (req, res) => {
+    const { userId } = req.params;
+  
     try {
-        const queue = await RoomState.find().sort({ createdAt: -1 }); // Sort by newest first
-        res.json(queue);
+      const room = await Room.findOne({ roomMembers: userId });
+      if (!room) {
+        return res.status(404).json({ message: "Room not found." });
+      }
+  
+      res.status(200).json({
+        roomStatus: room.roomStatus,
+        roomState: room.roomState,
+      });
     } catch (error) {
-        console.error("Error fetching room state queue:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+      console.error("Error fetching room state:", error);
+      res.status(500).json({ message: "Server error." });
     }
 });
-
-router.get("/getAllRoomStates/:userId", async (req, res) => {
-    try {
-        const  { userId } = req.params; // Extract userId from request parameters
-
-        const user = await User.findOne({ userId: userId });
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        let rooms = await Room.find({ userId: user._id });
-
-        // TODO: READ THE CURRENT ROOM STATE FROM THE DATABASE AND RETURN IT TO THE FRONTEND
-    } catch (error) {
-        console.error("Error fetching all room states:", error);
-        res.status(500).json({ message: "Internal Server Error" });
-    }
-});
-
+  
 module.exports = router;

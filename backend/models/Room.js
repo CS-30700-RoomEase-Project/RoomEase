@@ -6,6 +6,7 @@ const RoomSchema = new mongoose.Schema({
     settings: [{ type: Boolean }],
     tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task', default: [] }],
     roomStatus: { type: String, default: 'Available' },
+    roomState: { type: String, default: 'FFFFFF'},
     groupChat: [{
         senderId: { type: String, required: true }, // User ID (as string)
         message: { type: String, required: true },
@@ -21,7 +22,7 @@ const RoomSchema = new mongoose.Schema({
     outGoingInvites: { type: Array, default: [] },
     quietHours: [{ type: Array, default: [] }],
     chorePoints: { type: Map, of: Number, default: () => ({Easy: 3,Medium: 5,Hard: 7})},
-    clauses: [{ type: String, default: ["These are your roommate clauses", "Add, edit, or change clauses"] }]
+    clauses: [{ type: String, default: ["These are your roommate clauses", "Add, edit, or change clauses", "Change them as you like"] }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Room', RoomSchema);

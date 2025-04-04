@@ -17,8 +17,19 @@ export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpe
         const fetchClauses = async () => {
             try {
                 const response = await fetch(`/api/rooms/getClauses/${roomId}`); // Adjust API endpoint if necessary
+                
+                if (!response.ok) {
+                    throw new Error(`Error fetching clauses: ${response.statusText}`);
+                }
+
                 const data = await response.json();
-                setClauses(data); // Store the fetched clauses
+                console.log("Fetched clauses:", data); // Log fetched data to debug
+
+                if (Array.isArray(data)) {
+                    setClauses(data); // Store the fetched clauses
+                } else {
+                    console.error("Invalid clauses data format", data);
+                }
             } catch (error) {
                 console.error("Error fetching clauses:", error);
             }
@@ -57,10 +68,13 @@ export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpe
                             
                             {/* Roommate Clauses - Simple White Rectangle */}
                             <div className={style.clausesBox} onClick={handleGoToClauses}>
+                                {/* Displaying the text inside the box */}
+                                <p className={style.clausesText}>View your roommate clauses here</p>
+
                                 {clauses.length > 0 ? (
                                     <ul>
                                         {clauses.map((clause, index) => (
-                                            <li key={index}>{clause.text}</li> // Assuming clause.text is the text of the clause
+                                            <li key={index}>{clause.text ? clause.text : clause}</li> // Check if `clause` has text
                                         ))}
                                     </ul>
                                 ) : (
