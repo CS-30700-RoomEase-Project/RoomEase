@@ -1,24 +1,29 @@
 import React, { useState, useEffect } from "react";
 import ChorePopup from "../Shared_components/Chores/ChorePopup";
 import ChorePointsPopup from "../Shared_components/Chores/ChorePointsPopup";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import styles from "./Chores.module.css";
 import NotificationButton from '../Shared_components/NotificationBell/NotificationBell';
 import ChoreCommentsPopup from "../Shared_components/Chores/ChoreCommentsPopup";
 import ChoreSwapPopup from "../Shared_components/Chores/ChoreSwapPopup";
 
 function Chores() {
-    const { roomId } = useParams(); // Gets the roomId from the URL
+    let { roomId } = useParams(); // Gets the roomId from the URL
     const navigate = useNavigate();
 
     const [isChorePopupOpen, setChorePopupOpen] = useState(false);
     const [isPointsPopupOpen, setPointsPopupOpen] = useState(false);
     const [isCommentsPopupOpen, setCommentsPopupOpen] = useState(false);
     const [isSwapPopupOpen, setSwapPopupOpen] = useState(false);
-    const [chores, setChores] = useState([]); // Store fetched chores
+    // When in a regular room, "chores" is an array.
+    // When roomId === "master-room", "chores" will hold an object with keys
+    // representing roomIds and values of { roomName, chores: [] }.
+    const [chores, setChores] = useState([]);
     const [selectedChore, setSelectedChore] = useState(null); // Track selected chore for editing
-    const [userData, setUserData] = useState({}); // Store user data
 
+    const userData = JSON.parse(localStorage.getItem("userData")) || {};
+    console.log("User data:", userData);
+    
     // Fetch chores from API
     const fetchChores = async () => {
         try {
@@ -27,35 +32,57 @@ function Chores() {
                 if (!response.ok) throw new Error("Failed to fetch chores");
 
                 const data = await response.json();
-                
                 // Sort chores: Incomplete first, then completed
                 const sortedChores = data.sort((a, b) => a.completed - b.completed);
 
                 setChores(sortedChores); // Update state with sorted chores
             } else {
-                const response = await fetch(`http://localhost:5001/api/chores/getMasterChores/${userData.userId}`); // Ensure API is working
-                if (!response.ok) throw new Error("Failed to fetch chores");
+                // For the aggregated (master-room) view, call get chores for all rooms
+                let totalChores = [];
+                for (const room of userData.rooms) {
+                    const response = await fetch(`http://localhost:5001/api/chores/getChores/${room._id}`);
+                    if (!response.ok) continue;
 
-                const data = await response.json();
+                    let data = await response.json();
 
-                // Sort chores: Incomplete first, then completed
-                const sortedChores = data.sort((a, b) => a.completed - b.completed);
+                    // Sort chores: Incomplete first, then completed
+                    let sortedChores = data.sort((a, b) => a.completed - b.completed);
 
-                setChores(sortedChores); // Update state with sorted chores
+                    // Add the roomName from the room to each chore
+                    sortedChores = sortedChores.map(chore => ({ ...chore, roomName: room.roomName, roomId: room._id }));
+
+                    totalChores = totalChores.concat(sortedChores);
+                }
+
+                // Group chores by room name using the roomName added above
+                const groupedChores = totalChores.reduce((acc, chore) => {
+                    const roomName = chore.roomName || "Unnamed Room";
+                    if (!acc[roomName]) {
+                        acc[roomName] = {
+                            roomName,
+                            chores: [],
+                        };
+                    }
+                    acc[roomName].chores.push(chore);
+                    return acc;
+                }, {});
+                
+                setChores(groupedChores);
+                console.log("fetch done");
             }
-
         } catch (error) {
             console.error("Error fetching chores:", error);
         }
     };
 
-
     useEffect(() => {
-        setUserData(JSON.parse(localStorage.getItem("userData"))); // Get user data from local storage
+        console.log("new roomId", roomId);
+        setChores([]);
         if (roomId) {
             fetchChores();
         }
-    }, [roomId]); // Refetch chores when roomId changes
+    }, [roomId]);
+
 
     // Mark chore as complete and switch to next person
     const handleMarkAsComplete = async (chore) => {
@@ -67,8 +94,7 @@ function Chores() {
     
             if (!response.ok) throw new Error("Failed to mark chore as complete");
     
-            const updatedChore = await response.json();
-    
+            await response.json();
             // Update state with the new chore data from the response
             fetchChores();
         } catch (error) {
@@ -76,25 +102,32 @@ function Chores() {
         }
     };
     
-
     // Delete chore when delete button clicked
     const handleDeleteChore = async (choreId) => {
         try {
             const response = await fetch(`http://localhost:5001/api/chores/delete/${choreId}/${roomId}`, {
                 method: "DELETE",
             });
-
+    
             if (!response.ok) throw new Error("Failed to delete chore");
-
-            setChores(prevChores => prevChores.filter(chore => chore._id !== choreId));
+    
+            if (roomId !== "master-room") {
+                setChores(prevChores => prevChores.filter(chore => chore._id !== choreId));
+            }
         } catch (error) {
             console.error("Error deleting chore:", error);
         }
         fetchChores();
     };
 
-    const handleGoToRoom = () => {
-        navigate(`/Room/${roomId}`);
+    const handleGoToRoom = (room) => {
+        window.location.href = `/room/${room}`;
+    };
+
+    const handleGoToChores = (room) => {
+        roomId = room;
+        fetchChores();
+        window.location.href = `/chores/${room}`;
     };
 
     // Open popup for adding a new chore
@@ -137,87 +170,104 @@ function Chores() {
     return (
         <div className={styles.choresAppContainer}>
             <div className={styles.choresHeader}>
-                <button className={styles.addChore} onClick={handleNewChore}>
-                    <h4>Add Chore</h4>
-                </button>
-                <button onClick={() => setSwapPopupOpen(true)}>
-                    <h4>Chore Swaps</h4>
-                </button>
-                <NotificationButton/>
-                <h1 className={styles.titleText}>Chores</h1>
-                <button className={styles.pointsButton} onClick={() => setPointsPopupOpen(true)}>
-                    <h4>Adjust Points</h4>
-                </button>
-                <button className={styles.logoutButton} onClick={handleGoToRoom}>
-                    <h4>Back to Room</h4>
-                </button>
-            </div>
+            {roomId !== "master-room" ? (
+                <>
+                    <button className={styles.addChore} onClick={handleNewChore}>
+                        <h4>Add Chore</h4>
+                    </button>
+                    <button onClick={() => setSwapPopupOpen(true)}>
+                        <h4>Chore Swaps</h4>
+                    </button>
+                    <NotificationButton/>
+                    <h1 className={styles.titleText}>Chores</h1>
+                    <button className={styles.pointsButton} onClick={() => setPointsPopupOpen(true)}>
+                        <h4>Adjust Points</h4>
+                    </button>
+                    <button className={styles.logoutButton} onClick={() => handleGoToRoom(roomId)}>
+                        <h4>Back to Room</h4>
+                    </button>
+                </>
+            ) : (
+                <>
+                    <h1 className={styles.titleText}>Your Chores</h1>
+                </>
+            )}
+        </div>
 
             <div className={styles.list}>
-                {chores.map((chore) => (
-                    <div key={chore._id} className= {chore.completed ? styles.listItemMarked : styles.listItem}>
-                        <span>{chore.choreName}</span>
-                        <span>{chore.description}</span>
-                        <span>{chore.order[chore.whoseTurn].username}</span>
-                        <span>
-                            {String(new Date(chore.dueDate).getUTCMonth() + 1).padStart(2, '0')}-
-                            {String(new Date(chore.dueDate).getUTCDate()).padStart(2, '0')}-
-                            {new Date(chore.dueDate).getUTCFullYear()}
-                        </span>
-                        <span>{chore.difficulty}</span>
-                        <div className={styles.buttonContainer}>
-                            <button
-                                className={styles.commentButton}
-                                onClick={() => handleViewComments(chore)}
-                            >
-                                comments
-                            </button>
-                            <button
-                                className={styles.markButton}
-                                onClick={() => handleMarkAsComplete(chore)}
-                            >
-                                {chore.completed ? "Reuse" : "Mark Complete"}
-                            </button>
-                            <button 
-                                className={styles.editButton} 
-                                onClick={() => handleEditChore(chore)}
-                            >
-                                edit
-                            </button>
-                            <button 
-                                className={styles.deleteButton}
-                                onClick={() => handleDeleteChore(chore._id)}
-                            >
-                                delete
-                            </button>
+                {roomId !== "master-room" ? (
+                    chores.map((chore) => (
+                        <div key={chore._id} className={chore.completed ? styles.listItemMarked : styles.listItem}>
+                            <span>{chore.choreName}</span>
+                            <span>{chore.description}</span>
+                            <span>
+                                {chore.order && chore.order[chore.whoseTurn] 
+                                    ? chore.order[chore.whoseTurn].username 
+                                    : "N/A"}
+                            </span>                            
+                            <span>
+                                {String(new Date(chore.dueDate).getUTCMonth() + 1).padStart(2, '0')}-  
+                                {String(new Date(chore.dueDate).getUTCDate()).padStart(2, '0')}-  
+                                {new Date(chore.dueDate).getUTCFullYear()}
+                            </span>
+                            <span>{chore.difficulty}</span>
+                            <div className={styles.buttonContainer}>
+                                <button className={styles.commentButton} onClick={() => handleViewComments(chore)}>
+                                    comments
+                                </button>
+                                <button className={styles.markButton} onClick={() => handleMarkAsComplete(chore)}>
+                                    {chore.completed ? "Reuse" : "Mark Complete"}
+                                </button>
+                                <button className={styles.editButton} onClick={() => handleEditChore(chore)}>
+                                    edit
+                                </button>
+                                <button className={styles.deleteButton} onClick={() => handleDeleteChore(chore._id)}>
+                                    delete
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
+                    ))
+                ) : (
+                    Object.keys(chores).length > 0 ? (
+                        Object.keys(chores).map((groupKey) => {
+                            const group = chores[groupKey];
+                            return (
+                                <div key={groupKey}>
+                                    <h2>{group.roomName}</h2>
+                                    {group.chores.map((chore) => (
+                                        <div key={chore._id} className={styles.listItem} onClick={() => handleGoToChores(chore.roomId)}>
+                                            <span>{chore.choreName}</span>
+                                            <span>{chore.description}</span>
+                                            <span>
+                                                {chore.order && chore.order[chore.whoseTurn]
+                                                    ? chore.order[chore.whoseTurn].username 
+                                                    : "N/A"}
+                                            </span>
+                                            <span>
+                                                {String(new Date(chore.dueDate).getUTCMonth() + 1).padStart(2, '0')}-  
+                                                {String(new Date(chore.dueDate).getUTCDate()).padStart(2, '0')}-  
+                                                {new Date(chore.dueDate).getUTCFullYear()}
+                                            </span>
+                                            <span>{chore.difficulty}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        })
+                    ) : (
+                        <p>No chores available.</p>
+                    )
+                )}
             </div>
 
-            <ChorePopup 
-                isOpen={isChorePopupOpen} 
-                onClose={closeChorePopup} 
-                chore={selectedChore} 
-                roomId={roomId}
-            />
-            <ChorePointsPopup
-                isOpen={isPointsPopupOpen}
-                onClose={closePointsPopup}
-                roomId={roomId}
-            />
-            <ChoreCommentsPopup
-                isOpen={isCommentsPopupOpen}
-                onClose={closeCommentsPopup}
-                chore={selectedChore}
-                roomId={roomId}
-            />
-            <ChoreSwapPopup
-                isOpen={isSwapPopupOpen}
-                onClose={closeSwapPopup}
-                chores={chores}
-                roomId={roomId}
-            />
+            {roomId !== "master-room" && (
+                <>
+            <ChorePopup isOpen={isChorePopupOpen} onClose={closeChorePopup} chore={selectedChore} roomId={roomId} />
+            <ChorePointsPopup isOpen={isPointsPopupOpen} onClose={closePointsPopup} roomId={roomId} />
+            <ChoreCommentsPopup isOpen={isCommentsPopupOpen} onClose={closeCommentsPopup} chore={selectedChore} roomId={roomId} />
+            <ChoreSwapPopup isOpen={isSwapPopupOpen} onClose={closeSwapPopup} chores={roomId !== "master-room" ? chores : []} roomId={roomId} />
+            </>
+            )}
         </div>
     );
 }

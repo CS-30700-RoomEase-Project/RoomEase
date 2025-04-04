@@ -79,7 +79,7 @@ const AvatarButton = () => {
       >
         <div className='dropdown'>
           <button onClick={handleSettingsClick} className='Button1'>Settings</button>
-          {!location.pathname.includes("dashboard") && <button onClick={handleReviewsClick} className='Button2'>My Reviews</button>}
+          {!location.pathname.includes("dashboard") && !location.pathname.includes("master-room") && <button onClick={handleReviewsClick} className='Button2'>My Reviews</button>}
           <button onClick={handleLogout} className='signoutButton'>Logout</button>
         </div>
       </Popup>

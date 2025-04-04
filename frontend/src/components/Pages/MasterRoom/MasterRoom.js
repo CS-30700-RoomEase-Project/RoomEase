@@ -99,16 +99,14 @@ function MasterRoom() {
                     room={null}
                     enabled={true}
                 />
-                <Desk>
+                <Desk gavelVisible={false}>
                     <Computer 
                         handleSettingsClick={() => {}}
                         handleInviteClick={() => {}}
                         roomId={"master-room"} // Indicates that this is the master room
                         roomData={null} // Indicates that this is the master room
                     />
-                    <Gavel onClick={() => handleGoToDisputes()} enabled={true} />
                 </Desk>
-                <Clock onClick={() => handleGoToState()} enabled={true} />
                 <BulletinBoard 
                     onClick={handleBulletinClick}
                     enabled={true}
@@ -121,7 +119,7 @@ function MasterRoom() {
             </div>
             <div className={style.roomFloor}/>
         </div>
-        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={[true, true, true]} roomId={1} onOpenNotes={() => setShowNotesPopup(true)} />
+        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={[false, false, true]} roomId={1} onOpenNotes={() => setShowNotesPopup(true)} />
         <NotesPopup
             room={null}
             isOpen={showNotesPopup}
