@@ -120,7 +120,7 @@ function Room() {
                     room={roomData}
                     enabled={roomData.settings[0]}
                 />
-                <Desk>
+                <Desk gavelVisible={true}>
                     <Computer 
                         
                         handleInviteClick={handleInviteClick} 
