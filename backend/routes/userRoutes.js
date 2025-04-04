@@ -25,6 +25,7 @@ router.post('/register', async (req, res) => {
             }
 
             const userData = {
+                _id: user._id,
                 username: user.username,
                 userId: user.userId,
                 email: user.email,
@@ -49,6 +50,7 @@ router.post('/register', async (req, res) => {
         await user.save();
         console.log("User saved to MongoDB:", user);
         const userData = {
+            _id: user._id,
             username: user.username,
             userId: user.userId,
             email: user.email,

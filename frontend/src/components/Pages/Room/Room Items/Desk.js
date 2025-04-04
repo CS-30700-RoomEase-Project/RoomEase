@@ -3,12 +3,12 @@ import './RoomItems.css';
 import GavelPad from './GavelPad';
 import Gavel from './Gavel';
 
-function Desk({ children }) {
+function Desk({ children, gavelVisible }) {
     return (
         <div className='deskContainer'>
             <div className='deskItems'>
                 {children}
-                <GavelPad />
+                {(gavelVisible) && (<GavelPad />)}
             </div>
             <div className='desk'>
                 <div className='deskTop'></div>
