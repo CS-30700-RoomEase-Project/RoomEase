@@ -54,7 +54,7 @@ app.use("/api/invite", inviteRoutes);
 app.use("/api/roomstate", stateRoutes);
 app.use("/api/quiethours", quietHoursRoutes);
 app.use("/api/roomstate", roomStateRoutes);
-app.use("/api/clausesRoutes", clausesRoutes);
+app.use("/api/clauses", clausesRoutes);
 app.use("/api/rating", ratingRoutes); // ✅ CORRECTED TO /api/rating
 app.use("/api/ratingFetch", fetchRatingRoutes); // ✅ CORRECTED TO /api/ratingFetch
 app.use("/api/disputes", require("./routes/disputesRoutes")); // ✅ NEW ROUTE

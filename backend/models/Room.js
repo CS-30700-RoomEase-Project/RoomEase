@@ -21,7 +21,7 @@ const RoomSchema = new mongoose.Schema({
     outGoingInvites: { type: Array, default: [] },
     quietHours: [{ type: Array, default: [] }],
     chorePoints: { type: Map, of: Number, default: () => ({Easy: 3,Medium: 5,Hard: 7})},
-    clauses: [{ type: String, default: ["Leave the toilet seat up", "Play your music as loud as possible", "Keep all doors open"] }]
+    clauses: [{ type: String, default: ["These are your roommate clauses", "Add, edit, or change clauses"] }]
 }, { timestamps: true });
 
 module.exports = mongoose.model('Room', RoomSchema);

@@ -26,7 +26,7 @@ const Disputes = () => {
       }
     } catch (error) {
       console.error("Error fetching disputes:", error);
-      setError("Failed to fetch disputes. Please try again later.");
+      setError("No Disputes");
     } finally {
       setLoading(false); // End loading
     }
