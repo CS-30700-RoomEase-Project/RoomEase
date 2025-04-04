@@ -84,6 +84,19 @@ router.get('/getUsers/:roomId', async (req, res) => {
     }
 });
 
+// GET points for a room
+router.get('/points/:roomId', async (req, res) => {
+    try {
+      const room = await Room.findById(req.params.roomId).select('points');
+      if (!room) return res.status(404).json({ error: 'Room not found' });
+  
+      res.json({ points: room.points });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Server error' });
+    }
+});
+
 //for the chores page, do not mess with!
 router.get('/getMembers/:roomId', async (req, res) => {
     try {
