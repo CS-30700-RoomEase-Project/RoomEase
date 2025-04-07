@@ -5,7 +5,7 @@ import CallService from "../../SharedMethods/CallService";
 
 const defaultClauses = [
   "These are your roommate clauses",
-  "Add, edit, or change clauses",
+  "Add, edit, or change clauses below",
   "Change them as you like"
 ];
 
