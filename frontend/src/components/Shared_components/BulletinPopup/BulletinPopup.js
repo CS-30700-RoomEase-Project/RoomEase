@@ -5,40 +5,40 @@ import "reactjs-popup/dist/index.css";
 import style from "./BulletinPopup.module.css";
 import '../../Pages/Room/Room Items/RoomItems.css';
 import QHLogo from './QuietHoursIcon.png';
-import RoomClausesImage from './RoomClauses.png';  
-import notesImage from './notes.png';
+import RoomClausesImage from './RoomClauses.png';
+import NotesImage from './notes.png'; // Import the notes.png image
+import CallService from "../../SharedMethods/CallService";
+
+const defaultClauses = ["No active clauses found"];
+const defaultNotes = "No current notes";
 
 export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpenNotes }) {
-    const [clauses, setClauses] = useState([]); // State to store clauses
+    const [clauses, setClauses] = useState([]);
+    const [notes, setNotes] = useState("");
+
     const navigate = useNavigate();
 
-    // Fetch clauses when the popup is opened
     useEffect(() => {
-        const fetchClauses = async () => {
-            try {
-                const response = await fetch(`/api/rooms/getClauses/${roomId}`); // Adjust API endpoint if necessary
-                
-                if (!response.ok) {
-                    throw new Error(`Error fetching clauses: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                console.log("Fetched clauses:", data); // Log fetched data to debug
-
-                if (Array.isArray(data)) {
-                    setClauses(data); // Store the fetched clauses
+        if (isOpen && roomId) {
+            CallService(`clauses/getList/${roomId}`, {}, (data) => {
+                if (data) {
+                    const updatedClauses = data.length ? data : [...defaultClauses];
+                    setClauses(updatedClauses);
                 } else {
-                    console.error("Invalid clauses data format", data);
+                    console.error("No data received from clauses API");
                 }
-            } catch (error) {
-                console.error("Error fetching clauses:", error);
-            }
-        };
+            });
 
-        if (isOpen) {
-            fetchClauses();
+            CallService(`room/getNotes/${roomId}`, {}, (data) => {
+                if (data && typeof data === "string") {
+                    setNotes(data.trim() || defaultNotes);
+                } else {
+                    setNotes(defaultNotes);
+                    console.error("Invalid data received from notes API");
+                }
+            });
         }
-    }, [isOpen, roomId]); // Fetch clauses whenever popup opens or roomId changes
+    }, [isOpen, roomId]);
 
     const handleGoToHours = () => {
         navigate(`/quiet-hours/${roomId}`);
@@ -46,6 +46,10 @@ export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpe
 
     const handleGoToClauses = () => {
         navigate(`/clauses/${roomId}`);
+    };
+
+    const handleOpenNotes = () => {
+        onOpenNotes && onOpenNotes(); // Use prop if provided
     };
 
     return (
@@ -62,25 +66,53 @@ export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpe
                 <div className={style.board}>
                     <div className={style.frame}>
                         <div className={style.content}>
-                            {settings[0] && <img onClick={handleGoToHours} className={style.quietHours} src={QHLogo} title="Quiet Hours" />}
-                            {settings[1] && <img onClick={handleGoToClauses} className={style.roomClauses} src={RoomClausesImage} title="Room Clauses" />} 
-                            {settings[2] && <img onClick={onOpenNotes} className={style.notesImage} src={notesImage} title="Room Notes" />}
-                            
-                            {/* Roommate Clauses - Simple White Rectangle */}
-                            <div className={style.clausesBox} onClick={handleGoToClauses}>
-                                {/* Displaying the text inside the box */}
-                                <p className={style.clausesText}>View your roommate clauses here</p>
+                            {/* Quiet Hours Logo */}
+                            {settings[0] && (
+                                <div className={style.quietHoursWrapper}>
+                                    <img
+                                        onClick={handleGoToHours}
+                                        className={style.quietHours}
+                                        src={QHLogo}
+                                        title="View your Quiet Hours"
+                                    />
+                                </div>
+                            )}
 
-                                {clauses.length > 0 ? (
-                                    <ul>
-                                        {clauses.map((clause, index) => (
-                                            <li key={index}>{clause.text ? clause.text : clause}</li> // Check if `clause` has text
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <p>No clauses available</p>
-                                )}
-                            </div>
+                            {/* Room Notes Image */}
+                            {settings[2] && (
+                                <div 
+                                    className={style.notesImage} 
+                                    title="View your Room Notes" 
+                                    onClick={handleOpenNotes}
+                                >
+                                    <img 
+                                        src={NotesImage} 
+                                        alt="Room Notes" 
+                                        className={style.notesIcon} 
+                                    />
+                                </div>
+                            )}
+
+                            {/* Roommate Clauses Box */}
+                            {settings[1] && (
+                                <div className={style.clausesBox} onClick={handleGoToClauses}>
+                                    <div 
+                                        className={style.clausesList} 
+                                        title="View your Roommate Clauses"
+                                    >
+                                        {clauses.length > 0 ? (
+                                            clauses.slice(0, 5).map((clause, index) => (
+                                                <p key={index} className={style.clauseItem}>
+                                                    • {typeof clause === "string" ? clause : clause.text}
+                                                </p>
+                                            ))
+                                        ) : (
+                                            <p className={style.clauseItem}>No clauses available</p>
+                                        )}
+                                    </div>
+                                    <p className={style.viewMore}>Click to view more</p>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

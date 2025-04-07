@@ -2,7 +2,7 @@
 .bulletinContainer {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* Align the content to the left */
+    align-items: center; /* Align the content to the center */
     gap: 15px;
     width: 1200px;
     height: 600px;
@@ -15,7 +15,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: flex-start; /* Align the content to the left */
+    align-items: center; /* Center the content */
     height: 100vh !important;
     width: 100vw !important;
     position: fixed !important;
@@ -101,50 +101,66 @@
     min-height: 250px;
 }
 
-.notesImage {
-    width: 25%;
-    height: 50%;
-    position: absolute;
-    left: 71%;
-}
-
-.notesImage:hover {
-    cursor: pointer;
-    transform: scale(1.1);
-}
-
-/* Quiet hours logo css */
-.quietHours {
-    width: 30%;
-    height:auto;
+/* Quiet Hours Logo css */
+.quietHoursWrapper {
     position: relative;
-    margin-right: auto;
+    display: inline-block;
 }
 
-.quietHours:hover {
+/* Quiet Hours Logo hover effect */
+.quietHours {
+    width: 100%;
+    height: auto;
     cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Quiet Hours hover effect */
+.quietHours:hover {
     transform: scale(1.1);
 }
 
-/* Room Clauses element */
+/* Quiet Hours text on hover */
+.quietHoursWrapper::after {
+    content: "Quiet Hours";
+    position: absolute;
+    top: -30px; /* Position text directly above the icon */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    font-weight: bold;
+    color: black; /* Black color for the text */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Show the text on hover */
+.quietHoursWrapper:hover::after {
+    opacity: 1;
+}
+
+/* Room Clauses element css */
 .roomClauses {
     width: 20%;    /* Scale the image to 10% of its original size */
     height: auto;  /* Maintain the aspect ratio */
     position: relative;
     right: 0;     /* Same as quiet hours logo for alignment */
     cursor: pointer;
+    transition: transform 0.3s ease-in-out;
 }
 
+/* Room Clauses hover effect */
 .roomClauses:hover {
     transform: scale(1.1);
 }
 
+/* Room Clauses text on hover */
 .roomClauses::after {
-    content: "Quiet Hours";
+    content: "Room Clauses";
     position: absolute;
     top: -25px;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     font-size: 18px;
     font-weight: bold;
     color: #333;
@@ -152,6 +168,7 @@
     transition: opacity 0.3s ease;
 }
 
+/* Show the text on hover */
 .roomClauses:hover::after {
     opacity: 1;
 }
@@ -195,7 +212,7 @@
     position: absolute;
     top: -10%;
     left: 50%;
-    transform: translate(-50%, -50%);
+    transform: translateX(-50%);
     font-size: 18px;
     font-weight: bold;
     color: #333;
@@ -205,4 +222,127 @@
 
 .clausesBox:hover::after {
     opacity: 1;
+}
+
+.clausesList {
+    max-height: 120px;
+    overflow-y: auto;
+    text-align: left;
+    padding-left: 10px;
+    margin-top: 10px;
+}
+
+.clauseItem {
+    font-size: 12px;
+    color: #333;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    word-wrap: break-word;
+}
+
+.viewMore {
+    font-size: 10px;
+    color: #666;
+    margin-top: 10px;
+    text-align: center;
+    font-style: italic;
+}
+
+.clausesList::-webkit-scrollbar {
+    width: 6px;
+}
+
+.clausesList::-webkit-scrollbar-thumb {
+    background-color: #c4b5a7;
+    border-radius: 4px;
+}
+
+/* Room Notes Box */
+.notesBox {
+    width: 40%; /* Adjust the width of the notes box */
+    max-width: 500px; /* Set a maximum width */
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    left: 50px;
+}
+
+/* Notes Image Container */
+.notesImage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease-in-out;
+    margin-top: 20px;
+    margin-left: auto;
+    position: relative;  /* Ensure positioning for hover text */
+}
+
+/* *** Tweak the size of the notes image here *** */
+.notesIcon {
+    width: 240px;  /* Adjust the size of the notes image */
+    height: auto;  /* Maintain the aspect ratio */
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Optional: Add a hover effect on the notes icon */
+.notesIcon:hover {
+    transform: scale(1.1);  /* Slight zoom effect on hover */
+}
+
+/* Notes text on hover (same as Quiet Hours) */
+.notesImage::after {
+    content: "Room Notes";
+    position: absolute;
+    top: -30px;  /* Position text directly above the icon */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 18px;
+    font-weight: bold;
+    color: black;  /* Black color for the text */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Show the text on hover */
+.notesImage:hover::after {
+    opacity: 1;
+}
+
+/* Notes Title */
+.notesTitle {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+/* Notes Content */
+.notesContent {
+    font-size: 16px;
+    color: #333;
+    max-height: 200px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.closeNotesButton {
+    background-color: #5c3939;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.closeNotesButton:hover {
+    background-color: #8b6b4f;
 }
