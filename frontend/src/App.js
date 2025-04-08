@@ -15,7 +15,8 @@ import RoomSettings from "./components/Pages/RoomSettings/RoomSettings"; // Impo
 import Disputes from "./components/Pages/Disputes/Disputes";
 import MasterRoom from "./components/Pages/MasterRoom/MasterRoom"; // Import MasterRoom components
 import MasterRoomState from "./components/Pages/MasterRoom/MasterPages/RoomState/MasterRoomState"; // Import MasterRoomState component
-import NotesPopup from "./components/Shared_components/BulletinPopup/NotesPopup"
+import NotesPopup from "./components/Shared_components/BulletinPopup/NotesPopup";
+import Clauses from "./components/Pages/RoomClauses/RoomClauses";
 
 function App() {
   return (
@@ -36,6 +37,9 @@ function App() {
         {/* Quiet Hours Settings route */}
         <Route path="/quiet-hours/:roomId" element={<QuietHoursSettings />} />
         
+        {/* Clauses Route */}
+        <Route path="/clauses/:roomId" element={<Clauses />} />
+
         {/* Disputes route */}
         <Route path="/disputes/:roomId" element={<Disputes />} />
 
