@@ -1,0 +1,77 @@
+.computer-container {
+  position: relative; /* NOT absolute or fixed */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 200px;
+  height: 200px;
+  margin: 0; /* make sure no margin pushes it down */
+}
+
+.monitor {
+  position: relative;
+  width: 100%;
+  height: 70%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.monitor-frame {
+  width: 100%;
+  height: 70%;
+  background-color: #2c2c2c;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.monitor-screen {
+  width: 92%;
+  height: 85%;
+  margin: 4% auto;
+  background-color: #1e1e1e;
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.screen-content {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 5px;
+}
+
+.monitor-logo {
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 2px;
+  background-color: #555;
+  border-radius: 1px;
+}
+
+.monitor-stand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stand-neck {
+  width: 6px;
+  height: 10px;
+  background-color: #2c2c2c;
+}
+
+.stand-base {
+  width: 40px;
+  height: 5px;
+  background-color: #2c2c2c;
+  border-radius: 2px;
+}

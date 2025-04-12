@@ -1,24 +1,28 @@
-import React, { Children } from 'react';
-import './RoomItems.css';
-import GavelPad from './GavelPad';
-import Gavel from './Gavel';
+import "./desk.css"
+import GavelPad from "./GavelPad"
 
-function Desk({ children, gavelVisible }) {
-    return (
-        <div className='deskContainer'>
-            <div className='deskItems'>
-                {children}
-                {(gavelVisible) && (<GavelPad />)}
-            </div>
-            <div className='desk'>
-                <div className='deskTop'></div>
-                <div className='deskLegs'>
-                    <div className='deskLeg'/>
-                    <div className='deskLeg'/>
-                </div>
-            </div>
+function Desk({ children, gavelVisible, computer }) {
+  return (
+    <div className="desk-wrapper">
+      <div className="desk-container">
+        <div className="desk-surface">
+          {computer && <div className="computer-wrapper">{computer}</div>}
+          {children}
+          {gavelVisible && <GavelPad />}
         </div>
-    )
+
+        <div className="desk-structure">
+          <div className="desk-drawer">
+            <div className="drawer-handle"></div>
+          </div>
+          <div className="desk-legs">
+            <div className="desk-leg left"></div>
+            <div className="desk-leg right"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
-export default Desk;
+export default Desk
