@@ -4,21 +4,18 @@
 }
 
 .computer-wrapper {
-  position: absolute;
-  bottom: 0; /* Align computer directly on the desk surface */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10; /* Ensure computer is above the desk surface */
+  /* Removed position: absolute */
+  transform: translateY(34%); 
+  z-index: 10;
   pointer-events: auto;
 }
 
 .gavel-wrapper {
-  position: absolute;
-  bottom: 0; /* Align gavel directly on the desk surface at the same level as the computer */
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 9; /* Ensure gavel is below the computer */
+  /* Removed position: absolute */
+  transform: translateY(-15%); /* Match any adjustments made to computer-wrapper */
+  z-index: 9;
 }
+
 
 .desk-container {
   position: relative; 
@@ -40,7 +37,7 @@
 
 .desk-items {
   position: absolute;
-  top: -80px;
+  bottom: 0px;
   width: 100%;
   display: flex;
   justify-content: space-around;
@@ -58,7 +55,7 @@
   width: 80%;
   height: 40px;
   margin: 0 auto;
-  background-color: #7d4e24;
+  background-color: #4a4a49;
   border-radius: 2px;
   box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.2);
 }
@@ -67,7 +64,7 @@
   position: absolute;
   width: 40px;
   height: 6px;
-  background-color: #5a3921;
+  background-color: #dac1af;
   border-radius: 3px;
   top: 50%;
   left: 50%;
@@ -83,11 +80,47 @@
 }
 
 .desk-leg {
-  width: 20px;
-  height: 100%;
-  background-color: #6d4c33;
+  width: 20%;
+  height: 92%;
+  background-color: #323231;
   border-radius: 0 0 4px 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 4px 0;
 }
+
+.desk-drawer-segment {
+  background-color: #3c3c3b;
+  flex: 1;
+  margin: 2px 0;
+  border-radius: 2px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.drawer-segment-handle {
+  width: 20px;
+  height: 4px;
+  background-color: #b8a98f;
+  border-radius: 2px;
+}
+.desk-drawer {
+  position: relative;
+  width: 80%;
+  height: 45px;
+  margin: 0 auto;
+  background-color: rgb(70, 64, 64); /* So segments are visible */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  padding: 0 0;
+  gap: 0;
+}
+
+
 
 .desk-leg.left {
   margin-left: 40px;

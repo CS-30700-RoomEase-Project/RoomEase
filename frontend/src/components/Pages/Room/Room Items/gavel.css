@@ -3,12 +3,30 @@
   width: 60px;
   height: 30px;
   transform: rotate(45deg);
-  transform-origin: center;
+  transform-origin: 30px 15px; /* Pivot around the handle connection */
   transition: transform 0.3s ease;
 }
 
-.gavel-container:hover {
-  transform: rotate(45deg) scale(1.05);
+.swing {
+  animation: gavel-swing 0.4s ease-in-out;
+}
+
+@keyframes gavel-swing {
+  0% {
+    transform: rotate(45deg) scale(1);
+  }
+  25% {
+    transform: rotate(35deg) scale(1.05);
+  }
+  50% {
+    transform: rotate(50deg) scale(1.05);
+  }
+  75% {
+    transform: rotate(40deg) scale(1.05);
+  }
+  100% {
+    transform: rotate(45deg) scale(1);
+  }
 }
 
 .gavel-head {
@@ -16,7 +34,7 @@
   top: 0;
   left: 0;
   width: 25px;
-  height: 15px;
+  height: 40px;
   background: linear-gradient(to bottom, #8b5a2b, #6d4c33);
   border-radius: 3px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
@@ -24,11 +42,11 @@
 
 .gavel-handle {
   position: absolute;
-  top: 7.5px;
+  top: 17px;
   left: 25px;
   width: 35px;
   height: 5px;
-  background: linear-gradient(to right, #a67c52, #8b5a2b);
+  background: linear-gradient(to right, #3c2d1e, #180f07);
   border-radius: 2px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }

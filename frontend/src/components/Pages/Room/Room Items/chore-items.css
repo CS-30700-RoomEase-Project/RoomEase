@@ -1,22 +1,23 @@
 .chore-items-container {
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    width: 160px; /* Increased from 120px */
-    height: 200px; /* Increased from 150px */
-    margin: 0;
-    transition: transform 0.3s ease;
-  }
-  
-  .chore-items-container:hover {
-    transform: scale(1.05);
-  }
-  
-  .broom-position {
-    position: absolute;
-    bottom: 60px; /* Adjusted from 40px */
-    left: 30px; /* Adjusted from 20px */
-    transform: rotate(-15deg);
-  }
-  
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 200px; /* Increased width */
+  height: 220px; /* Slightly increased height */
+  margin: 0;
+  transition: transform 0.3s ease;
+  transform: scale(1.5); /* Always scaled up */
+  transform-origin: bottom center; /* Keeps it grounded to the floor */
+}
+
+.chore-items-container:hover {
+  transform: scale(1.6); /* Slightly less dramatic scale for control */
+}
+
+.broom-position {
+  position: absolute;
+  bottom: 70px; /* Tweak as needed */
+  left: 35px;
+  transform: rotate(-15deg);
+}

@@ -16,7 +16,7 @@ body {
   overflow: auto;
   overflow-x: hidden;
   box-sizing: border-box;
-  background-color: #f2f2f2; /* Light background to keep it fresh */
+  background-color: #d1ae7c; /* Light background to keep it fresh */
 }
 
 .roomBanner {
@@ -60,7 +60,8 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  background-color: #d0d8db; /* Muted, slightly warm grey */
+  /* background-image: url('some-window.png'); */
+  background-color: #9591b5; /* Muted, slightly warm grey */
   box-sizing: border-box;
 }
 
@@ -112,7 +113,7 @@ body {
 .roomFloor {
   width: 100%;
   height: 60px;
-  background: linear-gradient(to right, #3d4f58, #4b6d7e); /* Muted gradient */
+  background: linear-gradient(to right, #121414, #121517); /* Muted gradient */
   box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
