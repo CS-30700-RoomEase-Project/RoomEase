@@ -8,6 +8,7 @@ import NotificationBell from "../Shared_components/NotificationBell/Notification
 import RoomCreationDoor from "../Shared_components/RoomDoors/RoomCreationDoor.js"
 import RoomDoor from "../Shared_components/RoomDoors/RoomDoor.js"
 import RoomInvite from "../Shared_components/RoomDoors/RoomInvite.js"
+import RoomCard from "../Shared_components/RoomImage/RoomCard.js"
 import styles from "./Dashboard.module.css"
 
 /**
@@ -140,6 +141,30 @@ function Dashboard() {
     setIsRoomsModalOpen(!isRoomsModalOpen)
   }
 
+  const handleFileUpload = async (roomId, file) => {
+    const formData = new FormData();
+    formData.append("roomImage", file); // must match multer's .single('roomImage')
+  
+    try {
+      const response = await fetch(`http://localhost:5001/api/room/uploadRoomImage/${roomId}`, {
+        method: "POST",
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        alert("File upload failed.");
+        return;
+      }
+  
+      const result = await response.json();
+      // alert(`File uploaded to room with ID: ${result.roomId}`);
+    } catch (err) {
+      console.error("Upload error:", err);
+      alert("There was an error uploading the file.");
+    }
+  };
+  
+  
   return (
     <div className={styles.dashboardAppContainer}>
       {/* Animated background elements */}
@@ -293,15 +318,43 @@ function Dashboard() {
                 </button>
               </div>
               <div className={styles.modalContent}>
-                {userData.rooms &&
-                  userData.rooms.map((room) => (
-                    <div key={room._id} className={styles.roomItem} onClick={() => getRoom(room._id)}>
-                      <div className={styles.roomItemIcon}>
-                        <Briefcase size={20} />
-                      </div>
-                      <span>{room.roomName}</span>
+              {userData.rooms &&
+                userData.rooms.map((room) => (
+                  <div key={room._id} className={styles.roomItem}>
+                    {/* <div className={styles.roomItemIcon} onClick={() => getRoom(room._id)} style={{ cursor: 'pointer' }}>
+                      <Briefcase size={20} />
+                    </div> */}
+                    <div className={styles.roomHeader}>
+                    <span onClick={() => getRoom(room._id)} style={{ cursor: 'pointer' }}>
+                      {room.roomName}
+                    </span>
+
+                    {/* File Upload Input */}
+                    {/* <input
+                      type="file"
+                      onChange={(e) => handleFileUpload(room._id, e.target.files[0])}
+                      className={styles.fileInput}
+                    /> */}
+                    <div className={styles.fileUploadWrapper}>
+                    <input
+                      type="file"
+                      id={`file-upload-${room._id}`}
+                      onChange={(e) => handleFileUpload(room._id, e.target.files[0])}
+                      className={styles.hiddenFileInput}
+                    />
+                    <label htmlFor={`file-upload-${room._id}`} className={styles.customFileLabel}>
+                    📤
+                    </label>
+                  </div>
+
                     </div>
-                  ))}
+                    
+                    {/* RoomCard placed in a separate div */}
+                    <div className={styles.roomCardContainer}>
+                      <RoomCard roomId={room._id} />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
