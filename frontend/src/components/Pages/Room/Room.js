@@ -105,12 +105,12 @@ function Room() {
     <>
       <div className="appContainer">
         <div className="roomBanner">
-          <ExitRoom onClick={() => navigate("/dashboard")} />
+          <ExitRoom onClick={() => navigate("/dashboard")} style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           <h1 className="roomTitle">{roomData.roomName}</h1>
           <div className="roomBannerMini">
-            {roomData.settings[7] && <RateButton />}
-            {roomData.settings[6] && <GroupChat roomId={roomId} userName={username} />}
-            <Avatar />
+            {roomData.settings[7] && <RateButton style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />}
+            {roomData.settings[6] && <GroupChat roomId={roomId} userName={username} style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />}
+            <Avatar style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           </div>
         </div>
 
@@ -122,13 +122,14 @@ function Room() {
                 <BulletinBoard
                   onClick={handleBulletinClick}
                   enabled={roomData.settings[3] || roomData.settings[9] || roomData.settings[8]}
+                  style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
                 />
                 <span className="hover-label">Quiet Hours, Room Notes, Room Clauses</span>
               </div>
             </div>
             <div className="upperRight">
               <div className="hover-container">
-                <Clock onClick={() => handleGoToState(roomId)} enabled={roomData.settings[4]} />
+                <Clock onClick={() => handleGoToState(roomId)} enabled={roomData.settings[4]} style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }} />
                 <span className="hover-label">Room State</span>
               </div>
             </div>
@@ -137,38 +138,41 @@ function Room() {
           <div className="floorItems">
             <div className="floorLeft">
               <div className="hover-container">
-                <Fridge room={roomData} enabled={roomData.settings[0]} />
+                <Fridge room={roomData} enabled={roomData.settings[0]} style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }} />
                 <span className="hover-label">Grocries</span>
               </div>
             </div>
             <div className="floorMiddle">
-  <Desk
-    gavelVisible={true}
-    computer={
-      <div className="hover-container">
-        <Computer
-          handleInviteClick={handleInviteClick}
-          handleSettingsClick={handleSettingsClick}
-          roomId={roomData._id}
-          roomData={roomData}
-        />
-        <span className="hover-label">Settings, Invites, Bills</span>
-      </div>
-    }
-  >
-    <div className="hover-container">
-      <Gavel
-        onClick={() => handleGoToDisputes(roomId)}
-        enabled={roomData.settings[2]}
-      />
-      <span className="hover-label">Disputes</span>
-    </div>
-  </Desk>
-</div>
+              <Desk
+                gavelVisible={true}
+                computer={
+                  <div className="hover-container">
+                    <Computer
+                      handleInviteClick={handleInviteClick}
+                      handleSettingsClick={handleSettingsClick}
+                      roomId={roomData._id}
+                      roomData={roomData}
+                      style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+                    />
+                    <span className="hover-label">Settings, Invites, Bills</span>
+                  </div>
+                }
+                style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+              >
+                <div className="hover-container">
+                  <Gavel
+                    onClick={() => handleGoToDisputes(roomId)}
+                    enabled={roomData.settings[2]}
+                    style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+                  />
+                  <span className="hover-label">Disputes</span>
+                </div>
+              </Desk>
+            </div>
 
             <div className="floorRight">
               <div className="hover-container">
-                <ChoreItems onClick={() => handleGoToChores(roomId)} enabled={roomData.settings[5]} />
+                <ChoreItems onClick={() => handleGoToChores(roomId)} enabled={roomData.settings[5]} style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }} />
                 <span className="hover-label">Chores</span>
               </div>
             </div>
@@ -183,6 +187,7 @@ function Room() {
         settings={[roomData.settings[3], roomData.settings[9], roomData.settings[8]]}
         roomId={roomId}
         onOpenNotes={() => setShowNotesPopup(true)}
+        style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
       />
 
       <NotesPopup
@@ -190,6 +195,7 @@ function Room() {
         isOpen={showNotesPopup}
         onClose={() => setShowNotesPopup(false)}
         initialNotes={roomData.bulletinNotes}
+        style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
       />
     </>
   );

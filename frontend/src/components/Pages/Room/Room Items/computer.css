@@ -39,12 +39,18 @@
 .screen-content {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+  background-color: black;
   display: flex;
   justify-content: space-around;
   align-items: center;
   padding: 5px;
+  transition: background 0.3s ease;
 }
+
+.monitor:hover .screen-content {
+  background: linear-gradient(135deg, #2c3e50, #702f59);
+}
+
 
 .monitor-logo {
   position: absolute;

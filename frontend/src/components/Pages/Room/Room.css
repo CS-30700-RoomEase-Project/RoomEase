@@ -17,6 +17,7 @@ body {
   overflow-x: hidden;
   box-sizing: border-box;
   background-color: #d1ae7c; /* Light background to keep it fresh */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for the container */
 }
 
 .roomBanner {
@@ -26,9 +27,9 @@ body {
   width: 100%;
   height: 80px;
   padding: 0 24px;
-  background: linear-gradient(to right, #4b6d7e, #6a8b9a); /* Muted gradient */
+  background: linear-gradient(to right, #1e1920, #1a141b); /* Muted gradient */
   box-sizing: border-box;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* More pronounced shadow for the banner */
   position: relative;
   z-index: 10;
 }
@@ -50,6 +51,7 @@ body {
   align-self: top;
   justify-self: center;
   animation: fadeIn 1.5s ease-in-out;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle text shadow */
 }
 
 .roomBackground {
@@ -60,10 +62,13 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
-  /* background-image: url('some-window.png'); */
+  background-image: url('tile.png');
   background-color: #9591b5; /* Muted, slightly warm grey */
+  background-repeat: repeat; /* ensures the image repeats */
+  background-size: 50px 50px; /* adjust to make the tile smaller */
   box-sizing: border-box;
 }
+
 
 /* Room sections for positioning */
 .upperSection {
@@ -114,7 +119,7 @@ body {
   width: 100%;
   height: 60px;
   background: linear-gradient(to right, #121414, #121517); /* Muted gradient */
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2), 0 -2px 5px rgba(0, 0, 0, 0.1); /* Inner and bottom shadow for depth */
 }
 
 /* Messages container */
@@ -130,6 +135,7 @@ body {
   border: 1px solid #ddd;
   display: flex;
   flex-direction: column-reverse;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
 /* Hover container and label */
@@ -155,6 +161,7 @@ body {
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow for the label */
 }
 
 .hover-container:hover .hover-label {

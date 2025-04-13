@@ -26,14 +26,16 @@ function Fridge({ room, enabled }) {
       <div className="fridge-body">
         <div className="freezer-door">
           <div className="freezer-handle"></div>
-          <div className="freezer-light"></div>
+          {/* <div className="freezer-light"></div> */}
         </div>
-        <div className="fridge-door">
-          <div className="fridge-handle"></div>
-          <div className="fridge-light"></div>
-          <div className="water-dispenser">
-            <div className="dispenser-panel"></div>
-            <div className="dispenser-recess"></div>
+        <div className="fridge-door-wrapper">
+          <div className="fridge-door">
+            <div className="fridge-handle"></div>
+            {/* <div className="fridge-light"></div> */}
+            {/* <div className="water-dispenser">
+              <div className="dispenser-panel"></div>
+              <div className="dispenser-recess"></div>
+            </div> */}
           </div>
         </div>
       </div>
