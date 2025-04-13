@@ -999,3 +999,31 @@
   }
 }
 
+.hiddenFileInput {
+  display: none;
+}
+
+.customFileLabel {
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 6px 12px;
+  background-color: #637c7abe;
+  color: white;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.customFileLabel:hover {
+  background-color: #9abfbcbe;
+}
+
+.roomHeader {
+  display: flex;
+  justify-content: center; /* Centers horizontally */
+  align-items: center;     /* Centers vertically */
+  height: 100px;           /* Or adjust to your desired height */
+  text-align: center;
+}
+
+
