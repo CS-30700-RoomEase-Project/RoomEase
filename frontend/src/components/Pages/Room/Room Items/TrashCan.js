@@ -1,22 +1,19 @@
-import React from 'react';
+"use client"
+import React from "react"
+import "./trash-can.css"
 
-/**
- * TrashCan component to represent a trash can item in the room
- */
 const TrashCan = ({ onClick }) => {
-    return (
-        <div className="trashCan" onClick={onClick} style={{ cursor: 'pointer' }}>
-            <div className="trashCanLid">
-                <div className='trashCanLidHandle' />
-                <div className='trashCanLidBody' />
-            </div>
-            <div className="trashCanBody">
-                <div className='trashCanBodyAccent' style={{ transform: 'rotate(355deg)' }} />
-                <div className='trashCanBodyAccent' />
-                <div className='trashCanBodyAccent' style={{ transform: 'rotate(5deg)' }} />
-            </div>
-        </div>
-    );
-};
+  return (
+    <div className="trash-can-container" onClick={onClick}>
+      <div className="trash-can-lid">
+        <div className="trash-can-lid-handle"></div>
+      </div>
+      <div className="trash-can-body">
+        <div className="trash-can-shine"></div>
+        <div className="trash-can-shadow"></div>
+      </div>
+    </div>
+  )
+}
 
-export default TrashCan;
+export default TrashCan

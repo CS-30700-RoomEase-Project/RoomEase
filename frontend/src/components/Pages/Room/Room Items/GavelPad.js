@@ -1,14 +1,12 @@
-import React from 'react';
-import './RoomItems.css';
+import "./gavel-pad.css"
 
 function GavelPad() {
-    return (
-        <div className="gavel-pad-container">
-            <div className="gavel-pad-layer1"></div>
-            <div className="gavel-pad-layer2"></div>
-            <div className="gavel-pad-layer3"></div>
-        </div>
-    );
+  return (
+    <div className="gavel-pad-container">
+      <div className="gavel-pad-base"></div>
+      <div className="gavel-pad-top"></div>
+    </div>
+  )
 }
 
-export default GavelPad;
+export default GavelPad
