@@ -15,6 +15,7 @@ import Gavel from './Room Items/Gavel';
 import style from './Room.module.css';
 import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
 import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
+import RoomSettingsPopup from '../../Shared_components/RoomSettings/RoomSettingsPopup';
 
 function Room() {
     const { roomId } = useParams(); // Gets the roomId from the URL
@@ -22,6 +23,7 @@ function Room() {
 
     const [showBulletin, setShowBulletin] = useState(false);
     const [showNotesPopup, setShowNotesPopup] = useState(false);
+    const [showSettingsPopup, setShowSettingsPopup] = useState(false);
     const [roomData, setRoomData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -69,7 +71,8 @@ function Room() {
     };
 
     const handleSettingsClick = () => {
-        navigate(`/room/${roomId}/settings`);
+        console.log("Settings clicked"); // Debugging
+        setShowSettingsPopup(true);
     };
 
     const handleGoToChores = (roomId) => {
@@ -149,6 +152,10 @@ function Room() {
             isOpen={showNotesPopup}
             onClose={() => setShowNotesPopup(false)}
             initialNotes={roomData.bulletinNotes}
+        />
+        <RoomSettingsPopup 
+            isOpen={showSettingsPopup} 
+            onClose={() => setShowSettingsPopup(false)} 
         />
         </>
     )
