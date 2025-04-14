@@ -14,13 +14,13 @@ function GroceryItem(props) {
   const { items, setItems, index, item, description, room } = props;
   const costRef = useRef(null);
   const quantityRef = useRef(null);
+  const originalCost = useRef(0); // Track initial cost
 
-  // On component mount or when item.cost changes, update the cost state
   useEffect(() => {
-    if (item.cost !== undefined && item.cost !== null) {
-      setCost(item.cost);
-    }
-  }, [item.cost]);
+    const initial = item.cost ?? 0;
+    setCost(initial);
+    originalCost.current = initial;
+  }, [item, index]);
 
   useEffect(() => {
     setTempComment(description || "");
@@ -30,27 +30,14 @@ function GroceryItem(props) {
     const updatedItems = [...items];
     updatedItems[index].purchased = !updatedItems[index].purchased;
     updatedItems[index].description = tempComment;
-    
+
     const userId = localStorage.getItem("userId");
- 
+
     setItems(updatedItems);
     saveItem();
     const requesterCount = item.requesters ? item.requesters.length : 0;
     const amountOwed = requesterCount > 0 ? cost / requesterCount : 0;
 
-
-    console.log("USER: "+ updatedItems[index].purchaser);
-    if (updatedItems[index].purchased) {
-      const notificationData = {
-        userId: userId,
-        amountOwed: amountOwed,
-        pageID: "/grocery",
-      };
-      CallService(
-        "grocery/notifyPurchased/" + ((room) ? room._id : 1) + "/" + item._id,
-        notificationData
-      );
-    }
   };
 
   const removeItem = () => {
@@ -64,16 +51,12 @@ function GroceryItem(props) {
   };
 
   const requestItem = () => {
-    console.log("Requesting item: " + item.itemName);
     const userData = JSON.parse(localStorage.getItem("userData"));
     const userId = userData.userId;
 
-    // Send a roomId of "1" to the backend to indicate that the request is coming from a master room
     CallService(
-      "grocery/request/" + (((room) ? room._id : 1) + "/" + item._id),
-      {
-        userId: userId,
-      },
+      "grocery/request/" + ((room ? room._id : 1) + "/" + item._id),
+      { userId: userId },
       editResponseHandler
     );
   };
@@ -109,12 +92,12 @@ function GroceryItem(props) {
     const requesterCount = item.requesters ? item.requesters.length : 0;
     const amountOwed = requesterCount > 0 ? cost / requesterCount : 0;
     let description = tempComment;
-    console.log("SAVE AMOUNT: " +amountOwed)
-    const updatedItem = { 
-      ...item, 
-      cost,        
+
+    const updatedItem = {
+      ...item,
+      cost,
       amountOwed,
-      description
+      description,
     };
 
     CallService("grocery/update", updatedItem, (data) => {
@@ -155,9 +138,7 @@ function GroceryItem(props) {
     return usernames + shareText;
   };
 
-  // Handle comment submission
   const handleSubmitComment = (e) => {
-    setComment(tempComment);
     setComment(tempComment);
     e.stopPropagation();
     saveItem();
@@ -167,9 +148,8 @@ function GroceryItem(props) {
   const handleCancelComment = (e) => {
     e.stopPropagation();
     setCommentPopup(false);
-  }
+  };
 
-  // When the entire grocery item container is clicked, open the comment popup (if not editing)
   const handleContainerClick = () => {
     if (editIndex === null) {
       setCommentPopup(true);
@@ -179,8 +159,6 @@ function GroceryItem(props) {
 
   return (
     <div className={styles.groceryItemC} onClick={handleContainerClick}>
-      
-      {/* Purchase Button */}
       <button onClick={(e) => { e.stopPropagation(); togglePurchased(); }} className={styles.purchaseCheckbox}>
         {item.purchased && <span className={styles.checked}>✔</span>}
       </button>
@@ -189,38 +167,35 @@ function GroceryItem(props) {
         style={{ textDecoration: item.purchased ? "line-through" : "none" }}
       >
         <div className={styles.groceryItemText}>
-        {editIndex === index ? (
-          <div className={styles.editContainer} onClick={(e) => e.stopPropagation()}>
-            <input
-              type="text"
-              value={editName}
-              onChange={(e) => setEditName(e.target.value)}
-              maxLength={21}
-              className={styles.editInput}
-              onClick={(e) => e.stopPropagation()}
-            />
-            <input
-              type="number"
-              ref={quantityRef}
-              onFocus={() => quantityRef.current.select()}
-              onClick={(e) => { e.stopPropagation(); quantityRef.current.select(); }}
-              value={editQuantity}
-              onChange={(e) =>
-                setEditQuantity(
-                  Math.min(999, Math.max(1, parseInt(e.target.value) || 1))
-                )
-              }
-              min="1"
-              max="999"
-              className={styles.editQuantityInput}
-            />
-          </div>
-        ) : (
-          <>
-            {item.itemName} - {" "}
-            <span className={styles.quantityText}>{item.quantity}</span>
-          </>
-        )}
+          {editIndex === index ? (
+            <div className={styles.editContainer} onClick={(e) => e.stopPropagation()}>
+              <input
+                type="text"
+                value={editName}
+                onChange={(e) => setEditName(e.target.value)}
+                maxLength={21}
+                className={styles.editInput}
+                onClick={(e) => e.stopPropagation()}
+              />
+              <input
+                type="number"
+                ref={quantityRef}
+                onFocus={() => quantityRef.current.select()}
+                onClick={(e) => { e.stopPropagation(); quantityRef.current.select(); }}
+                value={editQuantity}
+                onChange={(e) =>
+                  setEditQuantity(Math.min(999, Math.max(1, parseInt(e.target.value) || 1)))
+                }
+                min="1"
+                max="999"
+                className={styles.editQuantityInput}
+              />
+            </div>
+          ) : (
+            <>
+              {item.itemName} - <span className={styles.quantityText}>{item.quantity}</span>
+            </>
+          )}
         </div>
       </div>
       <div className={editIndex === index ? styles.editButtons : styles.groceryItemButtons} onClick={(e) => e.stopPropagation()}>
@@ -262,29 +237,70 @@ function GroceryItem(props) {
             onClick={(e) => e.stopPropagation()}
             onChange={(e) => {
               let value = e.target.value;
-              // If there's a decimal point, ensure no more than 2 decimal places are entered.
               if (value.includes('.')) {
                 const [whole, fraction] = value.split('.');
                 if (fraction.length > 2) {
                   value = `${whole}.${fraction.substring(0, 2)}`;
                 }
               }
-              // Convert value to a number and clamp it to a maximum of 9999.
               const numericValue = Math.min(parseFloat(value) || 0, 9999);
               setCost(numericValue);
             }}
-            onBlur={(e) => {
-              // Parse the number and ensure it's not above 9999.
-              const numericValue = Math.min(parseFloat(e.target.value) || 0, 9999);
-              // Format to exactly two decimal places.
-              const formatted = numericValue.toFixed(2);
-              setCost(parseFloat(formatted));
-              saveItem();
-            }}
             onKeyDown={(e) => {
               if (e.key === "Enter") {
+                e.preventDefault();
+                const numericValue = Math.min(parseFloat(e.target.value) || 0, 9999);
+                const formatted = parseFloat(numericValue.toFixed(2));
+                setCost(formatted);
                 saveItem();
+            
+                if (formatted !== originalCost.current && item.purchased && formatted > 0) {
+                  const requesterCount = item.requesters ? item.requesters.length : 0;
+                  const amountOwed = requesterCount > 0 ? formatted / requesterCount : 0;
+                  const userId = localStorage.getItem("userId");
+            
+                  const notificationData = {
+                    userId: userId,
+                    amountOwed: amountOwed,
+                    pageID: "/grocery",
+                  };
+            
+                  CallService(
+                    "grocery/notifyPurchased/" + ((room) ? room._id : 1) + "/" + item._id,
+                    notificationData
+                  );
+                }
+            
+                originalCost.current = formatted;
+            
+                // Deselect the input box (blur)
+                e.target.blur();
               }
+            }}
+            onBlur={(e) => {
+              const numericValue = Math.min(parseFloat(e.target.value) || 0, 9999);
+              const formatted = parseFloat(numericValue.toFixed(2));
+              setCost(formatted);
+              saveItem();
+
+              if (formatted !== originalCost.current && item.purchased && formatted > 0) {
+                const requesterCount = item.requesters ? item.requesters.length : 0;
+                const amountOwed = requesterCount > 0 ? formatted / requesterCount : 0;
+                const userId = localStorage.getItem("userId");
+
+                const notificationData = {
+                  userId: userId,
+                  amountOwed: amountOwed,
+                  pageID: "/grocery",
+                };
+
+                CallService(
+                  "grocery/notifyPurchased/" + ((room) ? room._id : 1) + "/" + item._id,
+                  notificationData
+                );
+              }
+
+              originalCost.current = formatted;
             }}
             placeholder="Cost"
             className={styles.inputCost}
@@ -300,27 +316,27 @@ function GroceryItem(props) {
         </div>
       )}
 
-        {commentPopup && (
-          <div className={styles.commentOverlay} onClick={handleCancelComment}>
-            <div className={styles.commentModal} onClick={(e) => e.stopPropagation()}>
-              <h3>Comment on {item.itemName}</h3>
-              <textarea
-                value={tempComment}
-                onChange={(e) => setTempComment(e.target.value)}
-                placeholder="Type your comment here..."
-                maxLength={1000}
-              />
-              <div className={styles.modalButtons}>
-                <button onClick={handleSubmitComment} className={styles.Button}>
-                  Submit
-                </button>
-                <button onClick={handleCancelComment} className={styles.Button}>
-                  Close
-                </button>
-              </div>
+      {commentPopup && (
+        <div className={styles.commentOverlay} onClick={handleCancelComment}>
+          <div className={styles.commentModal} onClick={(e) => e.stopPropagation()}>
+            <h3>Comment on {item.itemName}</h3>
+            <textarea
+              value={tempComment}
+              onChange={(e) => setTempComment(e.target.value)}
+              placeholder="Type your comment here..."
+              maxLength={1000}
+            />
+            <div className={styles.modalButtons}>
+              <button onClick={handleSubmitComment} className={styles.Button}>
+                Submit
+              </button>
+              <button onClick={handleCancelComment} className={styles.Button}>
+                Close
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      )}
     </div>
   );
 }
