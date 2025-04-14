@@ -176,7 +176,7 @@ router.post('/add/:roomID', async (req, res) => {
   
 
   router.post("/notifyPurchased/:roomId/:itemId/", async (req, res) => {
-    const { userId, description, pageID } = req.body;
+    const { userId, amountOwed, pageID } = req.body;
     const { roomId, itemId } = req.params;
     try {
       // Optionally, get the notifying user (for origin)
@@ -190,7 +190,8 @@ router.post('/add/:roomID', async (req, res) => {
       }
   
       item.purchaser = user._id;
-
+      const purchaserName = user.username;
+      const description = `You owe $${amountOwed} to ${purchaserName} for purchasing ${item.itemName}`;
       await item.save();
 
       // Create the notification with usersNotified equal to the requesters array from the grocery item

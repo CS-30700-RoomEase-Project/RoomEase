@@ -30,14 +30,20 @@ function GroceryItem(props) {
     const updatedItems = [...items];
     updatedItems[index].purchased = !updatedItems[index].purchased;
     updatedItems[index].description = tempComment;
+    
     const userId = localStorage.getItem("userId");
+ 
     setItems(updatedItems);
     saveItem();
+    const requesterCount = item.requesters ? item.requesters.length : 0;
+    const amountOwed = requesterCount > 0 ? cost / requesterCount : 0;
 
+
+    console.log("USER: "+ updatedItems[index].purchaser);
     if (updatedItems[index].purchased) {
       const notificationData = {
         userId: userId,
-        description: `${updatedItems[index].itemName} purchased!`,
+        amountOwed: amountOwed,
         pageID: "/grocery",
       };
       CallService(
@@ -103,6 +109,7 @@ function GroceryItem(props) {
     const requesterCount = item.requesters ? item.requesters.length : 0;
     const amountOwed = requesterCount > 0 ? cost / requesterCount : 0;
     let description = tempComment;
+    console.log("SAVE AMOUNT: " +amountOwed)
     const updatedItem = { 
       ...item, 
       cost,        
