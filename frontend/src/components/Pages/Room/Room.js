@@ -11,6 +11,7 @@ import Computer from './Room Items/Computer';
 import Desk from './Room Items/Desk';
 import Fridge from './Room Items/Fridge';
 import Gavel from './Room Items/Gavel';
+import GavelPad from './Room Items/GavelPad';
 
 import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
 import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
@@ -87,6 +88,13 @@ function Room() {
     if (roomData.settings[2]) {
       console.log("Navigating to disputes with roomId:", roomId);
       navigate(`/disputes/${roomId}`);
+    }
+  };
+
+  const handleGoToSubmitDisputes = (roomId) => {
+    if (roomData.settings[2]) {
+      console.log("Navigating to submit disputes with roomId:", roomId);
+      navigate(`/submit-dispute/${roomId}`);
     }
   };
 
@@ -167,6 +175,15 @@ function Room() {
                   />
                   <span className="hover-label">Disputes</span>
                 </div>
+
+                <div className="hover-container" onClick={() => handleGoToSubmitDisputes(roomId)}>
+                  <GavelPad
+                    enabled={roomData.settings[2]}
+                    style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+                  />
+                  <span className="hover-label">Submit A Dispute</span>
+                </div>
+
               </Desk>
             </div>
 

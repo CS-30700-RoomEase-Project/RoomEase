@@ -17,6 +17,7 @@ import MasterRoom from "./components/Pages/MasterRoom/MasterRoom"; // Import Mas
 import MasterRoomState from "./components/Pages/MasterRoom/MasterPages/RoomState/MasterRoomState"; // Import MasterRoomState component
 import NotesPopup from "./components/Shared_components/BulletinPopup/NotesPopup";
 import Clauses from "./components/Pages/RoomClauses/RoomClauses";
+import SubmitDisputes from './components/Pages/SubmitDispute/SubmitDispute';
 
 function App() {
   return (
@@ -42,6 +43,9 @@ function App() {
 
         {/* Disputes route */}
         <Route path="/disputes/:roomId" element={<Disputes />} />
+        
+        {/* Submit disputes route */}
+        <Route path="/submit-dispute/:roomId" element={<SubmitDisputes />} />
 
         {/* Room page route */}
         <Route path="/room/:roomId" element={<Room />}/>
@@ -58,9 +62,6 @@ function App() {
         {/* Room notes page route */}
         <Route path="/notes" element={<NotesPopup />} />
 
-        {/* Redirect from any other route to the home page (optional) */}
-        <Route path="*" element={<Navigate to="/" />} />
-
         {/* Bills/Expenses Settings route */}
         <Route path="/room/:roomId/bills" element={<BillsExpenses/>} />
 
@@ -75,6 +76,7 @@ function App() {
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />
+
       </Routes>
     </Router>
   );
