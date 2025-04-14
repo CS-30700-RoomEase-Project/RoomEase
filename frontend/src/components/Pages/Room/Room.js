@@ -14,8 +14,12 @@ import Gavel from './Room Items/Gavel';
 
 import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
 import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
+<<<<<<< HEAD
 import CosmeticStorePopup from './CosmeticStorePopup';
 import './Room.css';
+=======
+import RoomSettingsPopup from '../../Shared_components/RoomSettings/RoomSettingsPopup';
+>>>>>>> 2bcc42f8 (RoomSettings being transferred to a popup and having more options added)
 
 function Room() {
     const { roomId } = useParams();
@@ -23,6 +27,7 @@ function Room() {
 
     const [showBulletin, setShowBulletin] = useState(false);
     const [showNotesPopup, setShowNotesPopup] = useState(false);
+    const [showSettingsPopup, setShowSettingsPopup] = useState(false);
     const [roomData, setRoomData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -177,9 +182,10 @@ function Room() {
         navigate(`/room/${roomId}/invite`);
     };
 
-  const handleSettingsClick = () => {
-    navigate(`/room/${roomId}/settings`);
-  };
+    const handleSettingsClick = () => {
+        console.log("Settings clicked"); // Debugging
+        setShowSettingsPopup(true);
+    };
 
     const handleGoToChores = (roomId) => {
         console.log("Navigating to chores with roomId:", roomId);
@@ -222,6 +228,13 @@ function Room() {
             <Avatar style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
           </div>
         </div>
+        <BulletinPopup isOpen={showBulletin} onClose={() => setShowBulletin(false)} settings={[roomData.settings[3], roomData.settings[9], roomData.settings[8]]} roomId={roomId} onOpenNotes={() => setShowNotesPopup(true)} />
+        <NotesPopup
+            room={roomData}
+            isOpen={showNotesPopup}
+            onClose={() => setShowNotesPopup(false)}
+            initialNotes={roomData.bulletinNotes}
+        />
 
         <div className="roomBackground">
           <div className="upperSection">
@@ -305,6 +318,10 @@ function Room() {
         onClose={() => setShowNotesPopup(false)}
         initialNotes={roomData.bulletinNotes}
         style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
+      />
+      <RoomSettingsPopup 
+        isOpen={showSettingsPopup} 
+        onClose={() => setShowSettingsPopup(false)} 
       />
       <CosmeticStorePopup
                 isOpen={cosmeticPopupOpen}
