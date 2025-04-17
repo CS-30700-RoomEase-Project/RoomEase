@@ -64,11 +64,6 @@ function Room() {
   }, [roomId, navigate]);
 
 
-  if (!userData?.userId) {
-    navigate("/login");
-    return;
-  }
-
   const handleInviteClick = () => {
     navigate(`/room/${roomId}/invite`);
   };
