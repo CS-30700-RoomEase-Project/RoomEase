@@ -14,12 +14,15 @@ const RateButton = () => {
 
   return (
     <div>
-      {/* Rate button */}
-      <button onClick={openPopup} className="rate-button">
-        Rate Roommates
-      </button>
+        <button 
+          onClick={openPopup} 
+          className="rate-button" 
+          title="Rate your roommate"
+        >
+          Ratings
+        </button>
 
-      {/* RoomRatePopUp will appear when isOpen is true */}
+        {/* RoomRatePopUp will appear when isOpen is true */}
       <RoomRatePopUp isOpen={isOpen} onClose={closePopup} />
     </div>
   );

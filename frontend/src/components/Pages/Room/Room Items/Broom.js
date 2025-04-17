@@ -1,21 +1,16 @@
-import React from 'react';
+import React from "react"
+import "./broom.css"
 
-/**
- * Broom component to represent a trash can item in the room
- */ 
-const Broom = ({ onClick }) => {
-    return (
-        <div className="broom" onClick={onClick} style={{ cursor: 'pointer' , transform: 'rotate(10deg)'}}>
-            <div className="broomHandle"/>
-            <div className="broomHead">
-                <div className='broomBristle'/>
-                <div className='broomBristle'/>
-                <div className='broomBristle'/>
-                <div className='broomBristle'/>
-                <div className='broomBristle'/>
-            </div>
-        </div>
-    );
-};
+function Broom() {
+  return (
+    <div className="broom-container">
+      <div className="broom-handle"></div>
+      <div className="broom-connector"></div>
+      <div className="broom-head">
+        <div className="broom-bristles"></div>
+      </div>
+    </div>
+  )
+}
 
-export default Broom;
+export default Broom

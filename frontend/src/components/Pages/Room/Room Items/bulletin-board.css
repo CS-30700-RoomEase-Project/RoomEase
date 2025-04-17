@@ -1,0 +1,129 @@
+.bulletin-board-container {
+    position: relative;
+    width: 400px; /* Increased from 150px */
+    height: 160px; /* Increased from 120px */
+    margin: 20px;
+    transition: transform 0.3s ease;
+  }
+  
+  .bulletin-board-container:hover {
+    transform: scale(1.03);
+  }
+  
+  .bulletin-frame {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: #593f29;
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    padding: 5px;
+  }
+  
+  .bulletin-cork {
+    width: 100%;
+    height: 100%;
+    background-color: #f9dfb4;
+    border-radius: 2px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .bulletin-cork::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+      radial-gradient(circle at 30% 40%, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+      radial-gradient(circle at 50% 60%, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+      radial-gradient(circle at 70% 80%, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+      radial-gradient(circle at 90% 10%, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  .bulletin-note {
+    position: absolute;
+    width: 55px; /* Increased from 40px */
+    height: 55px; /* Increased from 40px */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transform: rotate(var(--rotation, -5deg));
+  }
+  
+  .bulletin-note.yellow {
+    background-color: #fff9c4;
+    top: 15px;
+    left: 20px;
+    --rotation: -5deg;
+  }
+  
+  .bulletin-note.blue {
+    background-color: #bbdefb;
+    top: 25px;
+    right: 20px;
+    --rotation: 5deg;
+  }
+  
+  .bulletin-note.green {
+    background-color: #c8e6c9;
+    bottom: 15px;
+    left: 30px;
+    --rotation: 3deg;
+  }
+  
+  .note-lines {
+    position: relative;
+    width: 80%;
+    height: 60%;
+    margin: 8px auto;
+  }
+  
+  .note-lines::before,
+  .note-lines::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  .note-lines::before {
+    top: 33%;
+  }
+  
+  .note-lines::after {
+    top: 66%;
+  }
+  
+  .bulletin-pin {
+    position: absolute;
+    width: 8px; /* Increased from 6px */
+    height: 8px; /* Increased from 6px */
+    border-radius: 50%;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+  
+  .bulletin-pin.red {
+    background-color: #e74c3c;
+    top: 10px;
+    left: 40px;
+  }
+  
+  .bulletin-pin.blue {
+    background-color: #3498db;
+    top: 20px;
+    right: 40px;
+  }
+  
+  .bulletin-pin.green {
+    background-color: #2ecc71;
+    bottom: 10px;
+    left: 50px;
+  }
+  
+  .bulletin-pin.yellow {
+    background-color: #f1c40f;
+    bottom: 20px;
+    right: 30px;
+  }
+  

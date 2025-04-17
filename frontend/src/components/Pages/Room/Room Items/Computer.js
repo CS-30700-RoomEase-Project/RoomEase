@@ -1,31 +1,37 @@
-import React from 'react';
-import RoomSettingsIcon from "./ComputerContent/SettingsIcon/RoomSettingsIcon";
-import InviteIcon from "./ComputerContent/InviteIcon/InviteIcon";
+"use client"
+import { useNavigate } from "react-router-dom"
 import BillsIcon from "./ComputerContent/BillIcon/BillsIcon"
-import { useNavigate } from 'react-router-dom';
-import "./RoomItems.css";
+import InviteIcon from "./ComputerContent/InviteIcon/InviteIcon"
+import RoomSettingsIcon from "./ComputerContent/SettingsIcon/RoomSettingsIcon"
+import "./computer.css"
 
-function Computer({ handleSettingsClick, handleInviteClick, roomId, roomData }) {
-  const navigate = useNavigate();
+function Computer({ handleInviteClick, handleSettingsClick, roomId, roomData }) {
+  const navigate = useNavigate()
 
   const handleGoToBills = () => {
-      navigate(`/room/${roomId}/bills`);
-  };
+    navigate(`/room/${roomId}/bills`)
+  }
 
   return (
     <div className="computer-container">
-      <div className="monitor-frame">
-        <div className="monitor-screen">
-          {(roomId != "master-room") && <RoomSettingsIcon onClick={handleSettingsClick} />}
-          {(roomId != "master-room") && <InviteIcon onClick={handleInviteClick} />}
-          {(roomId == "master-room" || roomData.settings[1]) && <BillsIcon onClick={handleGoToBills} />}
+      <div className="monitor">
+        <div className="monitor-frame">
+          <div className="monitor-screen">
+            <div className="screen-content">
+              {roomId !== "master-room" && <RoomSettingsIcon onClick={handleSettingsClick} />}
+              {roomId !== "master-room" && <InviteIcon onClick={handleInviteClick} />}
+              {(roomId === "master-room" || roomData.settings[1]) && <BillsIcon onClick={handleGoToBills} />}
+            </div>
+          </div>
+          <div className="monitor-logo"></div>
+        </div>
+        <div className="monitor-stand">
+          <div className="stand-neck"></div>
+          <div className="stand-base"></div>
         </div>
       </div>
-      <div className="computer-stand"></div>
-      <div className="computer-base"></div>
     </div>
-  );
+  )
 }
 
-export default Computer;
-
+export default Computer

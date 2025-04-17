@@ -1,62 +1,180 @@
-
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .appContainer {
-    display: flex;
-    flex-direction: column; /* Ensuring column layout */
-    justify-content: top;  /* Centers the container vertically */
-    align-items: left;  /* Centers the container horizontally */
-    height: 100vh;  /* Full viewport height */
-    width: 100%;  /* Full viewport width */
-    overflow: auto;
-    overflow-x: hidden;
-    box-sizing: border-box;  /* Ensures padding and border are included in width */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  height: 100vh;
+  width: 100%;
+  overflow: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
+  background-color: #d1ae7c; /* Light background to keep it fresh */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for the container */
 }
 
 .roomBanner {
-    display: flex;
-    justify-content: space-between; /* Spreads items apart */
-    align-items: center;  /* Centers items vertically */
-    width: 100%;
-    height: 15%;
-    padding: 10px;
-    background-color: #8b6b4f; 
-    box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  height: 80px;
+  padding: 0 24px;
+  background: linear-gradient(to right, #1e1920, #1a141b); /* Muted gradient */
+  box-sizing: border-box;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* More pronounced shadow for the banner */
+  position: relative;
+  z-index: 10;
+}
+
+.roomBannerMini {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+  height: 100%;
 }
 
 .roomTitle {
-    font-size: 2rem;
-    margin-top: 1rem;
-    max-width: 40rem;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
-    color: white;
-    font-family: 'Roboto', sans-serif;
-    align-self: top;
-    justify-self: center;
-    line-height: 1.6;
-    animation: fadeIn 1.5s ease-in-out;
-  }
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+  color: #ecf0f1;
+  align-self: top;
+  justify-self: center;
+  animation: fadeIn 1.5s ease-in-out;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle text shadow */
+}
 
 .roomBackground {
-    width: 100vw;
-    height: 80%;
-    flex-grow: 1;
-    margin: 0;
-    align-items: center;
-    position: relative;
-    display: flex;
-    background-color: black;
-    box-sizing: border-box;
+  width: 100%;
+  height: 80%;
+  flex-grow: 1;
+  margin: 0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-image: url('tile.png');
+  background-color: #9591b5; /* Muted, slightly warm grey */
+  background-repeat: repeat; /* ensures the image repeats */
+  background-size: 50px 50px; /* adjust to make the tile smaller */
+  box-sizing: border-box;
+}
+
+
+/* Room sections for positioning */
+.upperSection {
+  width: 100%;
+  height: 35%;
+  display: flex;
+}
+
+.upperLeft {
+  width: 33.33%;
+  height: 100%;
+}
+
+.upperMiddle {
+  width: 33.33%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.upperRight {
+  width: 33.33%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.floorItems {
+  width: 100%;
+  height: 65%;
+  display: flex;
+  align-items: flex-end;
+}
+
+.floorLeft,
+.floorMiddle,
+.floorRight {
+  width: 33.33%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
 }
 
 .roomFloor {
-    width: 100%;
-    height: 5%;
-    margin: 0;
-    background-color: #8b6b4f;
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(to right, #121414, #121517); /* Muted gradient */
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2), 0 -2px 5px rgba(0, 0, 0, 0.1); /* Inner and bottom shadow for depth */
+}
+
+/* Messages container */
+.messages-container {
+  height: 400px;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column-reverse;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Hover container and label */
+.hover-container {
+  position: relative;
+  display: inline-block;
+}
+
+.hover-label {
+  visibility: hidden;
+  background-color: rgba(0, 0, 0, 0.7); /* Darker muted label background */
+  color: #fff;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  position: absolute;
+  bottom: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow for the label */
+}
+
+.hover-container:hover .hover-label {
+  visibility: visible;
+  opacity: 1;
+}
+
+/* Fade-in animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
