@@ -6,6 +6,13 @@ const RoomCosmetic = require('../models/RoomCosmetic');
 
 const router = express.Router();
 
+
+const multer = require('multer');
+// Configure multer to store image in memory (for storing as Buffer in MongoDB)
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
+
+
 router.post('/createRoom', async (req, res) => {
     const { userId, roomName, groupPic, settings } = req.body;
 
@@ -49,6 +56,49 @@ router.post('/createRoom', async (req, res) => {
     }
 });
 
+router.post('/uploadRoomImage/:roomId', upload.single('roomImage'), async (req, res) => {
+    try {
+        const { roomId } = req.params;
+        const file = req.file;
+        console.log("File received:", file); // Debugging line
+        if (!file) {
+            return res.status(400).json({ message: 'No file uploaded' });
+        }
+
+        const room = await Room.findById(roomId);
+        if (!room) {
+            return res.status(404).json({ message: 'Room not found' });
+        }
+
+        // Store image buffer into the roomImage field
+        room.roomImage = file.buffer;
+        await room.save();
+
+        res.status(200).json({ message: 'Room image updated successfully', roomId: room._id });
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).json({ message: 'Server error', error });
+    }
+});
+
+router.get('/roomImage/:roomId', async (req, res) => {
+    try {
+      const { roomId } = req.params;
+      const room = await Room.findById(roomId);
+  
+      if (!room || !room.roomImage) {
+        return res.status(404).json({ message: 'Room or image not found' });
+      }
+  
+      res.set('Content-Type', 'image/jpeg'); // or 'image/png' based on what you expect
+      res.send(room.roomImage);
+    } catch (error) {
+      console.error('Error fetching room image:', error);
+      res.status(500).json({ message: 'Server error', error });
+    }
+  });
+
+  
 router.get('/getRoom', async( req, res) => {
     const { roomId, userId } = req.query;
     try {

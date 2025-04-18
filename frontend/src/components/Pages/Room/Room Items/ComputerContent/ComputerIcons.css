@@ -2,7 +2,7 @@
 .gear-container {
     width: 40px;
     height: 40px;
-    background: tan;
+    background: rgba(210, 180, 140, 0);
     border-radius: 8px;
     display: flex;
     justify-content: center;
@@ -28,7 +28,7 @@
   
 /* Container hover effect */
 .gear-container:hover {
-  background: #d2b48c; /* Darker tan */
+  background: #978cd25d; /* Darker tan */
   scale: 1.1;
 }
 
@@ -36,7 +36,7 @@
 .invite-icon {
   width: 40px;
   height: 40px;
-  background: tan;
+  background: rgba(210, 202, 140, 0);
   border-radius: 8px;
   display: flex;
   justify-content: center;
@@ -46,7 +46,7 @@
 }
 
 .invite-icon:hover {
-  background: #d2b48c; /* Darker tan */
+  background: #978cd25d; /* Darker tan */
   scale: 1.1;
 }
 
@@ -85,7 +85,7 @@
 .bill-icon {
   width: 40px;
   height: 40px;
-  background: tan;
+  background: rgba(210, 180, 140, 0);
   border-radius: 8px;
   display: flex;
   justify-content: center;
@@ -95,7 +95,7 @@
 }
 
 .bill-icon:hover {
-  background: #d2b48c; /* Darker tan */
+  background: #978cd25d; /* Darker tan */
   scale: 1.1;
 }
 

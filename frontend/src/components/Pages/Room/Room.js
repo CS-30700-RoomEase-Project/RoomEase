@@ -12,10 +12,10 @@ import Desk from './Room Items/Desk';
 import Fridge from './Room Items/Fridge';
 import Gavel from './Room Items/Gavel';
 
-import style from './Room.module.css';
 import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
 import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
 import CosmeticStorePopup from './CosmeticStorePopup';
+import './Room.css';
 
 function Room() {
     const { roomId } = useParams();
@@ -42,18 +42,22 @@ function Room() {
             return;
         }
 
-        const fetchRoomData = async () => {
-            try {
-                const response = await fetch(`http://localhost:5001/api/room/getRoom?roomId=${roomId}&userId=${userData.userId}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" }
-                });
+    const fetchRoomData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:5001/api/room/getRoom?roomId=${roomId}&userId=${userData.userId}`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          }
+        );
 
-                if (!response.ok) {
-                    throw new Error(`Server error: ${response.status}`);
-                }
+        if (!response.ok) {
+          throw new Error(`Server error: ${response.status}`);
+        }
 
                 const data = await response.json();
+                localStorage.setItem("roommates", "");
                 localStorage.setItem('roommates', JSON.stringify(data.room.roomMembers));
                 console.log("roomData:", data);
                 setRoomData(data.room);
@@ -173,9 +177,9 @@ function Room() {
         navigate(`/room/${roomId}/invite`);
     };
 
-    const handleSettingsClick = () => {
-        navigate(`/room/${roomId}/settings`);
-    };
+  const handleSettingsClick = () => {
+    navigate(`/room/${roomId}/settings`);
+  };
 
     const handleGoToChores = (roomId) => {
         console.log("Navigating to chores with roomId:", roomId);
@@ -194,78 +198,124 @@ function Room() {
         }
     };
 
-    const handleBulletinClick = () => {
-        if (roomData.settings[3] || roomData.settings[9] || roomData.settings[8]) {
-            setShowBulletin(true);
-        }
-    };
+  const handleBulletinClick = () => {
+    if (roomData.settings[3] || roomData.settings[9] || roomData.settings[8]) {
+      setShowBulletin(true);
+    } else {
+      return;
+    }
+  };
 
-    if (loading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error}</div>;
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
 
-    return (
-        <>
-            <div className={style.appContainer}>
-                <div className={style.roomBanner}>
-                    <ExitRoom onClick={() => navigate('/dashboard')} />
-                    <button onClick={() => setCosmeticPopupOpen(true)}>Open Cosmetic Store</button>
-                    <h1 className={style.roomTitle}>{roomData.roomName}</h1>
-                    <div className={style.roomBannerMini}>
-                        {roomData.settings[7] && (<RateButton />)}
-                        {roomData.settings[6] && (<GroupChat roomId={roomId} userName={username} />)}
-                        <Avatar />
-                    </div>
-                </div>
+  return (
+    <>
+      <div className="appContainer">
+        <div className="roomBanner">
+          <ExitRoom onClick={() => navigate("/dashboard")} style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+          <button onClick={() => setCosmeticPopupOpen(true)}>Open Cosmetic Store</button>
+          <h1 className="roomTitle">{roomData.roomName}</h1>
+          <div className="roomBannerMini">
+            {roomData.settings[7] && <RateButton style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />}
+            {roomData.settings[6] && <GroupChat roomId={roomId} userName={username} style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />}
+            <Avatar style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+          </div>
+        </div>
 
-                <div className={style.roomBackground}>
-                    <Fridge room={roomData} enabled={roomData.settings[0]} />
-                    <Desk gavelVisible={true}>
-                        <Computer
-                            handleInviteClick={handleInviteClick}
-                            handleSettingsClick={handleSettingsClick}
-                            roomId={roomData._id}
-                            roomData={roomData}
-                        />
-                        <Gavel onClick={() => handleGoToDisputes(roomId)} enabled={roomData.settings[2]} />
-                    </Desk>
-                    <Clock onClick={() => handleGoToState(roomId)} enabled={roomData.settings[4]} />
-                    <BulletinBoard
-                        onClick={handleBulletinClick}
-                        enabled={roomData.settings[3] || roomData.settings[9] || roomData.settings[8]}
+        <div className="roomBackground">
+          <div className="upperSection">
+            <div className="upperLeft"></div>
+            <div className="upperMiddle">
+              <div className="hover-container">
+                <BulletinBoard
+                  onClick={handleBulletinClick}
+                  enabled={roomData.settings[3] || roomData.settings[9] || roomData.settings[8]}
+                  style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+                />
+                <span className="hover-label">Quiet Hours, Room Notes, Room Clauses</span>
+              </div>
+            </div>
+            <div className="upperRight">
+              <div className="hover-container">
+                <Clock onClick={() => handleGoToState(roomId)} enabled={roomData.settings[4]} style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }} />
+                <span className="hover-label">Room State</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="floorItems">
+            <div className="floorLeft">
+              <div className="hover-container">
+                <Fridge room={roomData} enabled={roomData.settings[0]} style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }} />
+                <span className="hover-label">Grocries</span>
+              </div>
+            </div>
+            <div className="floorMiddle">
+              <Desk
+                gavelVisible={true}
+                computer={
+                  <div className="hover-container">
+                    <Computer
+                      handleInviteClick={handleInviteClick}
+                      handleSettingsClick={handleSettingsClick}
+                      roomId={roomData._id}
+                      roomData={roomData}
+                      style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
                     />
-                    <ChoreItems
-                        onClick={() => handleGoToChores(roomId)}
-                        enabled={roomData.settings[5]}
-                    />
+                    <span className="hover-label">Settings, Invites, Bills</span>
+                  </div>
+                }
+                style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+              >
+                <div className="hover-container">
+                  <Gavel
+                    onClick={() => handleGoToDisputes(roomId)}
+                    enabled={roomData.settings[2]}
+                    style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }}
+                  />
+                  <span className="hover-label">Disputes</span>
                 </div>
-
-                <div className={style.roomFloor} />
+              </Desk>
             </div>
 
-            <BulletinPopup
-                isOpen={showBulletin}
-                onClose={() => setShowBulletin(false)}
-                settings={[roomData.settings[3], roomData.settings[9], roomData.settings[8]]}
-                roomId={roomId}
-                onOpenNotes={() => setShowNotesPopup(true)}
-            />
+            <div className="floorRight">
+              <div className="hover-container">
+                <ChoreItems onClick={() => handleGoToChores(roomId)} enabled={roomData.settings[5]} style={{ boxShadow: '0 4px 8px rgba(0,0,0,0.1)' }} />
+                <span className="hover-label">Chores</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="roomFloor" />
+      </div>
 
-            <NotesPopup
-                room={roomData}
-                isOpen={showNotesPopup}
-                onClose={() => setShowNotesPopup(false)}
-                initialNotes={roomData.bulletinNotes}
-            />
-            <CosmeticStorePopup
+      <BulletinPopup
+        isOpen={showBulletin}
+        onClose={() => setShowBulletin(false)}
+        settings={[roomData.settings[3], roomData.settings[9], roomData.settings[8]]}
+        roomId={roomId}
+        onOpenNotes={() => setShowNotesPopup(true)}
+        style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
+      />
+
+      <NotesPopup
+        room={roomData}
+        isOpen={showNotesPopup}
+        onClose={() => setShowNotesPopup(false)}
+        initialNotes={roomData.bulletinNotes}
+        style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
+      />
+      <CosmeticStorePopup
                 isOpen={cosmeticPopupOpen}
                 onClose={() => setCosmeticPopupOpen(false)}
                 cosmetics={cosmeticData}
                 totalPoints={points}
                 onPurchase={handlePurchase}
                 onSelect={handleSelect}
-            />
-        </>
-    );
+        />
+    </>
+  );
 }
 
 export default Room;
