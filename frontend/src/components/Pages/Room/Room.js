@@ -14,28 +14,33 @@ import Gavel from './Room Items/Gavel';
 
 import BulletinPopup from '../../Shared_components/BulletinPopup/BulletinPopup';
 import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
+import CosmeticStorePopup from './CosmeticStorePopup';
 import './Room.css';
 
 function Room() {
-  const { roomId } = useParams();
-  const navigate = useNavigate();
+    const { roomId } = useParams();
+    const navigate = useNavigate();
 
-  const [showBulletin, setShowBulletin] = useState(false);
-  const [showNotesPopup, setShowNotesPopup] = useState(false);
-  const [roomData, setRoomData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [username, setusername] = useState(null);
+    const [showBulletin, setShowBulletin] = useState(false);
+    const [showNotesPopup, setShowNotesPopup] = useState(false);
+    const [roomData, setRoomData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [username, setusername] = useState(null);
+    const [cosmetics, setCosmetics] = useState(null);
+    const [cosmeticPopupOpen, setCosmeticPopupOpen] = useState(false);
+    const [cosmeticData, setCosmeticData] = useState({});
+    const [points, setPoints] = useState(0);
 
-  useEffect(() => {
-    const userData = JSON.parse(localStorage.getItem("userData"));
-    setusername(userData.username);
-    console.log(userData);
 
-    if (!userData?.userId) {
-      navigate("/login");
-      return;
-    }
+    useEffect(() => {
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        setusername(userData?.username);
+
+        if (!userData?.userId) {
+            navigate('/login');
+            return;
+        }
 
     const fetchRoomData = async () => {
       try {
@@ -51,44 +56,147 @@ function Room() {
           throw new Error(`Server error: ${response.status}`);
         }
 
-        const data = await response.json();
-        localStorage.setItem("roommates", "");
-        localStorage.setItem("roommates", JSON.stringify(data.room.roomMembers));
-        setRoomData(data.room);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message);
-        setLoading(false);
-      }
+                const data = await response.json();
+                localStorage.setItem("roommates", "");
+                localStorage.setItem('roommates', JSON.stringify(data.room.roomMembers));
+                console.log("roomData:", data);
+                setRoomData(data.room);
+                console.log("roomData2:",roomData);
+                const storedUser = localStorage.getItem("userData");
+                const parsedUser = JSON.parse(storedUser);
+                const currentUserId = parsedUser._id;
+                console.log(currentUserId);
+                setPoints(data.room.points[currentUserId]);
+                console.log("points:",points);
+                setLoading(false);
+            } catch (err) {
+                setError(err.message);
+                setLoading(false);
+            }
+        };
+
+        const fetchCosmetics = async () => {
+            try {
+                const response = await fetch(`http://localhost:5001/api/room/getCosmetic?roomId=${roomId}&userId=${userData.userId}`, {
+                    method: "GET",
+                    headers: { "Content-Type": "application/json" }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Cosmetic fetch error: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log(data.cosmetic);
+                await setCosmeticData(data.cosmetic);
+                console.log("Fetched cosmetics:", data.cosmetic);
+                console.log("cosmeticData:", cosmeticData);
+            } catch (err) {
+                console.error("Error fetching cosmetics:", err);
+            }
+        };
+
+        fetchRoomData();
+        fetchCosmetics();
+    }, [roomId, navigate]);
+
+    useEffect(() => {
+        if (!cosmeticData || !Array.isArray(cosmeticData.selected)) return;
+    
+        const applyRoomColors = (selectedArray) => {
+            const keys = ['fridge', 'table', 'computer', 'trash', 'board', 'clock', 'gavel', 'background'];
+    
+            keys.forEach((key, i) => {
+                const color = selectedArray[i];
+                if (color && color !== 'default') {
+                    document.documentElement.style.setProperty(`--${key}-color`, color);
+                } else {
+                    document.documentElement.style.removeProperty(`--${key}-color`);
+                }
+            });
+        };
+    
+        applyRoomColors(cosmeticData.selected);
+    }, [cosmeticData]);
+    
+    
+
+    const handlePurchase = async (color) => {
+        const userData = JSON.parse(localStorage.getItem('userData'));
+    
+        try {
+            const response = await fetch('http://localhost:5001/api/room/purchaseColor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: userData._id,
+                    roomId,
+                    color
+                })
+            });
+    
+            if (!response.ok) throw new Error('Purchase failed');
+    
+            const updated = await response.json();
+            setCosmeticData(updated.cosmetic);
+            setPoints(updated.totalPoints);
+        } catch (err) {
+            console.error(err);
+            alert('Not enough points or purchase failed');
+        }
     };
 
-    fetchRoomData();
-  }, [roomId, navigate]);
+    const handleSelect = async (index, color) => {
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        console.log(color);
+        console.log(index);
+    
+        try {
+            const response = await fetch('http://localhost:5001/api/room/selectColor', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: userData._id,
+                    roomId,
+                    index,
+                    color
+                })
+            });
+    
+            if (!response.ok) throw new Error('Failed to select color');
+    
+            const updated = await response.json();
+            setCosmeticData(updated.cosmetic);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+    
 
-  const handleInviteClick = () => {
-    navigate(`/room/${roomId}/invite`);
-  };
+    const handleInviteClick = () => {
+        navigate(`/room/${roomId}/invite`);
+    };
 
   const handleSettingsClick = () => {
     navigate(`/room/${roomId}/settings`);
   };
 
-  const handleGoToChores = (roomId) => {
-    console.log("Navigating to chores with roomId:", roomId);
-    navigate(`/chores/${roomId}`);
-  };
+    const handleGoToChores = (roomId) => {
+        console.log("Navigating to chores with roomId:", roomId);
+        navigate(`/chores/${roomId}`);
+    };
 
-  const handleGoToState = (roomId) => {
-    console.log("Navigating to state with roomId:", roomId);
-    navigate(`/room-state/${roomId}`);
-  };
+    const handleGoToState = (roomId) => {
+        console.log("Navigating to state with roomId:", roomId);
+        navigate(`/room-state/${roomId}`);
+    };
 
-  const handleGoToDisputes = (roomId) => {
-    if (roomData.settings[2]) {
-      console.log("Navigating to disputes with roomId:", roomId);
-      navigate(`/disputes/${roomId}`);
-    }
-  };
+    const handleGoToDisputes = (roomId) => {
+        if (roomData.settings[2]) {
+            console.log("Navigating to disputes with roomId:", roomId);
+            navigate(`/disputes/${roomId}`);
+        }
+    };
 
   const handleBulletinClick = () => {
     if (roomData.settings[3] || roomData.settings[9] || roomData.settings[8]) {
@@ -106,6 +214,7 @@ function Room() {
       <div className="appContainer">
         <div className="roomBanner">
           <ExitRoom onClick={() => navigate("/dashboard")} style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />
+          <button onClick={() => setCosmeticPopupOpen(true)}>Open Cosmetic Store</button>
           <h1 className="roomTitle">{roomData.roomName}</h1>
           <div className="roomBannerMini">
             {roomData.settings[7] && <RateButton style={{ boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }} />}
@@ -197,6 +306,14 @@ function Room() {
         initialNotes={roomData.bulletinNotes}
         style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
       />
+      <CosmeticStorePopup
+                isOpen={cosmeticPopupOpen}
+                onClose={() => setCosmeticPopupOpen(false)}
+                cosmetics={cosmeticData}
+                totalPoints={points}
+                onPurchase={handlePurchase}
+                onSelect={handleSelect}
+        />
     </>
   );
 }

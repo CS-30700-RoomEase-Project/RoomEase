@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('../models/User');
 const Room = require('../models/Room');
 const Notification = require('../models/Notification');
+const RoomCosmetic = require('../models/RoomCosmetic');
 
 const router = express.Router();
 
@@ -27,6 +28,16 @@ router.post('/createRoom', async (req, res) => {
         newRoom.roomId = newRoom._id;
         await newRoom.save();
         console.log("Room saved to MongoDB:", newRoom);
+
+        // Create and save the RoomCosmetic using schema defaults
+        const newCosmetic = new RoomCosmetic({
+            room: newRoom._id
+        });
+
+        await newCosmetic.save();
+
+        // Associate cosmetic with user
+        user.roomCosmetics.push(newCosmetic._id);
 
         // Add the room to the user's list of rooms
         user.rooms.push(newRoom);
@@ -108,6 +119,149 @@ router.get('/getRoom', async( req, res) => {
         }
     } catch (error) {
         res.status(500).json({ message: "Server error", error });
+    }
+});
+
+router.post('/purchaseColor', async (req, res) => {
+    const { userId, roomId, color } = req.body;
+
+    if (!userId || !roomId || !color) {
+        return res.status(400).json({ error: 'Missing userId, roomId, or color' });
+    }
+    console.log("user:", userId);
+    console.log("room:", roomId);
+    console.log("color", color);
+
+    try {
+        // Find the room
+        const room = await Room.findById(roomId);
+        if (!room) return res.status(404).json({ error: 'Room not found' });
+        console.log("room", room);
+
+        // Make sure the room has a points map
+        if (!room.points || !room.points.has(userId)) {
+            return res.status(400).json({ error: 'User points not found in room' });
+        }
+        console.log("points:", room.points);
+
+        // Get user points in the room
+        const currentPoints = room.points.get(userId);
+
+        // Find the user and their RoomCosmetic
+        const user = await User.findById(userId).populate('roomCosmetics');
+        if (!user) return res.status(404).json({ error: 'User not found' });
+        console.log(user);
+
+        const roomCosmetic = user.roomCosmetics.find(rc => rc.room.toString() === roomId);
+        if (!roomCosmetic) return res.status(404).json({ error: 'RoomCosmetic not found' });
+
+        // Check if color already purchased
+        if (roomCosmetic.purchased.get(color)) {
+            return res.status(400).json({ error: 'Color already purchased' });
+        }
+
+        const colorCost = roomCosmetic.cost.get(color);
+        if (currentPoints < colorCost) {
+            return res.status(400).json({ error: 'Not enough points' });
+        }
+
+        // Deduct points from room's points map
+        room.points.set(user._id, currentPoints - colorCost);
+
+        // Mark color as purchased
+        roomCosmetic.purchased.set(color, true);
+
+        // Save changes
+        await room.save();
+        await roomCosmetic.save();
+
+        return res.status(200).json({
+            message: 'Color purchased successfully',
+            cosmetic: roomCosmetic,
+            totalPoints: room.points.get(userId)
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
+router.post('/selectColor', async (req, res) => {
+    const { userId, roomId, index, color } = req.body;
+
+    if (!userId || !roomId || index === undefined || !color) {
+        return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    try {
+        // Find the user and populate RoomCosmetics
+        const user = await User.findById(userId).populate('roomCosmetics');
+        if (!user) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Find the correct RoomCosmetic by roomId
+        const roomCosmetic = user.roomCosmetics.find(rc => rc.room.toString() === roomId);
+        if (!roomCosmetic) {
+            return res.status(404).json({ error: 'RoomCosmetic not found for this room' });
+        }
+
+        // Check if the color has been purchased
+        if (color != "default" && !roomCosmetic.purchased.get(color)) {
+            return res.status(400).json({ error: 'Color not purchased yet' });
+        }
+
+        // Set the selected color at the given index
+        roomCosmetic.selected[index] = color;
+        await roomCosmetic.save();
+
+        return res.status(200).json({ cosmetic: roomCosmetic });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error' });
+    }
+});
+
+
+router.get('/getCosmetic', async (req, res) => {
+    try {
+        const { userId, roomId } = req.query;
+
+        if (!userId || !roomId) {
+            return res.status(400).json({ error: 'Missing userId or roomId' });
+        }
+
+        console.log("getting user");
+
+        // Find the user and populate their roomCosmetics
+        const user = await User.findOne({ userId:userId })
+            .populate('roomCosmetics')
+            .exec();
+
+        console.log("user gotten");
+
+        if (!user) {
+
+            return res.status(404).json({ error: 'User not found' });
+        }
+
+        // Find the RoomCosmetic associated with the given roomId
+        const cosmetic = user.roomCosmetics.find(rc => rc.room.toString() === roomId);
+
+        if (!cosmetic) {
+            return res.status(404).json({ error: 'No RoomCosmetic found for this room' });
+        }
+
+        // Optionally, populate fields inside the RoomCosmetic if needed
+        const populatedCosmetic = await RoomCosmetic.findById(cosmetic._id).exec();
+
+        return res.status(200).json({ cosmetic: populatedCosmetic });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: 'Server error' });
     }
 });
 
