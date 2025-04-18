@@ -22,7 +22,7 @@
 .fridgeDoor {
     width: 90%;
     height: 55%;
-    background-color: #696868;
+    background-color: var(--fridge-color, #696868);
     border-radius: 10px;
     position: relative;
 }
@@ -30,7 +30,7 @@
 .freezerDoor {
     width: 90%;
     height: 35%;
-    background-color: #696868;
+    background-color: var(--fridge-color, #696868);
     border-radius: 10px;
     position: relative;
 }
@@ -87,7 +87,7 @@
 .deskLeg {
     width: 10%;
     height: 100%;
-    background-color: #5c3939;
+    background-color: var(--table-color, #5c3939);
     position: relative;
     top: 0;
     left: 0;
@@ -98,7 +98,7 @@
 .deskTop {
     width: 100%;
     height: 20%;
-    background-color: #5c3939;
+    background-color: var(--table-color, #5c3939);
     position: relative;
     top: 0;
     left: 0;
@@ -129,7 +129,7 @@
 .monitor-screen {
   width: 100%;
   height: 100%;
-  background-color: #7fbfbf;
+  background-color: var(--computer-color, #7fbfbf);
   align-items: center;
   align-content: center;
   justify-content: space-evenly;
@@ -175,7 +175,7 @@
 .clock {
   width: 100px;
   height: 100px;
-  border: 5px solid black;
+  border: 5px solid var(--clock-color, black);
   border-radius: 50%;
   position: relative;
   background-color: #f0f0f0;
@@ -220,7 +220,7 @@ OLD
   bottom: 50%;
   left: 50%;
   transform-origin: bottom;
-  background: black;
+  background: var(--clock-color, black);
   border-radius: 5px;
 }
 
@@ -249,7 +249,7 @@ OLD
 .center-point {
   width: 8px;
   height: 8px;
-  background: black;
+  background: var(--clock-color, black);
   border-radius: 50%;
   position: absolute;
   top: 50%;
@@ -282,7 +282,7 @@ OLD
     position: relative;
     top: 5%;
     left: 5%;
-    background-color: #8b6b4f;
+    background-color: var(--board-color, #8b6b4f);
     position: relative;
 }
 
@@ -310,7 +310,7 @@ OLD
 .trashCanLidBody {
   width: 100%;
   height: 70%;
-  background-color: #696868;
+  background-color: var(--trash-color, #696868);
   position: relative;
 
   border-top-left-radius: 50%;
@@ -336,7 +336,7 @@ OLD
   flex-direction: row;
   justify-content: space-evenly;
   align-items: center;
-  background-color: #696868;
+  background-color: var(--trash-color, #696868);
   position: relative;
   top: 0;
   left: 0;
@@ -473,7 +473,7 @@ OLD
   width: 20px;
   height: 50px; /* Adjust height for handle size */
   bottom: 15%;
-  background-color: #8B4513; /* Brown color for handle */
+  background-color: var(--gavel-color, #8B4513); 
   border-radius: 5px;
   border: 1px solid #FFD700; /* Gold border */
 
@@ -488,7 +488,7 @@ OLD
 .gavel-handle {
   width: 80px; /* Longer rectangle for the head */
   height: 10px; /* Height for the head */
-  background-color: #8B4516; /* Light gray color for the head */
+  background-color: var(--gavel-color, #8B4513); 
   border-radius: 5px; /* Curved corners for the head */
   border: 1px solid #FFD700; /* Gold border */
   position: absolute;
