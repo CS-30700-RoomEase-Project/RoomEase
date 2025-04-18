@@ -39,7 +39,7 @@ const CosmeticStorePopup = ({ isOpen, onClose, cosmetics, totalPoints, onPurchas
                                 value={cosmetics.selected[index]}
                                 onChange={(e) => onSelect(index, e.target.value)}
                             >
-                                <option key="default" value="default">default</option>
+                                <option key={"default"} value={"default"}>default</option>
                                 {availableColors.filter(c => cosmetics.purchased[c]).map((color) => (
                                     <option key={color} value={color}>{color}</option>
                                 ))}

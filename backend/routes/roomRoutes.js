@@ -158,7 +158,7 @@ router.post('/selectColor', async (req, res) => {
         }
 
         // Check if the color has been purchased
-        if (!roomCosmetic.purchased.get(color)) {
+        if (color != "default" && !roomCosmetic.purchased.get(color)) {
             return res.status(400).json({ error: 'Color not purchased yet' });
         }
 

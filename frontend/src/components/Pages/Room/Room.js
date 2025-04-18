@@ -144,6 +144,8 @@ function Room() {
 
     const handleSelect = async (index, color) => {
         const userData = JSON.parse(localStorage.getItem('userData'));
+        console.log(color);
+        console.log(index);
     
         try {
             const response = await fetch('http://localhost:5001/api/room/selectColor', {
