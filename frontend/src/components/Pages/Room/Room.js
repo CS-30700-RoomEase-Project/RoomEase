@@ -54,6 +54,7 @@ function Room() {
         localStorage.setItem('roommates', JSON.stringify(data.room.roomMembers)); // Store room data in local storage                localStorage.setItem('roommates', JSON.stringify(data.room.roomMembers)); // Store room data in local storage
         setRoomData(data.room);
         setLoading(false);
+        localStorage.setItem("roomData", JSON.stringify(data.room)); // Store room data in local storage
       } catch (err) {
           setError(err.message);
           setLoading(false);
@@ -69,7 +70,7 @@ function Room() {
   };
 
   const handleSettingsClick = () => {
-    navigate(`/room/${roomId}/settings`);
+    setShowSettingsPopup(true);
   };
 
   const handleGoToChores = (roomId) => {
@@ -195,6 +196,10 @@ function Room() {
         onClose={() => setShowNotesPopup(false)}
         initialNotes={roomData.bulletinNotes}
         style={{ boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
+      />
+      <RoomSettingsPopup 
+        isOpen={showSettingsPopup} 
+        onClose={() => setShowSettingsPopup(false)} 
       />
     </>
   );
