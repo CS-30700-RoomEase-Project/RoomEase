@@ -1,4 +1,5 @@
 const express = require('express');
+const sharp = require('sharp');  // NEW: import sharp for image processing
 const User = require('../models/User');
 const Room = require('../models/Room');
 const Notification = require('../models/Notification');
@@ -6,12 +7,10 @@ const RoomCosmetic = require('../models/RoomCosmetic');
 
 const router = express.Router();
 
-
 const multer = require('multer');
 // Configure multer to store image in memory (for storing as Buffer in MongoDB)
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
-
 
 router.post('/createRoom', async (req, res) => {
     const { userId, roomName, groupPic, settings } = req.body;
@@ -70,8 +69,11 @@ router.post('/uploadRoomImage/:roomId', upload.single('roomImage'), async (req, 
             return res.status(404).json({ message: 'Room not found' });
         }
 
-        // Store image buffer into the roomImage field
-        room.roomImage = file.buffer;
+        const resizedBuffer = await sharp(file.buffer)
+          .resize(350, 100)
+          .toBuffer();
+
+        room.roomImage = resizedBuffer;
         await room.save();
 
         res.status(200).json({ message: 'Room image updated successfully', roomId: room._id });
@@ -327,10 +329,9 @@ router.get('/getMembers/:roomId', async (req, res) => {
 });
   
 router.get('/leaveRoom', async (req, res) => {
-    console.log("--------------------------------------------------");
     const { roomId, userId } = req.query;
-    let room = await Room.findOne({ _id: roomId });
-    console.log("Room found:", room);
+
+    let room = await Room.findById(roomId);
     // Check if the room exists
     if (!room) {
         return res.status(404).json({ message: "Room not found" });
@@ -371,13 +372,28 @@ router.get('/leaveRoom', async (req, res) => {
             await memeberNotification.save();
             await memeberNotification.propagateNotification();
         }
-        console.log("---------------------------------------------------");
         return res.status(200).json({ message: "User successfully left!", userData: user, roomData: room });
     } else {
-        console.log(room.roomMembers);
-        console.log("--------------------------------------fdsdf-------------");
-
         return res.status(404).json({ message: "User is not a member of this room" });
+    }
+});
+
+router.post('/updateRoomSettings', async (req, res) => {
+    const { roomId, settings, roomName } = req.body;
+    try {
+        console.log(roomId);
+        const room = await Room.findOne({_id: roomId});
+        if (!room) {
+            return res.status(404).json({ message: "Room not found" });
+        }   
+        room.settings = settings;
+        room.roomName = roomName;
+        await room.save();
+        console.log("Room settings updated:", room);
+        res.status(200).json({ message: "Room settings updated successfully", roomData: room });
+    } catch (error) {
+        console.error("Error updating room settings:", error);
+        res.status(500).json({ message: "Server error", error });
     }
 });
   

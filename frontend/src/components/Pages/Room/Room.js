@@ -73,6 +73,7 @@ function Room() {
         setPoints(data.room.points[currentUserId]);
         console.log("points:", points);
         setLoading(false);
+        localStorage.setItem("roomData", JSON.stringify(data.room)); // Store room data in local storage
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -391,6 +392,10 @@ function Room() {
         totalPoints={points}
         onPurchase={handlePurchase}
         onSelect={handleSelect}
+      />
+      <RoomSettingsPopup
+        isOpen={showSettingsPopup}
+        onClose={() => setShowSettingsPopup(false)}
       />
     </>
   );
