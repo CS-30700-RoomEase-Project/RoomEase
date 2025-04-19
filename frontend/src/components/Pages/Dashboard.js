@@ -335,17 +335,6 @@ function Dashboard() {
                       onChange={(e) => handleFileUpload(room._id, e.target.files[0])}
                       className={styles.fileInput}
                     /> */}
-                    <div className={styles.fileUploadWrapper}>
-                    <input
-                      type="file"
-                      id={`file-upload-${room._id}`}
-                      onChange={(e) => handleFileUpload(room._id, e.target.files[0])}
-                      className={styles.hiddenFileInput}
-                    />
-                    <label htmlFor={`file-upload-${room._id}`} className={styles.customFileLabel}>
-                    📤
-                    </label>
-                  </div>
 
                     </div>
                     

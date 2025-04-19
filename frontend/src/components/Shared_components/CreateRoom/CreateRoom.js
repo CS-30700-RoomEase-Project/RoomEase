@@ -3,7 +3,6 @@
 import { useState } from "react"
 import "./CreateRoom.css"
 
-
 const CreateRoom = ({ onClose }) => {
     let userData = JSON.parse(localStorage.getItem('userData'));
 
@@ -12,7 +11,18 @@ const CreateRoom = ({ onClose }) => {
       roomName: "",
       groupPic: "",
       roomSettings: [false, false, false, false, false],
-    })
+    });
+    const [photoFile, setPhotoFile] = useState(null); // NEW: track file changes
+
+    // Modified file input handler for group photo
+    const handleFileChange = (e) => {
+      const file = e.target.files[0];
+      setRoomData({
+        ...roomData,
+        groupPic: file,
+      });
+      setPhotoFile(file);
+    };
 
     /* Handles when the field is changed */
     const handleChange = (e) => {
@@ -38,32 +48,43 @@ const CreateRoom = ({ onClose }) => {
       
         try {
           const response = await fetch("http://localhost:5001/api/room/createRoom", {
-            method: "POST",  // POST method to send data
+            method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               userId: roomData.userId,
               roomName: roomData.roomName,
-              groupPic: roomData.groupPic,
+              groupPic: roomData.groupPic ? roomData.groupPic.name : "", // send file name or empty string
               settings: roomData.roomSettings,
-            }),  // Send roomData as JSON in the request body
+            }),
           });
 
-          // Check if the response is OK (status 200)
           if (!response.ok) {
             console.error(`Error: ${response.status} - ${response.statusText}`);
             alert("Server responded with an error.");
             return;
           }
       
-          // Attempt to parse the response as JSON
           const data = await response.json();
           localStorage.setItem("userData", JSON.stringify(data.userData));
           
+          // NEW: If a file was selected, upload it using its API endpoint
+          if (photoFile) {
+            const formData = new FormData();
+            formData.append("roomImage", photoFile);
+            const photoResponse = await fetch(`http://localhost:5001/api/room/uploadRoomImage/${data.room._id}`, {
+              method: "POST",
+              body: formData,
+            });
+            if (!photoResponse.ok) {
+              alert("Room photo upload failed.");
+            }
+          }
+      
         } catch (error) {
           console.error("Error in the fetch request:", error);
           alert("An error occurred while creating the room.");
         }
-    
+      
         window.location.reload();  // Force reload all React components
     };
       
@@ -82,15 +103,32 @@ const CreateRoom = ({ onClose }) => {
             />
           </div>
   
-          <div className="input-group">
-            <label htmlFor="groupPic">Group Picture URL:</label>
-            <input
-              type="text"
-              id="groupPic"
-              name="groupPic"
-              value={roomData.groupPic}
-              onChange={handleChange}
-            />
+          {/* Group photo file input */}
+          <div className="input-group file-input-group">
+            {/* Field label */}
+            <label htmlFor="groupPic" className="file-field-label">
+              Group Photo:
+            </label>
+            <div className="file-input-container">
+              {/* Icon that opens file picker */}
+              <label htmlFor="groupPic" className="file-upload-icon">
+                📤
+              </label>
+
+              {/* Hidden real input */}
+              <input
+                type="file"
+                id="groupPic"
+                name="groupPic"
+                onChange={handleFileChange}
+                className="hiddenFileInput"
+              />
+
+              {/* Chosen file name */}
+              {roomData.groupPic && (
+                <span className="file-name">{roomData.groupPic.name}</span>
+              )}
+            </div>
           </div>
           <div className="checkbox-section">
 
