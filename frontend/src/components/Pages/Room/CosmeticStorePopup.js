@@ -58,9 +58,7 @@ const CosmeticStorePopup = ({
             <div key={index} className="selector">
               <label>{item}</label>
               <select
-                value={
-                  (cosmetics.selected && cosmetics.selected[index]) || "default"
-                }
+                value={cosmetics.selected[index]}
                 onChange={(e) => onSelect(index, e.target.value)}
               >
                 <option key="default" value="default">
