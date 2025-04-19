@@ -35,7 +35,7 @@
   left: 0;
   width: 25px;
   height: 40px;
-  background: linear-gradient(to bottom, #8b5a2b, #6d4c33);
+  background: linear-gradient(to bottom, color-mix(in srgb, var(--gavel-color, #6d4c33) 70%, white), var(--gavel-color, #6d4c33));
   border-radius: 3px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }

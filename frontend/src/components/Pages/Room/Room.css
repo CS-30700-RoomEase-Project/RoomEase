@@ -63,9 +63,10 @@ body {
   display: flex;
   flex-direction: column;
   background-image: url('tile.png');
-  background-color: #9591b5; /* Muted, slightly warm grey */
+  background-color: var(--background-color, #9591b5); /* Muted, slightly warm grey */
   background-repeat: repeat; /* ensures the image repeats */
   background-size: 50px 50px; /* adjust to make the tile smaller */
+  background-blend-mode: multiply;
   box-sizing: border-box;
 }
 
