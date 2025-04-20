@@ -23,11 +23,12 @@ const CosmeticStorePopup = ({
 
   if (!isOpen) return null;
 
-  return (
-    <div className="popup-overlay">
-      <div className="popup-content">
-        <h2>Cosmetic Store</h2>
-        <p>Your Points: {totalPoints}</p>
+    return (
+        <div className='cosmetic-popup'>
+            <div className="popup-overlay">
+                <div className="popup-content">
+                    <h2>Cosmetic Store</h2>
+                    <p>Your Points: {totalPoints}</p>
 
         <div className="color-store">
           {availableColors.map((color) => (
@@ -76,12 +77,11 @@ const CosmeticStorePopup = ({
           ))}
         </div>
 
-        <button className="close-button" onClick={onClose}>
-          Close
-        </button>
-      </div>
-    </div>
-  );
+                    <button className="close-button" onClick={onClose}>Close</button>
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default CosmeticStorePopup;
