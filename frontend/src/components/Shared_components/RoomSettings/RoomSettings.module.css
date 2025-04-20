@@ -34,7 +34,11 @@
     margin-bottom: 20px;
     margin-left: 20px;
     max-height: 50vh;
+<<<<<<< HEAD
     overflow-y: auto;  /* Checkbox section scrollable */
+=======
+    overflow-y: auto;
+>>>>>>> origin
   }
 
 
@@ -98,7 +102,10 @@
   justify-content: center;
   align-items: center;
   padding: 5px;  /* Reduced outer padding */
+<<<<<<< HEAD
   overflow: visible;  /* UPDATED: ensure full popup is not scrollable */
+=======
+>>>>>>> origin
 }
 
 /* Remove unnecessary styling from modal */
@@ -110,7 +117,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+<<<<<<< HEAD
   overflow: hidden;
+=======
+>>>>>>> origin
 }
 
 .content {

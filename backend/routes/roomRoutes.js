@@ -46,11 +46,13 @@ router.post("/createRoom", async (req, res) => {
     newRoom.roomMembers.push(userId);
     await newRoom.save();
 
-    res.status(200).json({
-      message: "Room created successfully",
-      userData: user,
-      room: newRoom,
-    });
+    res
+      .status(200)
+      .json({
+        message: "Room created successfully",
+        userData: user,
+        room: newRoom,
+      });
   } catch (error) {
     console.error("Error saving user:", error);
     res.status(500).json({ message: "Server error", error });
@@ -397,11 +399,13 @@ router.get("/leaveRoom", async (req, res) => {
       await memeberNotification.save();
       await memeberNotification.propagateNotification();
     }
-    return res.status(200).json({
-      message: "User successfully left!",
-      userData: user,
-      roomData: room,
-    });
+    return res
+      .status(200)
+      .json({
+        message: "User successfully left!",
+        userData: user,
+        roomData: room,
+      });
   } else {
     return res
       .status(404)
@@ -412,6 +416,7 @@ router.get("/leaveRoom", async (req, res) => {
 router.post("/updateRoomSettings", async (req, res) => {
   const { roomId, settings, roomName } = req.body;
   try {
+    console.log(roomId);
     const room = await Room.findOne({ _id: roomId });
     if (!room) {
       return res.status(404).json({ message: "Room not found" });
