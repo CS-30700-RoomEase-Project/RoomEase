@@ -60,7 +60,7 @@ html, body {
     align-items: center;
     position: relative;
     display: flex;
-    background-color: black;
+    background-color: var(--background-color, black); 
     box-sizing: border-box;
     }
 
