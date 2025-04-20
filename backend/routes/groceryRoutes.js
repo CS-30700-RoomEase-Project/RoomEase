@@ -37,6 +37,23 @@ router.post('/add/:roomID', async (req, res) => {
     }
   });
 
+  router.post('/addPoints', async (req, res) => {
+    try {
+      console.log("Points add:", req.body);
+      let updatedItem = req.body.updatedItem;
+      const userId = req.body.userId;
+      const user = await User.findOne({ userId });
+      user.totalPoints += 10;
+      await user.save();
+      updatedItem = await Grocery.findByIdAndUpdate(updatedItem._id, updatedItem, { new: true });
+      updatedItem = await updatedItem.populate('requesters', 'username');
+      res.status(200).json(updatedItem);
+    } catch (error) {
+      console.error('Error updating grocery:', error);
+      res.status(500).json({ error: 'Server error while updating grocery' });
+    }
+  });
+
   router.post('/remove/:itemID', async (req, res) => {
     try {
       const itemID = req.params.itemID;

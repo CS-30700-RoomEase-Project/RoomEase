@@ -118,10 +118,13 @@ function GroceryItem(props) {
     updatedItems[index].paid = false;
     updatedItems[index].cost = 0;
     updatedItems[index].purchased = false;
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    const userId = userData.userId;
+
     setCost(0);
     setItems(updatedItems);
     const updatedItem = { ...item, paid: updatedItems[index].paid };
-    CallService("grocery/update", updatedItem, editResponseHandler);
+    CallService("grocery/addPoints", {updatedItem: updatedItem, userId: userId }, editResponseHandler);
   };
 
   const renderRequesters = () => {
