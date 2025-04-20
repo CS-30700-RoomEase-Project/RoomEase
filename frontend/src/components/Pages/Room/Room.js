@@ -14,9 +14,9 @@ import Gavel from "./Room Items/Gavel";
 
 import BulletinPopup from "../../Shared_components/BulletinPopup/BulletinPopup";
 import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
+import RoomSettingsPopup from "../../Shared_components/RoomSettings/RoomSettingsPopup";
 import CosmeticStorePopup from "./CosmeticStorePopup";
 import "./Room.css";
-import RoomSettingsPopup from "../../Shared_components/RoomSettings/RoomSettingsPopup";
 
 function Room() {
   const { roomId } = useParams();
@@ -73,7 +73,7 @@ function Room() {
         setPoints(data.room.points[currentUserId]);
         console.log("points:", points);
         setLoading(false);
-        localStorage.setItem("roomData", JSON.stringify(data.room)); // Store room data in local storage
+        localStorage.setItem("roomData", JSON.stringify(data.room));
       } catch (err) {
         setError(err.message);
         setLoading(false);
@@ -198,7 +198,6 @@ function Room() {
   };
 
   const handleSettingsClick = () => {
-    console.log("Settings clicked"); // Debugging
     setShowSettingsPopup(true);
   };
 
@@ -392,10 +391,6 @@ function Room() {
         totalPoints={points}
         onPurchase={handlePurchase}
         onSelect={handleSelect}
-      />
-      <RoomSettingsPopup
-        isOpen={showSettingsPopup}
-        onClose={() => setShowSettingsPopup(false)}
       />
     </>
   );
