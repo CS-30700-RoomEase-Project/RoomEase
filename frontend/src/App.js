@@ -11,7 +11,6 @@ import BillsExpenses from "./components/Pages/BillsExpenses";
 import RoomState from "./components/Pages/RoomState/RoomState"; // Import RoomState component
 import Notifications from "./components/Pages/Notifications/Notifications"; //import notifications
 import InvitePage from "./components/Pages/InvitePage/InvitePage"; // Import InvitePage component
-import RoomSettings from "./components/Pages/RoomSettings/RoomSettings"; // Import InvitePage component
 import Disputes from "./components/Pages/Disputes/Disputes";
 import MasterRoom from "./components/Pages/MasterRoom/MasterRoom"; // Import MasterRoom components
 import MasterRoomState from "./components/Pages/MasterRoom/MasterPages/RoomState/MasterRoomState"; // Import MasterRoomState component
@@ -51,9 +50,6 @@ function App() {
 
         {/* Invite page route */}
         <Route path="/room/:roomId/invite" element={<InvitePage />} />
-
-        {/* Room Settings page route */}
-        <Route path="/room/:roomId/settings" element={<RoomSettings />} />
 
         {/* Room notes page route */}
         <Route path="/notes" element={<NotesPopup />} />
