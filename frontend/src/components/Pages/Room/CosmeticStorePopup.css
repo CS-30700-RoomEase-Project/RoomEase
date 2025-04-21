@@ -1,4 +1,4 @@
-.popup-overlay {
+.cosmetic-popup .popup-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,13 +11,14 @@
     z-index: 1000;
 }
 
-.popup-content {
+.cosmetic-popup .popup-content {
     background: white;
     padding: 20px;
     border-radius: 12px;
     width: 600px;
     max-height: 80vh;
     overflow-y: auto;
+    color: white;
 }
 
 .color-store {
@@ -50,4 +51,10 @@
 .close-button {
     margin-top: 20px;
     padding: 10px 20px;
+}
+
+.tabs button.active {
+    background-color: lightblue;
+    transform: scale(1.05);
+    transition: transform 0.2s, background-color 0.2s;
 }

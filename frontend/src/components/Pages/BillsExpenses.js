@@ -41,7 +41,7 @@ const BillsExpenses = () => {
     splitBill: true,
   });
 
-  // State for History Modal
+  // State for History Moda
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [historyBills, setHistoryBills] = useState([]);
 

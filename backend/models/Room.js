@@ -23,8 +23,12 @@ const RoomSchema = new mongoose.Schema({
     quietHours: [{ type: Array, default: [] }],
     chorePoints: { type: Map, of: Number, default: () => ({Easy: 3,Medium: 5,Hard: 7})},
     choreSwaps: {type: [{type: mongoose.Schema.Types.ObjectId, ref: 'choreSwap'}], default: []},
-    clauses: [{ type: String, default: ["These are your roommate clauses", "Add, edit, or change clauses", "Change them as you like"] }],
-    roomImage: { type: Buffer, default: null }
+    rules: [{ type: String, default: ["These are your roommate rules", "Add, edit, or change rules", "Change them as you like"] }],
+    roomImage: { type: Buffer, default: null },
+    roomClauses: {
+        type: String,
+        default: ""
+    }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Room', RoomSchema);

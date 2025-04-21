@@ -24,6 +24,7 @@ function Room() {
 
   const [showBulletin, setShowBulletin] = useState(false);
   const [showNotesPopup, setShowNotesPopup] = useState(false);
+  const [showSettingsPopup, setShowSettingsPopup] = useState(false);
   const [roomData, setRoomData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -32,7 +33,6 @@ function Room() {
   const [cosmeticPopupOpen, setCosmeticPopupOpen] = useState(false);
   const [cosmeticData, setCosmeticData] = useState({});
   const [points, setPoints] = useState(0);
-  const [showSettingsPopup, setShowSettingsPopup] = useState(false);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("userData"));
@@ -255,6 +255,23 @@ function Room() {
             <Avatar style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }} />
           </div>
         </div>
+        <BulletinPopup
+          isOpen={showBulletin}
+          onClose={() => setShowBulletin(false)}
+          settings={[
+            roomData.settings[3],
+            roomData.settings[9],
+            roomData.settings[8],
+          ]}
+          roomId={roomId}
+          onOpenNotes={() => setShowNotesPopup(true)}
+        />
+        <NotesPopup
+          room={roomData}
+          isOpen={showNotesPopup}
+          onClose={() => setShowNotesPopup(false)}
+          initialNotes={roomData.bulletinNotes}
+        />
 
         <div className="roomBackground">
           <div className="upperSection">

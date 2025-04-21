@@ -71,7 +71,7 @@ const RoomSettingsPopup = ({ isOpen, onClose }) => {
     try {
       console.log(payload);
       const response = await fetch(
-        "http://localhost:5001/api/room/updateRoomSettings/",
+        "http://localhost:5001/api/room/updateRoomSettings",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -100,6 +100,7 @@ const RoomSettingsPopup = ({ isOpen, onClose }) => {
         }
       }
       localStorage.setItem("roomData", JSON.stringify(data.roomData));
+      window.location.reload();
       alert("Room settings updated successfully.");
       onClose();
     } catch (error) {
@@ -197,7 +198,7 @@ const RoomSettingsPopup = ({ isOpen, onClose }) => {
                 <label>
                   <input
                     type="checkbox"
-                    checked={currentSettings[index]}
+                    checked={roomDataState.settings[index]}
                     onChange={handleCheckboxChange(index)}
                   />
                   {label}
