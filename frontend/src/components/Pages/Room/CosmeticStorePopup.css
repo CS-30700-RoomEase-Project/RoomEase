@@ -18,6 +18,7 @@
     width: 600px;
     max-height: 80vh;
     overflow-y: auto;
+    color: white;
 }
 
 .color-store {
@@ -50,4 +51,10 @@
 .close-button {
     margin-top: 20px;
     padding: 10px 20px;
+}
+
+.tabs button.active {
+    background-color: lightblue;
+    transform: scale(1.05);
+    transition: transform 0.2s, background-color 0.2s;
 }
