@@ -16,6 +16,7 @@ import BulletinPopup from "../../Shared_components/BulletinPopup/BulletinPopup";
 import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
 import RoomSettingsPopup from "../../Shared_components/RoomSettings/RoomSettingsPopup";
 import CosmeticStorePopup from "./CosmeticStorePopup";
+import QuestBell from "../../Shared_components/QuestBell/QuestBell";
 import "./Room.css";
 
 function Room() {
@@ -226,6 +227,32 @@ function Room() {
     }
   };
 
+const awardQuestPoints = async (userId, roomId, questType) => {
+    try {
+        const response = await fetch('http://localhost:5001/api/room/award-quest-points', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Ensures the body is JSON
+            },
+            body: JSON.stringify({
+                userId,
+                roomId,
+                questType
+            }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            console.log('Points awarded:', result.message);
+        } else {
+            console.error('Error:', result.message);
+        }
+    } catch (error) {
+        console.error('Error calling API:', error);
+    }
+};
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -237,6 +264,7 @@ function Room() {
             onClick={() => navigate("/dashboard")}
             style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}
           />
+          <QuestBell></QuestBell>
           <button onClick={() => setCosmeticPopupOpen(true)}>
             Open Cosmetic Store
           </button>

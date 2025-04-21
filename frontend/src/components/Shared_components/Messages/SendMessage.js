@@ -48,11 +48,42 @@ const SendMessage = ({ roomId, username }) => {
   const [message, setMessage] = useState("")
   const [isSending, setIsSending] = useState(false)
 
+  const awardQuestPoints = async (userId, roomId, questType) => {
+    try {
+        const response = await fetch('http://localhost:5001/api/room/award-quest-points', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Ensures the body is JSON
+            },
+            body: JSON.stringify({
+                userId,
+                roomId,
+                questType
+            }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            console.log('Points awarded:', result.message);
+        } else {
+            console.error('Error:', result.message);
+        }
+    } catch (error) {
+        console.error('Error calling API:', error);
+    }
+  };
+
+
   const handleSendMessage = async () => {
     if (!message.trim()) return
 
     setIsSending(true)
     try {
+      const storedUser = localStorage.getItem("userData");
+      const parsedUser = JSON.parse(storedUser);
+      const currentUserId = parsedUser._id;
+      awardQuestPoints(currentUserId, roomId, "sendChat");
       await axios.post(`http://localhost:5001/api/groupchat/${roomId}/message`, {
         senderId: username,
         message: message.trim(),

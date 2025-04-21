@@ -4,6 +4,7 @@ const User = require("../models/User");
 const Room = require("../models/Room");
 const Notification = require("../models/Notification");
 const RoomCosmetic = require("../models/RoomCosmetic");
+const RoomQuest = require('../models/RoomQuest');
 
 const router = express.Router();
 
@@ -56,6 +57,140 @@ router.post("/createRoom", async (req, res) => {
   } catch (error) {
     console.error("Error saving user:", error);
     res.status(500).json({ message: "Server error", error });
+  }
+});
+
+// Utility: check if two dates are on the same day
+function isSameDay(date1, date2) {
+  return (
+    date1.getFullYear() === date2.getFullYear() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getDate() === date2.getDate()
+  );
+}
+
+// API: Check if new day, and if so, generate new quests
+router.post('/checkAndGenerateQuests/:userId', async (req, res) => {
+  try {
+    const id = req.params.userId;
+    console.log("generating quests");
+
+    const user = await User.findOne({ _id: id }).populate('roomQuests');
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    const today = new Date();
+    const lastDate = user.lastQuestDate || new Date(0);
+
+    if (isSameDay(today, lastDate)) {
+      console.log("quests already generated today");
+      return res.status(200).json({ message: 'Quests already generated today' });
+    }
+
+    if (user.roomQuests && user.roomQuests.length > 0) {
+      await RoomQuest.deleteMany({ _id: { $in: user.roomQuests } });
+    }
+    user.roomQuests = [];
+    
+
+    const rooms = user.rooms;
+
+    // Generate quests for all rooms
+    for (const roomId of rooms) {
+      const quests = await RoomQuest.generateQuestsForRoom(roomId); // returns array of quest docs
+      console.log("Generated quests:", quests);
+      console.log("Quest IDs:", quests.map(q => q._id));
+      user.roomQuests.push(...quests.map(q => q._id));
+    }
+
+    user.lastQuestDate = today;
+    await user.save();
+
+    res.status(200).json({ message: 'New quests generated', quests: user.roomQuests });
+  } catch (error) {
+    console.error('Error checking/generating quests:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Route to award points if a matching quest exists for the user
+router.post('/award-quest-points', async (req, res) => {
+  try {
+    const { userId, roomId, questType } = req.body;
+    console.log("attempting to award points");
+
+    if (!userId || !roomId || !questType) {
+      return res.status(400).json({ message: 'Missing required parameters.' });
+    }
+
+    // Find the user by userId
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Loop through the user's roomQuests to find a matching quest
+    const matchingQuest = await RoomQuest.findOne({
+      _id: { $in: user.roomQuests },
+      room: roomId,
+      type: questType,
+    });
+    console.log("matching quest: ", matchingQuest);
+
+    if (!matchingQuest) {
+      return res.status(404).json({ message: 'Matching quest not found.' });
+    }
+
+    // Award points if the quest type matches
+    const success = await matchingQuest.awardPointsToUserIfTypeMatches(questType, userId);
+
+    if (success) {
+      return res.status(200).json({ message: 'Points awarded successfully!' });
+    } else {
+      return res.status(400).json({ message: 'Quest type does not match.' });
+    }
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Route to get all quests for a user in a specific room
+router.get('/quests-in-room', async (req, res) => {
+  try {
+    const { userId, roomId } = req.query;
+
+    if (!userId || !roomId) {
+      return res.status(400).json({ message: 'Missing required parameters.' });
+    }
+
+    // Find the user by userId
+    console.log("potato debug");
+    const user = await User.findOne({ _id: userId });
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+    console.log("debug potato");
+
+    // Find all quests for the room in the user's roomQuests array
+    const roomQuests = await RoomQuest.find({
+      _id: { $in: user.roomQuests },
+      room: roomId,
+    });
+
+    // If no quests are found, return a message
+    if (roomQuests.length === 0) {
+      return res.status(404).json({ message: 'No quests found in this room for the user.' });
+    }
+
+    // Return the list of quests
+    return res.status(200).json(roomQuests);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

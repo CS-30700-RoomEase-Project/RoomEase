@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Notification = require('./Notification');
 const RoomCosmetic = require('./RoomCosmetic');
+const RoomQuest = require('./RoomQuest');
 
 const UserSchema = new mongoose.Schema({
   username: { type: String, unique: false },
@@ -14,6 +15,8 @@ const UserSchema = new mongoose.Schema({
   reviews: { type: Array, default: [] },
   rooms: { type: Array, default: [] },
   roomCosmetics: {type: [{type:mongoose.Schema.Types.ObjectId, ref: 'RoomCosmetic'}], default: []},
+  roomQuests: {type: [{type:mongoose.Schema.Types.ObjectId, ref: 'RoomQuest'}], default: []},
+  lastQuestDate: {type:Date, default: null},
   //notification settings
   chatFilter: { type: Boolean, default: false },
   invites: { type: Array, default: []}
