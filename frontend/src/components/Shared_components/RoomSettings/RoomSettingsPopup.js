@@ -100,6 +100,7 @@ const RoomSettingsPopup = ({ isOpen, onClose }) => {
         }
       }
       localStorage.setItem("roomData", JSON.stringify(data.roomData));
+      window.location.reload();
       alert("Room settings updated successfully.");
       onClose();
     } catch (error) {
