@@ -18,7 +18,7 @@ const quietHoursRoutes = require("./routes/quietHoursRoutes");
 const roomStateRoutes = require("./routes/stateRoutes");
 const ratingRoutes = require("./routes/ratingRoutes"); // ✅ NEW ROUTE
 const fetchRatingRoutes = require("./routes/ratingFetchRoutes"); // ✅ NEW ROUTE
-const clausesRoutes = require("./routes/clausesRoutes");
+const rulesRoutes = require("./routes/rulesRoutes");
 
 // Initialize app and HTTP server
 const app = express();
@@ -52,7 +52,7 @@ app.use("/api/room", roomRoutes);
 app.use("/api/invite", inviteRoutes);
 app.use("/api/quiethours", quietHoursRoutes);
 app.use("/api/roomstate", roomStateRoutes);
-app.use("/api/clauses", clausesRoutes);
+app.use("/api/rules", rulesRoutes);
 app.use("/api/rating", ratingRoutes); // ✅ CORRECTED TO /api/rating
 app.use("/api/ratingFetch", fetchRatingRoutes); // ✅ CORRECTED TO /api/ratingFetch
 app.use("/api/disputes", require("./routes/disputesRoutes")); // ✅ NEW ROUTE
