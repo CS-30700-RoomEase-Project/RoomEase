@@ -346,3 +346,39 @@
 .closeNotesButton:hover {
     background-color: #8b6b4f;
 }
+
+.clausesWrapper {
+  position: relative;
+  display: inline-block;
+  width: 220px;       /* exactly the same fixed width */
+  height: 220px;      /* fixed height to match */
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+  margin-top: 0;     /* adjust if you need the same vertical alignment */
+}
+
+.clausesWrapper:hover {
+  transform: scale(1.1);
+}
+
+.clausesWrapper::after {
+  content: "Room Clauses";
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 18px;
+  font-weight: bold;
+  color: black;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.clausesWrapper:hover::after {
+  opacity: 1;
+}
+
+.clausesIcon {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
