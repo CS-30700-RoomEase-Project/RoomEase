@@ -1,44 +1,84 @@
 import React, { useState, useEffect } from "react";
 import Popup from "reactjs-popup";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "reactjs-popup/dist/index.css";
 import style from "./BulletinPopup.module.css";
-import '../../Pages/Room/Room Items/RoomItems.css';
-import QHLogo from './QuietHoursIcon.png';
-import RoomClausesImage from './RoomClauses.png';
-import NotesImage from './notes.png'; // Import the notes.png image
-import CallService from "../../SharedMethods/CallService";
+import "../../Pages/Room/Room Items/RoomItems.css";
 
-const defaultClauses = ["No active clauses found"];
+import QHLogo          from "./QuietHoursIcon.png";
+import NotesImage      from "./notes.png";
+import RoomClausesIcon from "./RoomClauses.png";
+
+import RoomClausesPopup from "../../Pages/RoomClauses/RoomClauses";
+import CallService      from "../../SharedMethods/CallService";
+
+const defaultRules = ["No active rules found"];
 const defaultNotes = "No current notes";
 
-export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpenNotes }) {
-    const [clauses, setClauses] = useState([]);
-    const [notes, setNotes] = useState("");
+export default function BulletinPopup({
+  isOpen,
+  onClose,
+  settings = [true, true, true],   // [quietHours, rules, notes]  ← clauses always on
+  roomId,
+  onOpenNotes,
+}) {
+  const [rules, setRules]       = useState([]);
+  const [notes, setNotes]       = useState("");
+  const [clauses, setClauses]   = useState("");
+  const [showClauses, setShowClauses] = useState(false);
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        if (isOpen && roomId) {
-            CallService(`clauses/getList/${roomId}`, {}, (data) => {
-                if (data) {
-                    const updatedClauses = data.length ? data : [...defaultClauses];
-                    setClauses(updatedClauses);
-                } else {
-                    console.error("No data received from clauses API");
-                }
-            });
+  /* Fetch everything each time the bulletin opens */
+  useEffect(() => {
+    if (!isOpen || !roomId) return;
 
-            CallService(`room/getNotes/${roomId}`, {}, (data) => {
-                if (data && typeof data === "string") {
-                    setNotes(data.trim() || defaultNotes);
-                } else {
-                    setNotes(defaultNotes);
-                    console.error("Invalid data received from notes API");
-                }
-            });
-        }
-    }, [isOpen, roomId]);
+    /* House Rules */
+    if (settings[1]) {
+      CallService(
+        `rules/getList/${roomId}`,
+        {},
+        (data) =>
+          setRules(Array.isArray(data) && data.length ? data : defaultRules),
+        () => setRules(defaultRules)
+      );
+    }
+
+    /* Room Notes */
+    if (settings[2]) {
+      CallService(
+        `room/getNotes/${roomId}`,
+        {},
+        (data) =>
+          setNotes(
+            typeof data === "string" && data.trim() ? data : defaultNotes
+          ),
+        () => setNotes(defaultNotes)
+      );
+    }
+
+    /* Room Clauses  – always fetched */
+    CallService(
+      `room/clauses/${roomId}`,
+      {},
+      (data) => {
+        const fetched =
+          typeof data?.clauses === "string"
+            ? data.clauses
+            : typeof data === "string"
+            ? data
+            : "";
+        setClauses(fetched);
+      },
+      () => setClauses("")
+    );
+  }, [isOpen, roomId, settings]);
+
+  /* Short helpers */
+  const gotoHours   = () => navigate(`/quiet-hours/${roomId}`);
+  const gotoRules   = () => navigate(`/house-rules/${roomId}`);
+  const openNotes   = () => onOpenNotes?.();
+    
 
     const awardQuestPoints = async (userId, roomId, questType) => {
         try {
@@ -65,89 +105,89 @@ export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpe
             console.error('Error calling API:', error);
         }
     };
-    
 
-    const handleGoToHours = () => {
-        navigate(`/quiet-hours/${roomId}`);
-    };
+  return (
+    <>
+      {/* Bulletin board itself */}
+      <Popup
+        open={isOpen}
+        modal
+        nested
+        onClose={onClose}
+        className={style.bulletinContainer}
+        overlayClassName={style.bulletinPopupOverlay}
+        contentClassName={style.bulletinPopupContent}
+      >
+        <div className={style.modal}>
+          <div className={style.board}>
+            <div className={style.frame}>
+              <div className={style.content}>
 
-    const handleGoToClauses = () => {
-        const storedUser = localStorage.getItem("userData");
-        const parsedUser = JSON.parse(storedUser);
-        const currentUserId = parsedUser._id;
-        awardQuestPoints(currentUserId, roomId, "reviewRules");
-        navigate(`/clauses/${roomId}`);
-    };
+                {/* Quiet Hours */}
+                {settings[0] && (
+                  <div className={style.quietHoursWrapper}>
+                    <img
+                      src={QHLogo}
+                      className={style.quietHours}
+                      alt="Quiet Hours"
+                      onClick={gotoHours}
+                    />
+                  </div>
+                )}
 
-    const handleOpenNotes = () => {
-        onOpenNotes && onOpenNotes(); // Use prop if provided
-    };
-
-    return (
-        <Popup
-            open={isOpen}
-            modal
-            nested
-            onClose={onClose}
-            className={style.bulletinContainer}
-            overlayClassName={style.bulletinPopupOverlay}
-            contentClassName={style.bulletinPopupContent}
-        >
-            <div className={style.modal}>
-                <div className={style.board}>
-                    <div className={style.frame}>
-                        <div className={style.content}>
-                            {/* Quiet Hours Logo */}
-                            {settings[0] && (
-                                <div className={style.quietHoursWrapper}>
-                                    <img
-                                        onClick={handleGoToHours}
-                                        className={style.quietHours}
-                                        src={QHLogo}
-                                        title="View your Quiet Hours"
-                                    />
-                                </div>
-                            )}
-
-                            {/* Room Notes Image */}
-                            {settings[2] && (
-                                <div 
-                                    className={style.notesImage} 
-                                    title="View your Room Notes" 
-                                    onClick={handleOpenNotes}
-                                >
-                                    <img 
-                                        src={NotesImage} 
-                                        alt="Room Notes" 
-                                        className={style.notesIcon} 
-                                    />
-                                </div>
-                            )}
-
-                            {/* Roommate Clauses Box */}
-                            {settings[1] && (
-                                <div className={style.clausesBox} onClick={handleGoToClauses}>
-                                    <div 
-                                        className={style.clausesList} 
-                                        title="View your Roommate Clauses"
-                                    >
-                                        {clauses.length > 0 ? (
-                                            clauses.slice(0, 5).map((clause, index) => (
-                                                <p key={index} className={style.clauseItem}>
-                                                    • {typeof clause === "string" ? clause : clause.text}
-                                                </p>
-                                            ))
-                                        ) : (
-                                            <p className={style.clauseItem}>No clauses available</p>
-                                        )}
-                                    </div>
-                                    <p className={style.viewMore}>Click to view more</p>
-                                </div>
-                            )}
-                        </div>
+                {/* House Rules */}
+                {settings[1] && (
+                  <div className={style.rulesBox} onClick={gotoRules}>
+                    <div className={style.rulesList}>
+                      {rules.map((r, i) => (
+                        <p key={i} className={style.ruleItem}>
+                          • {typeof r === "string" ? r : r.text}
+                        </p>
+                      ))}
                     </div>
+                    <p className={style.viewMore}>Click to view more</p>
+                  </div>
+                )}
+
+                {/* Room Notes */}
+                {settings[2] && (
+                  <div className={style.notesImage} onClick={openNotes}>
+                    <img
+                      src={NotesImage}
+                      alt="Room Notes"
+                      className={style.notesIcon}
+                    />
+                  </div>
+                )}
+
+                {/* Room Clauses – always visible */}
+                <div
+                  className={style.clausesWrapper}
+                  title="View Room Clauses"
+                  onClick={() => setShowClauses(true)}
+                >
+                  <img
+                    src={RoomClausesIcon}
+                    alt="Room Clauses"
+                    className={style.clausesIcon}
+                  />
                 </div>
+              </div>
             </div>
-        </Popup>
-    );
+          </div>
+        </div>
+      </Popup>
+
+      {/* Editor modal */}
+      {showClauses && (
+        <RoomClausesPopup
+          isOpen={showClauses}
+          roomId={roomId}
+          initialText={clauses}
+          onSave={(updated) => setClauses(updated)}
+          onClose={() => setShowClauses(false)}
+        />
+      )}
+    </>
+  );
 }

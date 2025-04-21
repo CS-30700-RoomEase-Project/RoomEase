@@ -569,4 +569,38 @@ router.post("/updateRoomSettings", async (req, res) => {
   }
 });
 
+// GET room clauses
+router.get("/clauses/:roomId", async (req, res) => {
+  try {
+    const room = await Room.findById(req.params.roomId).exec();
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    return res.json({ clauses: room.roomClauses });
+  } catch (err) {
+    console.error("Error fetching clauses:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// PUT update clauses
+router.put("/clauses/:roomId", async (req, res) => {
+  try {
+    const { clauses } = req.body;
+    if (typeof clauses !== "string") {
+      return res.status(400).json({ error: "clauses must be a string" });
+    }
+    const room = await Room.findByIdAndUpdate(
+      req.params.roomId,
+      { roomClauses: clauses },
+      { new: true }
+    ).exec();
+
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    return res.json({ clauses: room.roomClauses });
+  } catch (err) {
+    console.error("Error updating clauses:", err);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 module.exports = router;

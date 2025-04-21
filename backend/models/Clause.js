@@ -1,10 +1,25 @@
-// backend/models/Clause.js
 const mongoose = require('mongoose');
 
-const ClauseSchema = new mongoose.Schema({
-    roomId: { type: mongoose.Schema.Types.ObjectId, ref: 'Room', required: true },
-    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
-    text: { type: String, required: true },
-}, { timestamps: true });
+const ClauseSchema = new mongoose.Schema(
+  {
+    roomId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: 'Room'
+    },
+    text: {
+      type: String,
+      required: true,
+      default: ''
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now
+    }
+  },
+  {
+    timestamps: true  // createdAt & updatedAt
+  }
+);
 
 module.exports = mongoose.model('Clause', ClauseSchema);
