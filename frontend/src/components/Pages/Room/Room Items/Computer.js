@@ -20,7 +20,8 @@ function Computer({ handleInviteClick, handleSettingsClick, roomId, roomData }) 
             <div className="screen-content">
               {roomId !== "master-room" && <RoomSettingsIcon onClick={handleSettingsClick} />}
               {roomId !== "master-room" && <InviteIcon onClick={handleInviteClick} />}
-              {(roomId === "master-room" || roomData.settings[1]) && <BillsIcon onClick={handleGoToBills} />}
+              {/* {(roomId === "master-room" || roomData.settings[1]) && <BillsIcon onClick={handleGoToBills} />} */}
+              {(roomId === "master-room" || roomData?.settings?.[1]) && <BillsIcon onClick={handleGoToBills} />}
             </div>
           </div>
           <div className="monitor-logo"></div>
