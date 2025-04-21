@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Notification = require('./Notification');
+const RoomCosmetic = require('./RoomCosmetic');
 
 const UserSchema = new mongoose.Schema({
   username: { type: String, unique: false },
@@ -12,7 +13,7 @@ const UserSchema = new mongoose.Schema({
   notifications: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Notification' }], default: [] },
   reviews: { type: Array, default: [] },
   rooms: { type: Array, default: [] },
-  //room Cosmetics
+  roomCosmetics: {type: [{type:mongoose.Schema.Types.ObjectId, ref: 'RoomCosmetic'}], default: []},
   //notification settings
   chatFilter: { type: Boolean, default: false },
   invites: { type: Array, default: []}

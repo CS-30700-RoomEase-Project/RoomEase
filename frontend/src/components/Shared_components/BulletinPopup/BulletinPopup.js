@@ -5,27 +5,26 @@ import "reactjs-popup/dist/index.css";
 import style from "./BulletinPopup.module.css";
 import '../../Pages/Room/Room Items/RoomItems.css';
 import QHLogo from './QuietHoursIcon.png';
-import RoomClausesImage from './RoomClauses.png';
 import NotesImage from './notes.png'; // Import the notes.png image
 import CallService from "../../SharedMethods/CallService";
 
-const defaultClauses = ["No active clauses found"];
+const defaultRules = ["No active rules found"];
 const defaultNotes = "No current notes";
 
 export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpenNotes }) {
-    const [clauses, setClauses] = useState([]);
+    const [rules, setRules] = useState([]);
     const [notes, setNotes] = useState("");
 
     const navigate = useNavigate();
 
     useEffect(() => {
         if (isOpen && roomId) {
-            CallService(`clauses/getList/${roomId}`, {}, (data) => {
+            CallService(`rules/getList/${roomId}`, {}, (data) => {
                 if (data) {
-                    const updatedClauses = data.length ? data : [...defaultClauses];
-                    setClauses(updatedClauses);
+                    const updatedRules = data.length ? data : [...defaultRules];
+                    setRules(updatedRules);
                 } else {
-                    console.error("No data received from clauses API");
+                    console.error("No data received from rules API");
                 }
             });
 
@@ -44,8 +43,8 @@ export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpe
         navigate(`/quiet-hours/${roomId}`);
     };
 
-    const handleGoToClauses = () => {
-        navigate(`/clauses/${roomId}`);
+    const handleGoToRules = () => {
+        navigate(`/house-rules/${roomId}`);
     };
 
     const handleOpenNotes = () => {
@@ -93,21 +92,21 @@ export default function BulletinPopup({ isOpen, onClose, settings, roomId, onOpe
                                 </div>
                             )}
 
-                            {/* Roommate Clauses Box */}
+                            {/* Roommate Ruless Box */}
                             {settings[1] && (
-                                <div className={style.clausesBox} onClick={handleGoToClauses}>
+                                <div className={style.rulesBox} onClick={handleGoToRules}>
                                     <div 
-                                        className={style.clausesList} 
-                                        title="View your Roommate Clauses"
+                                        className={style.rulesList} 
+                                        title="View your House Rules"
                                     >
-                                        {clauses.length > 0 ? (
-                                            clauses.slice(0, 5).map((clause, index) => (
-                                                <p key={index} className={style.clauseItem}>
-                                                    • {typeof clause === "string" ? clause : clause.text}
+                                        {rules.length > 0 ? (
+                                            rules.slice(0, 5).map((rule, index) => (
+                                                <p key={index} className={style.ruleItem}>
+                                                    • {typeof rule === "string" ? rule : rule.text}
                                                 </p>
                                             ))
                                         ) : (
-                                            <p className={style.clauseItem}>No clauses available</p>
+                                            <p className={style.ruleItem}>No rules available</p>
                                         )}
                                     </div>
                                     <p className={style.viewMore}>Click to view more</p>

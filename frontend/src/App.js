@@ -11,12 +11,11 @@ import BillsExpenses from "./components/Pages/BillsExpenses";
 import RoomState from "./components/Pages/RoomState/RoomState"; // Import RoomState component
 import Notifications from "./components/Pages/Notifications/Notifications"; //import notifications
 import InvitePage from "./components/Pages/InvitePage/InvitePage"; // Import InvitePage component
-import RoomSettings from "./components/Pages/RoomSettings/RoomSettings"; // Import InvitePage component
 import Disputes from "./components/Pages/Disputes/Disputes";
 import MasterRoom from "./components/Pages/MasterRoom/MasterRoom"; // Import MasterRoom components
 import MasterRoomState from "./components/Pages/MasterRoom/MasterPages/RoomState/MasterRoomState"; // Import MasterRoomState component
 import NotesPopup from "./components/Shared_components/BulletinPopup/NotesPopup";
-import Clauses from "./components/Pages/RoomClauses/RoomClauses";
+import HouseRules from "./components/Pages/HouseRules/HouseRules"; // Import HouseRules component
 
 function App() {
   return (
@@ -37,8 +36,8 @@ function App() {
         {/* Quiet Hours Settings route */}
         <Route path="/quiet-hours/:roomId" element={<QuietHoursSettings />} />
         
-        {/* Clauses Route */}
-        <Route path="/clauses/:roomId" element={<Clauses />} />
+        {/* House Rules Route */}
+        <Route path="/house-rules/:roomId" element={<HouseRules />} />
 
         {/* Disputes route */}
         <Route path="/disputes/:roomId" element={<Disputes />} />
@@ -51,9 +50,6 @@ function App() {
 
         {/* Invite page route */}
         <Route path="/room/:roomId/invite" element={<InvitePage />} />
-
-        {/* Room Settings page route */}
-        <Route path="/room/:roomId/settings" element={<RoomSettings />} />
 
         {/* Room notes page route */}
         <Route path="/notes" element={<NotesPopup />} />
