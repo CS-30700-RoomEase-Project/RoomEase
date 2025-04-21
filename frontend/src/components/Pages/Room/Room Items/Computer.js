@@ -8,7 +8,37 @@ import "./computer.css"
 function Computer({ handleInviteClick, handleSettingsClick, roomId, roomData }) {
   const navigate = useNavigate()
 
+  const awardQuestPoints = async (userId, roomId, questType) => {
+    try {
+        const response = await fetch('http://localhost:5001/api/room/award-quest-points', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Ensures the body is JSON
+            },
+            body: JSON.stringify({
+                userId,
+                roomId,
+                questType
+            }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            console.log('Points awarded:', result.message);
+        } else {
+            console.error('Error:', result.message);
+        }
+    } catch (error) {
+        console.error('Error calling API:', error);
+    }
+  };
+
   const handleGoToBills = () => {
+    const storedUser = localStorage.getItem("userData");
+    const parsedUser = JSON.parse(storedUser);
+    const currentUserId = parsedUser._id;
+    awardQuestPoints(currentUserId, roomId, "checkBills");
     navigate(`/room/${roomId}/bills`)
   }
 
