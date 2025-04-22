@@ -16,7 +16,7 @@ body {
   overflow: auto;
   overflow-x: hidden;
   box-sizing: border-box;
-  background-color: #d1ae7c; /* Light background to keep it fresh */
+  /* background-color: #d1ae7c; Light background to keep it fresh */
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for the container */
 }
 
@@ -63,10 +63,28 @@ body {
   display: flex;
   flex-direction: column;
   background-image: url('tile.png');
-  background-color: #9591b5; /* Muted, slightly warm grey */
+  background-color: #9591b5; 
   background-repeat: repeat;
   background-size: 50px 50px;
   box-sizing: border-box;
+} 
+
+.bgOverlay {
+  position: absolute;        /* take it out of document flow */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;      /* allow clicks through the overlay */
+  z-index: 1;                /* sits above the image but below all other UI */
+}
+
+.upperSection,
+.floorItems,
+.roomFloor,
+.tooltipWrapper {
+  position: relative;
+  z-index: 2;                /* ensure your interactive elements sit on top */
 }
 
 /* Room sections for positioning */
@@ -192,7 +210,7 @@ body {
 }
 
 .roomDial {
-  /* your existing styles */
+  /* your existing vars */
   --size: 8rem;
   --border: 0.25rem;
 
@@ -201,19 +219,20 @@ body {
   height: var(--size);
   border-radius: 50%;
   background: conic-gradient(
-    #e74c3c   0deg   60deg,   /* Room 1 */
-    #f1c40f  60deg  120deg,   /* Room 2 */
-    #2ecc71 120deg  180deg,   /* Room 3 */
-    #3498db 180deg  240deg,   /* Room 4 */
-    #9b59b6 240deg  300deg,   /* Room 5 */
-    #e67e22 300deg  360deg    /* Room 6 */
+    #e74c3c   0deg   60deg,
+    #f1c40f  60deg  120deg,
+    #2ecc71 120deg  180deg,
+    #3498db 180deg  240deg,
+    #9b59b6 240deg  300deg,
+    #e67e22 300deg  360deg
   );
-  box-shadow:
-    inset 0 2px 8px rgba(0,0,0,0.4),
-    0 4px 6px rgba(0,0,0,0.2);
   border: var(--border) solid #fff;
 
-  /* ADD THESE: */
+  /* stronger multi‑layer shadow */
+  box-shadow:
+    inset 0 2px 8px rgba(0,0,0,0.4),      /* existing inner depth */
+    0 4px 6px rgba(0,0,0,0.2),            /* subtle outer */
+    0 8px 16px rgba(0,0,0,0.3);           /* pronounced halo */
   transform-origin: center center;
   transition: transform 0.6s ease-in-out;
 }
@@ -283,6 +302,7 @@ body {
   align-items: center;
   justify-content: center;
   z-index: 100;
+  color: black;
 }
 
 /* the white popup box */
@@ -294,6 +314,7 @@ body {
   width: 300px;
   max-width: 90%;
   text-align: center;
+  color: black;
 }
 
 .popupTitle {

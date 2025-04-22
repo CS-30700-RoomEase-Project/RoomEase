@@ -12,6 +12,9 @@
   height: 5px;
   background-color: #5d4037;
   border-radius: 2px;
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.4),
+    -12px 12px 24px 2px rgba(0, 0, 0, 0.5);
 }
 
 .gavel-pad-top {
