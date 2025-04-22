@@ -78,6 +78,33 @@ export default function BulletinPopup({
   const gotoHours   = () => navigate(`/quiet-hours/${roomId}`);
   const gotoRules   = () => navigate(`/house-rules/${roomId}`);
   const openNotes   = () => onOpenNotes?.();
+    
+
+    const awardQuestPoints = async (userId, roomId, questType) => {
+        try {
+            const response = await fetch('http://localhost:5001/api/room/award-quest-points', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Ensures the body is JSON
+                },
+                body: JSON.stringify({
+                    userId,
+                    roomId,
+                    questType
+                }),
+            });
+    
+            const result = await response.json();
+    
+            if (response.ok) {
+                console.log('Points awarded:', result.message);
+            } else {
+                console.error('Error:', result.message);
+            }
+        } catch (error) {
+            console.error('Error calling API:', error);
+        }
+    };
 
   return (
     <>
