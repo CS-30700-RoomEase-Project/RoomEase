@@ -1,17 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import GroceryPopUp from "../../GroceryPage/GroceryPopUp"
-import "./fridge.css"
+import { useState } from "react";
+import GroceryPopUp from "../../GroceryPage/GroceryPopUp";
+import "./fridge.css";
+import FridgeLetters from "./FridgeCosmetics/FridgeLetters";
 
-function Fridge({ room, enabled }) {
-  const [isPopUpOpen, setPopUpOpen] = useState(false)
+function Fridge({ room, enabled, roomCosmetics }) {
+  const [isPopUpOpen, setPopUpOpen] = useState(false);
 
   const handleClick = () => {
     if (enabled) {
-      setPopUpOpen(true)
+      setPopUpOpen(true);
     }
-  }
+  };
 
   return (
     <div
@@ -25,6 +26,9 @@ function Fridge({ room, enabled }) {
     >
       <div className="fridge-body">
         <div className="freezer-door">
+          <FridgeLetters
+            visible={roomCosmetics?.activeDecorations?.["Fridge Letters"]}
+          />
           <div className="freezer-handle"></div>
           {/* <div className="freezer-light"></div> */}
         </div>
@@ -39,9 +43,15 @@ function Fridge({ room, enabled }) {
           </div>
         </div>
       </div>
-      {isPopUpOpen && <GroceryPopUp room={room} isOpen={isPopUpOpen} onClose={() => setPopUpOpen(false)} />}
+      {isPopUpOpen && (
+        <GroceryPopUp
+          room={room}
+          isOpen={isPopUpOpen}
+          onClose={() => setPopUpOpen(false)}
+        />
+      )}
     </div>
-  )
+  );
 }
 
-export default Fridge
+export default Fridge;
