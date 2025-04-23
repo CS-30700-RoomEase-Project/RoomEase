@@ -1,0 +1,6 @@
+.container {
+    position: inherit;
+    left: -10%;
+    top: -10%;
+    scale: 0.6;
+}
