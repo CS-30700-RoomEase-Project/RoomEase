@@ -83,10 +83,40 @@ function Chores() {
         }
     }, [roomId]);
 
+    const awardQuestPoints = async (userId, roomId, questType) => {
+        try {
+            const response = await fetch('http://localhost:5001/api/room/award-quest-points', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json', // Ensures the body is JSON
+                },
+                body: JSON.stringify({
+                    userId,
+                    roomId,
+                    questType
+                }),
+            });
+    
+            const result = await response.json();
+    
+            if (response.ok) {
+                console.log('Points awarded:', result.message);
+            } else {
+                console.error('Error:', result.message);
+            }
+        } catch (error) {
+            console.error('Error calling API:', error);
+        }
+    };
+    
+
 
     // Mark chore as complete and switch to next person
     const handleMarkAsComplete = async (chore) => {
         try {
+            if (!chore.completed) {
+                awardQuestPoints(chore.order[chore.whoseTurn]._id, roomId, "completeChore");
+            }
             const response = await fetch(`http://localhost:5001/api/chores/markComplete/${chore._id}/${roomId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" }

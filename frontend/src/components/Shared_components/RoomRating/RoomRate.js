@@ -65,7 +65,7 @@ const RoomRate = ({ onClose }) => {
 
   const handleSubmitRatings = async () => {
     const storedRoomData = getStoredData("roomData");
-    const roomId = storedRoomData?.roomId || "room123";
+    const roomId = storedRoomData?._id || "room123";
 
     // Ensure at least one rating exists
     if (!roommates.length) {
