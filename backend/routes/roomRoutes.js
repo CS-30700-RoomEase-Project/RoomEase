@@ -9,7 +9,6 @@ const RoomQuest = require("../models/RoomQuest");
 const router = express.Router();
 
 const multer = require("multer");
-const Decoration = require("../models/Decoration");
 // Configure multer to store image in memory (for storing as Buffer in MongoDB)
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
