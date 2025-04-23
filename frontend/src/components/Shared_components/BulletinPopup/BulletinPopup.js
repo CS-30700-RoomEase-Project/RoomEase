@@ -1,3 +1,5 @@
+// src/Shared_components/BulletinPopup/BulletinPopup.js
+
 import React, { useState, useEffect } from "react";
 import Popup from "reactjs-popup";
 import { useNavigate } from "react-router-dom";
@@ -8,80 +10,81 @@ import "../../Pages/Room/Room Items/RoomItems.css";
 import QHLogo          from "./QuietHoursIcon.png";
 import NotesImage      from "./notes.png";
 import RoomClausesIcon from "./RoomClauses.png";
+import MemoriesIcon    from "./Memories.png";
 
 import RoomClausesPopup from "../../Pages/RoomClauses/RoomClauses";
-import CallService      from "../../SharedMethods/CallService";
 
+const API = "http://localhost:5001/api";
 const defaultRules = ["No active rules found"];
 const defaultNotes = "No current notes";
 
 export default function BulletinPopup({
   isOpen,
   onClose,
-  settings = [true, true, true],   // [quietHours, rules, notes]  ← clauses always on
+  settings = [true, true, true],   // [quietHours, rules, notes]
   roomId,
   onOpenNotes,
 }) {
-  const [rules, setRules]       = useState([]);
-  const [notes, setNotes]       = useState("");
-  const [clauses, setClauses]   = useState("");
+  const [rules, setRules]     = useState([]);
+  const [notes, setNotes]     = useState("");
+  const [clauses, setClauses] = useState("");
   const [showClauses, setShowClauses] = useState(false);
-
   const navigate = useNavigate();
 
-  /* Fetch everything each time the bulletin opens */
   useEffect(() => {
     if (!isOpen || !roomId) return;
 
-    /* House Rules */
+    // ─── House Rules (POST getList) ───
     if (settings[1]) {
-      CallService(
-        `rules/getList/${roomId}`,
-        {},
-        (data) =>
-          setRules(Array.isArray(data) && data.length ? data : defaultRules),
-        () => setRules(defaultRules)
-      );
+      fetch(`${API}/rules/getList/${roomId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      })
+        .then((r) => r.json())
+        .then((data) =>
+          setRules(Array.isArray(data) && data.length ? data : defaultRules)
+        )
+        .catch(() => setRules(defaultRules));
     }
 
-    /* Room Notes */
+    // ─── Room Notes (POST getList) ───
     if (settings[2]) {
-      CallService(
-        `room/getNotes/${roomId}`,
-        {},
-        (data) =>
-          setNotes(
-            typeof data === "string" && data.trim() ? data : defaultNotes
-          ),
-        () => setNotes(defaultNotes)
-      );
+      fetch(`${API}/notes/getList/${roomId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      })
+        .then((r) => r.json())
+        .then((arr) => {
+          const txt =
+            Array.isArray(arr) && arr.length ? arr.join("\n") : defaultNotes;
+          setNotes(txt);
+        })
+        .catch(() => setNotes(defaultNotes));
     }
 
-    /* Room Clauses  – always fetched */
-    CallService(
-      `room/clauses/${roomId}`,
-      {},
-      (data) => {
-        const fetched =
-          typeof data?.clauses === "string"
-            ? data.clauses
-            : typeof data === "string"
-            ? data
-            : "";
-        setClauses(fetched);
-      },
-      () => setClauses("")
-    );
+    // ─── Room Clauses (GET) ───
+    fetch(`${API}/room/clauses/${roomId}`)
+      .then((r) => r.json())
+      .then((data) =>
+        setClauses(typeof data.clauses === "string" ? data.clauses : "")
+      )
+      .catch(() => setClauses(""));
   }, [isOpen, roomId, settings]);
 
-  /* Short helpers */
-  const gotoHours   = () => navigate(`/quiet-hours/${roomId}`);
-  const gotoRules   = () => navigate(`/house-rules/${roomId}`);
-  const openNotes   = () => onOpenNotes?.();
+  // Navigation / action handlers
+  const gotoHours = () => navigate(`/quiet-hours/${roomId}`);
+  const gotoRules = () => navigate(`/house-rules/${roomId}`);
+  const openNotes = () => onOpenNotes?.();
+
+  const openMemories = () => {
+    onClose();
+    navigate(`/room/${roomId}/memories`);
+  };
 
   return (
     <>
-      {/* Bulletin board itself */}
       <Popup
         open={isOpen}
         modal
@@ -124,7 +127,11 @@ export default function BulletinPopup({
 
                 {/* Room Notes */}
                 {settings[2] && (
-                  <div className={style.notesImage} onClick={openNotes}>
+                  <div
+                    className={style.notesImage}
+                    title="View Room Notes"
+                    onClick={openNotes}
+                  >
                     <img
                       src={NotesImage}
                       alt="Room Notes"
@@ -133,7 +140,7 @@ export default function BulletinPopup({
                   </div>
                 )}
 
-                {/* Room Clauses – always visible */}
+                {/* Room Clauses */}
                 <div
                   className={style.clausesWrapper}
                   title="View Room Clauses"
@@ -145,13 +152,27 @@ export default function BulletinPopup({
                     className={style.clausesIcon}
                   />
                 </div>
+
+                {/* Memories */}
+                <div
+                  className={style.memoriesWrapper}
+                  title="View Room Memories"
+                  onClick={openMemories}
+                >
+                  <img
+                    src={MemoriesIcon}
+                    alt="Room Memories"
+                    className={style.memoriesIcon}
+                  />
+                </div>
+
               </div>
             </div>
           </div>
         </div>
       </Popup>
 
-      {/* Editor modal */}
+      {/* Room Clauses Editor */}
       {showClauses && (
         <RoomClausesPopup
           isOpen={showClauses}
