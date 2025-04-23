@@ -4,11 +4,12 @@ const User = require("../models/User");
 const Room = require("../models/Room");
 const Notification = require("../models/Notification");
 const RoomCosmetic = require("../models/RoomCosmetic");
-const RoomQuest = require('../models/RoomQuest');
+const RoomQuest = require("../models/RoomQuest");
 
 const router = express.Router();
 
 const multer = require("multer");
+const Decoration = require("../models/Decoration");
 // Configure multer to store image in memory (for storing as Buffer in MongoDB)
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -47,13 +48,11 @@ router.post("/createRoom", async (req, res) => {
     newRoom.roomMembers.push(userId);
     await newRoom.save();
 
-    res
-      .status(200)
-      .json({
-        message: "Room created successfully",
-        userData: user,
-        room: newRoom,
-      });
+    res.status(200).json({
+      message: "Room created successfully",
+      userData: user,
+      room: newRoom,
+    });
   } catch (error) {
     console.error("Error saving user:", error);
     res.status(500).json({ message: "Server error", error });
@@ -70,27 +69,28 @@ function isSameDay(date1, date2) {
 }
 
 // API: Check if new day, and if so, generate new quests
-router.post('/checkAndGenerateQuests/:userId', async (req, res) => {
+router.post("/checkAndGenerateQuests/:userId", async (req, res) => {
   try {
     const id = req.params.userId;
     console.log("generating quests");
 
-    const user = await User.findOne({ _id: id }).populate('roomQuests');
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    const user = await User.findOne({ _id: id }).populate("roomQuests");
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     const today = new Date();
     const lastDate = user.lastQuestDate || new Date(0);
 
     if (isSameDay(today, lastDate)) {
       console.log("quests already generated today");
-      return res.status(200).json({ message: 'Quests already generated today' });
+      return res
+        .status(200)
+        .json({ message: "Quests already generated today" });
     }
 
     if (user.roomQuests && user.roomQuests.length > 0) {
       await RoomQuest.deleteMany({ _id: { $in: user.roomQuests } });
     }
     user.roomQuests = [];
-    
 
     const rooms = user.rooms;
 
@@ -98,35 +98,40 @@ router.post('/checkAndGenerateQuests/:userId', async (req, res) => {
     for (const roomId of rooms) {
       const quests = await RoomQuest.generateQuestsForRoom(roomId); // returns array of quest docs
       console.log("Generated quests:", quests);
-      console.log("Quest IDs:", quests.map(q => q._id));
-      user.roomQuests.push(...quests.map(q => q._id));
+      console.log(
+        "Quest IDs:",
+        quests.map((q) => q._id)
+      );
+      user.roomQuests.push(...quests.map((q) => q._id));
     }
 
     user.lastQuestDate = today;
     await user.save();
 
-    res.status(200).json({ message: 'New quests generated', quests: user.roomQuests });
+    res
+      .status(200)
+      .json({ message: "New quests generated", quests: user.roomQuests });
   } catch (error) {
-    console.error('Error checking/generating quests:', error);
-    res.status(500).json({ message: 'Server error' });
+    console.error("Error checking/generating quests:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // Route to award points if a matching quest exists for the user
-router.post('/award-quest-points', async (req, res) => {
+router.post("/award-quest-points", async (req, res) => {
   try {
     const { userId, roomId, questType } = req.body;
     console.log("attempting to award points");
 
     if (!userId || !roomId || !questType) {
-      return res.status(400).json({ message: 'Missing required parameters.' });
+      return res.status(400).json({ message: "Missing required parameters." });
     }
 
     // Find the user by userId
     const user = await User.findOne({ _id: userId });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
+      return res.status(404).json({ message: "User not found." });
     }
 
     // Loop through the user's roomQuests to find a matching quest
@@ -138,31 +143,33 @@ router.post('/award-quest-points', async (req, res) => {
     console.log("matching quest: ", matchingQuest);
 
     if (!matchingQuest) {
-      return res.status(404).json({ message: 'Matching quest not found.' });
+      return res.status(404).json({ message: "Matching quest not found." });
     }
 
     // Award points if the quest type matches
-    const success = await matchingQuest.awardPointsToUserIfTypeMatches(questType, userId);
+    const success = await matchingQuest.awardPointsToUserIfTypeMatches(
+      questType,
+      userId
+    );
 
     if (success) {
-      return res.status(200).json({ message: 'Points awarded successfully!' });
+      return res.status(200).json({ message: "Points awarded successfully!" });
     } else {
-      return res.status(400).json({ message: 'Quest type does not match.' });
+      return res.status(400).json({ message: "Quest type does not match." });
     }
-
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // Route to get all quests for a user in a specific room
-router.get('/quests-in-room', async (req, res) => {
+router.get("/quests-in-room", async (req, res) => {
   try {
     const { userId, roomId } = req.query;
 
     if (!userId || !roomId) {
-      return res.status(400).json({ message: 'Missing required parameters.' });
+      return res.status(400).json({ message: "Missing required parameters." });
     }
 
     // Find the user by userId
@@ -170,7 +177,7 @@ router.get('/quests-in-room', async (req, res) => {
     const user = await User.findOne({ _id: userId });
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
+      return res.status(404).json({ message: "User not found." });
     }
     console.log("debug potato");
 
@@ -182,15 +189,16 @@ router.get('/quests-in-room', async (req, res) => {
 
     // If no quests are found, return a message
     if (roomQuests.length === 0) {
-      return res.status(404).json({ message: 'No quests found in this room for the user.' });
+      return res
+        .status(404)
+        .json({ message: "No quests found in this room for the user." });
     }
 
     // Return the list of quests
     return res.status(200).json(roomQuests);
-
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
@@ -309,11 +317,11 @@ router.post("/purchaseColor", async (req, res) => {
       return res.status(404).json({ error: "RoomCosmetic not found" });
 
     // Check if color already purchased
-    if (roomCosmetic.purchased.get(color)) {
+    if (roomCosmetic.colorsPurchased.get(color)) {
       return res.status(400).json({ error: "Color already purchased" });
     }
 
-    const colorCost = roomCosmetic.cost.get(color);
+    const colorCost = roomCosmetic.colorCost.get(color);
     if (currentPoints < colorCost) {
       return res.status(400).json({ error: "Not enough points" });
     }
@@ -322,7 +330,7 @@ router.post("/purchaseColor", async (req, res) => {
     room.points.set(user._id, currentPoints - colorCost);
 
     // Mark color as purchased
-    roomCosmetic.purchased.set(color, true);
+    roomCosmetic.colorsPurchased.set(color, true);
 
     // Save changes
     await room.save();
@@ -364,7 +372,7 @@ router.post("/selectColor", async (req, res) => {
     }
 
     // Check if the color has been purchased
-    if (color != "default" && !roomCosmetic.purchased.get(color)) {
+    if (color != "default" && !roomCosmetic.colorsPurchased.get(color)) {
       return res.status(400).json({ error: "Color not purchased yet" });
     }
 
@@ -504,6 +512,10 @@ router.get("/leaveRoom", async (req, res) => {
     // If the user is the last person in the room, delete the room
     if (room.roomMembers.length === 1) {
       await Room.deleteOne({ _id: roomId });
+
+      // Delete the associated Room Cosmetic class
+      await RoomCosmetic.deleteOne({ roomId: roomId });
+
       console.log("Room deleted:", roomId);
     } else {
       // Otherwise, just remove the user from the room
@@ -534,13 +546,11 @@ router.get("/leaveRoom", async (req, res) => {
       await memeberNotification.save();
       await memeberNotification.propagateNotification();
     }
-    return res
-      .status(200)
-      .json({
-        message: "User successfully left!",
-        userData: user,
-        roomData: room,
-      });
+    return res.status(200).json({
+      message: "User successfully left!",
+      userData: user,
+      roomData: room,
+    });
   } else {
     return res
       .status(404)
@@ -602,5 +612,110 @@ router.put("/clauses/:roomId", async (req, res) => {
   }
 });
 
+router.post("/purchaseDecoration", async (req, res) => {
+  const { userId, roomId, decoration } = req.body;
+
+  // Fixed parameter check to use 'decoration'
+  if (!userId || !roomId || !decoration) {
+    return res
+      .status(400)
+      .json({ error: "Missing userId, roomId, or decoration" });
+  }
+  console.log("user:", userId);
+  console.log("room:", roomId);
+  console.log("decoration:", decoration);
+
+  try {
+    // Find the room
+    const room = await Room.findById(roomId);
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    console.log("room", room);
+
+    // Make sure the room has a points map
+    if (!room.points || !room.points.has(userId)) {
+      return res.status(400).json({ error: "User points not found in room" });
+    }
+    console.log("points:", room.points);
+
+    // Get user points in the room
+    const currentPoints = room.points.get(userId);
+
+    // Find the user and their RoomCosmetic
+    const user = await User.findById(userId).populate("roomCosmetics");
+    if (!user) return res.status(404).json({ error: "User not found" });
+    console.log(user);
+
+    const roomCosmetic = user.roomCosmetics.find(
+      (rc) => rc.room.toString() === roomId
+    );
+    if (!roomCosmetic)
+      return res.status(404).json({ error: "RoomCosmetic not found" });
+
+    // Check if decoration already purchased using the updated map field
+    if (roomCosmetic.decorationsPurchased.get(decoration)) {
+      return res.status(400).json({ error: "Decoration already purchased" });
+    }
+    const decCost = roomCosmetic.decorationCost.get(decoration);
+    if (currentPoints < decCost) {
+      return res.status(400).json({ error: "Not enough points" });
+    }
+
+    // Deduct points using the correct cost variable
+    room.points.set(user._id, currentPoints - decCost);
+
+    // Mark decoration as purchased (fixing typo)
+    roomCosmetic.decorationsPurchased.set(decoration, true);
+
+    // Save changes
+    await room.save();
+    await roomCosmetic.save();
+
+    return res.status(200).json({
+      message: "Decoration purchased successfully",
+      cosmetic: roomCosmetic,
+      totalPoints: room.points.get(userId),
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/toggleDecoration", async (req, res) => {
+  const { userId, roomId, decoration, enabled } = req.body;
+  if (!userId || !roomId || !decoration || enabled === undefined) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+  try {
+    const room = await Room.findById(roomId);
+    if (!room) return res.status(404).json({ error: "Room not found" });
+    if (!room.points || !room.points.has(userId)) {
+      return res.status(400).json({ error: "User points not found in room" });
+    }
+    const user = await User.findById(userId).populate("roomCosmetics");
+    if (!user) return res.status(404).json({ error: "User not found" });
+    const roomCosmetic = user.roomCosmetics.find(
+      (rc) => rc.room.toString() === roomId
+    );
+    if (!roomCosmetic)
+      return res.status(404).json({ error: "RoomCosmetic not found" });
+
+    // Check if the decoration is purchased
+    if (!roomCosmetic.decorationsPurchased.get(decoration)) {
+      return res.status(400).json({ error: "Decoration not purchased yet" });
+    }
+
+    // Update the decoration's active state in the map
+    roomCosmetic.activeDecorations.set(decoration, enabled);
+    await roomCosmetic.save();
+    return res.status(200).json({
+      message: "Decoration toggled successfully",
+      cosmetic: roomCosmetic,
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
 
 module.exports = router;
