@@ -20,6 +20,7 @@ const ratingRoutes = require("./routes/ratingRoutes"); // ✅ NEW ROUTE
 const fetchRatingRoutes = require("./routes/ratingFetchRoutes"); // ✅ NEW ROUTE
 const rulesRoutes = require("./routes/rulesRoutes");
 const clauseRoutes = require("./routes/clauseRoutes");
+const memoryRoutes = require("./routes/memoryRoutes");
 
 // Initialize app and HTTP server
 const app = express();
@@ -61,6 +62,7 @@ app.use("/api/clauses", clauseRoutes);
 // Import and pass Socket.IO to group chat routes
 const groupChatRoutes = require("./routes/groupChatRoutes")(io);
 app.use("/api/groupchat", groupChatRoutes);
+app.use("/api/memories", memoryRoutes);
 
 // Socket.IO Events
 io.on("connection", (socket) => {

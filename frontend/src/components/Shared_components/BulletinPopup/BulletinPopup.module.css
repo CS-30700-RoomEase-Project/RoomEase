@@ -1,384 +1,114 @@
-/* Container for the entire bulletin board */
-.bulletinContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Align the content to the center */
-    gap: 15px;
-    width: 1200px;
-    height: 600px;
-    padding-left: 30px; /* Optional: Adjusts the padding if needed */
+/* ============  BULLETIN POPUP  ============ */
+
+/* ---------- overlay/containers remain unchanged ---------- */
+.bulletinContainer{display:flex;flex-direction:column;align-items:center;gap:15px;width:1200px;height:600px;padding-left:30px;}
+.bulletinPopupContainer{background:rgba(0,0,0,.7)!important;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100vh!important;width:100vw!important;position:fixed!important;top:0;left:0;z-index:2000!important;gap:15px;padding-left:30px;}
+.bulletinPopupContent{background:#333!important;width:350px;height:250px;min-height:250px;max-width:90%;padding:20px;border-radius:12px;box-shadow:0 4px 10px rgba(0,0,0,.15);text-align:center;position:relative;animation:fadeIn .3s ease-in-out;display:flex;flex-direction:column;justify-content:center;align-items:center;}
+.bulletin{background:none!important;margin:0!important;padding:0!important;display:flex;flex-direction:column;justify-content:center;align-items:center;height:100px;width:100px;}
+
+.board{width:1200px;height:600px;display:flex;}
+.frame{width:80%;height:80%;background:#5c3939;}
+
+/* ---------- NEW: tidy grid for all tiles ---------- */
+.content{
+  width:90%;height:90%;
+  position:relative;top:5%;left:5%;
+  background:#8b6b4f;
+  display:flex;              /* grid-like flex layout */
+  flex-wrap:wrap;
+  justify-content:center;    /* center horizontally */
+  align-items:center;        /* center vertically */
+  gap:40px;                  /* SAME space between every tile */
 }
 
-/* Popup container for the bulletin */
-.bulletinPopupContainer {
-    background: rgba(0, 0, 0, 0.7) !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; /* Center the content */
-    height: 100vh !important;
-    width: 100vw !important;
-    position: fixed !important;
-    top: 0;
-    left: 0;
-    z-index: 2000 !important; /* Ensure it's above everything */
-    gap: 15px;
-    padding-left: 30px;  /* Optional: Adds padding to move it further left */
+/* ---------- STANDARD 220 × 220 tile ---------- */
+.quietHoursWrapper,
+.notesImage,
+.clausesWrapper,
+.memoriesWrapper,
+.rulesBox{
+  width: 180px;
+  height:180px;
+  flex:0 0 220px;            /* every tile occupies identical slot */
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  position:relative;
+  cursor:pointer;
+  transition:transform .3s ease;
+}
+.quietHoursWrapper:hover,
+.notesImage:hover,
+.clausesWrapper:hover,
+.memoriesWrapper:hover,
+.rulesBox:hover{transform:scale(1.05);}
+
+/* ---------- Icon / image sizing inside the tile ---------- */
+.quietHours,
+.notesIcon,
+.clausesIcon,
+.memoriesIcon{
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
 }
 
-/* Content inside the popup */
-.bulletinPopupContent {
-    background: #333 !important;
-    width: 350px;
-    height: 250px;
-    min-height: 250px;
-    max-width: 90%;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
-    text-align: center;
-    position: relative;
-    animation: fadeIn 0.3s ease-in-out;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+/* ---------- Quiet Hours hover label ---------- */
+.quietHoursWrapper::after{
+  content:"Quiet Hours";
+  position:absolute;top:-28px;left:50%;transform:translateX(-50%);
+  font-size:18px;font-weight:bold;color:#fff;opacity:0;transition:opacity .3s ease;
 }
+.quietHoursWrapper:hover::after{opacity:1;}
 
-/* General styling for the bulletin */
-.bulletin {
-    background: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100px;
-    width: 100px;
+/* ---------- ROOM RULES box ---------- */
+.rulesBox{
+  background:#fff;
+  padding:12px;
+  border-radius:8px;
+  box-shadow:2px 2px 10px rgba(0,0,0,.1);
+  overflow:hidden;           /* keep list inside fixed tile */
+  margin:0;                  /* override old auto-margin */
 }
+.rulesBox::after{
+  content:"Room Rules";
+  position:absolute;top:-28px;left:50%;transform:translateX(-50%);
+  font-size:18px;font-weight:bold;color:#000;opacity:0;transition:opacity .3s ease;
+}
+.rulesBox:hover::after{opacity:1;}
 
-/* Frame to show the bulletin */
-.board {
-    width: 1200px;
-    height: 600px;
-    justify-self: center;
-    align-self: center;
-    display: flex;
-}
+.rulesList{max-height:140px;overflow-y:auto;text-align:left;padding-left:10px;margin-top:4px;}
+.ruleItem{font-size:12px;color:#333;line-height:1.3;word-wrap:break-word;margin-bottom:4px;}
 
-/* Frame of the content */
-.frame {
-    width: 80%;
-    height: 80%;
-    background-color: #5c3939;
+/* ---------- Room Notes ---------- */
+.notesImage{ /* already inherits tile rules */ }
+.notesImage::after{
+  content:"Room Notes";
+  position:absolute;top:-28px;left:50%;transform:translateX(-50%);
+  font-size:18px;font-weight:bold;color:#fff;opacity:0;transition:opacity .3s ease;
 }
+.notesImage:hover::after{opacity:1;}
 
-/* Content inside the frame */
-.content {
-    width: 90%;
-    height: 90%;
-    position: relative;
-    top: 5%;
-    left: 5%;
-    background-color: #8b6b4f;
-    position: relative;
-    justify-content: space-evenly;
-    align-items: center;
-    display: flex;
-    flex-shrink: 0;
+/* ---------- Room Clauses ---------- */
+.clausesWrapper::after{
+  content:"Clauses";
+  position:absolute;top:-24px;left:50%;transform:translateX(-50%);
+  font-size:18px;font-weight:bold;color:#fff;opacity:0;transition:opacity .3s ease;
 }
+.clausesWrapper:hover::after{opacity:1;}
 
-/* Modal appearance */
-.modal {
-    background: none !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 250px;
+/* ---------- Memories ---------- */
+.memoriesWrapper::after{
+  content:"Memories";
+  position:absolute;top:-24px;left:50%;transform:translateX(-50%);
+  font-size:18px;font-weight:bold;color:#fff;opacity:0;transition:opacity .3s ease;
 }
+.memoriesWrapper:hover::after{opacity:1;}
 
-/* Quiet Hours Logo css */
-.quietHoursWrapper {
-    position: relative;
-    display: inline-block;
-}
-
-/* Quiet Hours Logo hover effect */
-.quietHours {
-    width: 100%;
-    height: auto;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-}
-
-/* Quiet Hours hover effect */
-.quietHours:hover {
-    transform: scale(1.1);
-}
-
-/* Quiet Hours text on hover */
-.quietHoursWrapper::after {
-    content: "Quiet Hours";
-    position: absolute;
-    top: -30px; /* Position text directly above the icon */
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 18px;
-    font-weight: bold;
-    color: black; /* Black color for the text */
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-/* Show the text on hover */
-.quietHoursWrapper:hover::after {
-    opacity: 1;
-}
-
-/* Room Rules element css */
-.roomRules {
-    width: 20%;    /* Scale the image to 10% of its original size */
-    height: auto;  /* Maintain the aspect ratio */
-    position: relative;
-    right: 0;     /* Same as quiet hours logo for alignment */
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-}
-
-/* Room Rules hover effect */
-.roomRuless:hover {
-    transform: scale(1.1);
-}
-
-/* Room Rules text on hover */
-.roomRules::after {
-    content: "Room Rules";
-    position: absolute;
-    top: -25px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-/* Show the text on hover */
-.roomRules:hover::after {
-    opacity: 1;
-}
-
-/* Styling for the rules box */
-.rulesBox {
-    background-color: white;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    width: 250px;
-    text-align: center;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-    position: relative;
-    margin-left: auto;
-}
-
-/* Hover effect for the rules box */
-.rulesBox:hover {
-    transform: scale(1.05);
-}
-
-/* Adding the text inside the rules box */
-.rulesBox .rulesText {
-    font-size: 16px;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 10px;
-    text-align: center;
-    padding: 5px;
-}
-
-/* Adding hover effect on the box */
-.rulesBox:hover .rulesText {
-    color: #5c3939; /* Change text color on hover */
-}
-
-.rulesBox::after {
-    content: "Room Rules";
-    position: absolute;
-    top: -10%;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 18px;
-    font-weight: bold;
-    color: #333;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-.rulesBox:hover::after {
-    opacity: 1;
-}
-
-.rulesList {
-    max-height: 120px;
-    overflow-y: auto;
-    text-align: left;
-    padding-left: 10px;
-    margin-top: 10px;
-}
-
-.ruleItem {
-    font-size: 12px;
-    color: #333;
-    margin-bottom: 4px;
-    line-height: 1.3;
-    word-wrap: break-word;
-}
-
-.viewMore {
-    font-size: 10px;
-    color: #666;
-    margin-top: 10px;
-    text-align: center;
-    font-style: italic;
-}
-
-.rulesList::-webkit-scrollbar {
-    width: 6px;
-}
-
-.rulesList::-webkit-scrollbar-thumb {
-    background-color: #c4b5a7;
-    border-radius: 4px;
-}
-
-/* Room Notes Box */
-.notesBox {
-    width: 40%; /* Adjust the width of the notes box */
-    max-width: 500px; /* Set a maximum width */
-    background-color: #f0f0f0;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    margin-top: 20px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    left: 50px;
-}
-
-/* Notes Image Container */
-.notesImage {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.3s ease-in-out;
-    margin-top: 20px;
-    margin-left: auto;
-    position: relative;  /* Ensure positioning for hover text */
-}
-
-/* *** Tweak the size of the notes image here *** */
-.notesIcon {
-    width: 240px;  /* Adjust the size of the notes image */
-    height: auto;  /* Maintain the aspect ratio */
-    transition: transform 0.3s ease-in-out;
-}
-
-/* Optional: Add a hover effect on the notes icon */
-.notesIcon:hover {
-    transform: scale(1.1);  /* Slight zoom effect on hover */
-}
-
-/* Notes text on hover (same as Quiet Hours) */
-.notesImage::after {
-    content: "Room Notes";
-    position: absolute;
-    top: -30px;  /* Position text directly above the icon */
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 18px;
-    font-weight: bold;
-    color: black;  /* Black color for the text */
-    opacity: 0;
-    transition: opacity 0.3s ease;
-}
-
-/* Show the text on hover */
-.notesImage:hover::after {
-    opacity: 1;
-}
-
-/* Notes Title */
-.notesTitle {
-    font-size: 20px;
-    font-weight: bold;
-    margin-bottom: 15px;
-}
-
-/* Notes Content */
-.notesContent {
-    font-size: 16px;
-    color: #333;
-    max-height: 200px;
-    overflow-y: auto;
-    text-align: left;
-}
-
-.closeNotesButton {
-    background-color: #5c3939;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    margin-top: 10px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.closeNotesButton:hover {
-    background-color: #8b6b4f;
-}
-
-.clausesWrapper {
-  position: relative;
-  display: inline-block;
-  width: 220px;       /* exactly the same fixed width */
-  height: 220px;      /* fixed height to match */
-  cursor: pointer;
-  transition: transform 0.3s ease-in-out;
-  margin-top: 0;     /* adjust if you need the same vertical alignment */
-}
-
-.clausesWrapper:hover {
-  transform: scale(1.1);
-}
-
-.clausesWrapper::after {
-  content: "Room Clauses";
-  position: absolute;
-  top: -30px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 18px;
-  font-weight: bold;
-  color: black;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.clausesWrapper:hover::after {
-  opacity: 1;
-}
-
-.clausesIcon {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-}
+/* ---------- Notes modal & misc. ---------- */
+.notesBox{width:220px;max-width:220px; /* keeps same footprint */ }
+.notesIcon:hover{transform:scale(1.05);}
+.notesTitle{font-size:20px;font-weight:bold;margin-bottom:15px;}
+.notesContent{font-size:16px;color:#333;max-height:200px;overflow-y:auto;text-align:left;}
+.closeNotesButton{background:#5c3939;color:#fff;border:none;padding:8px 12px;margin-top:10px;border-radius:5px;cursor:pointer;}
+.closeNotesButton:hover{background:#8b6b4f;}

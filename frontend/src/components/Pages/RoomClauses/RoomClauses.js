@@ -1,43 +1,42 @@
+// src/Pages/RoomClauses/RoomClausesPopup.jsx
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import style from "./RoomClauses.module.css";
-import CallService from "../../SharedMethods/CallService";
 
 export default function RoomClausesPopup({
   isOpen,
   initialText = "",
-  onSave,
-  onClose,
   roomId,
+  onSave,   // (updatedText) => void
+  onClose,  // () => void
 }) {
   const [text, setText] = useState("");
 
-  /* Seed textarea every time the popup opens */
+  /* populate textarea each time the popup opens */
   useEffect(() => {
     if (isOpen) setText(initialText);
   }, [isOpen, initialText]);
 
-  const handleSave = () => {
-    CallService(
-      `room/clauses/${roomId}`,             // PUT
-      { clauses: text },
-      (res) => {
-        // res may be undefined, a string, or { clauses: "..." }
-        const updated =
-          typeof res?.clauses === "string"
-            ? res.clauses
-            : typeof res === "string"
-            ? res
-            : text;
+  /* PUT /api/room/clauses/:roomId */
+  const handleSave = async () => {
+    try {
+      const res = await fetch(`/api/room/clauses/${roomId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clauses: text }),
+      });
 
-        onSave?.(updated);                 // bubble the change to parent
-        onClose();
-      },
-      (err) => {
-        console.error("Failed saving clauses:", err);
-        alert("Could not save clauses. Please try again.");
-      }
-    );
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data = await res.json();           // { clauses: "..." }
+      const updated = typeof data.clauses === "string" ? data.clauses : text;
+
+      onSave?.(updated);                       // bubble to parent
+      onClose();
+    } catch (err) {
+      console.error("Failed saving clauses:", err);
+      alert("Could not save clauses. Please try again.");
+    }
   };
 
   if (!isOpen) return null;
@@ -51,7 +50,7 @@ export default function RoomClausesPopup({
           className={style.clausesTextarea}
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Enter any room‑specific clauses here…"
+          placeholder="Enter any room-specific clauses here…"
         />
 
         <div className={style.buttonGroup}>
