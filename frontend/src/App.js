@@ -16,6 +16,7 @@ import MasterRoom from "./components/Pages/MasterRoom/MasterRoom"; // Import Mas
 import MasterRoomState from "./components/Pages/MasterRoom/MasterPages/RoomState/MasterRoomState"; // Import MasterRoomState component
 import NotesPopup from "./components/Shared_components/BulletinPopup/NotesPopup";
 import HouseRules from "./components/Pages/HouseRules/HouseRules"; // Import HouseRules component
+import Memories from "./components/Pages/Memories/Memories"; // Import Memories component
 
 function App() {
   return (
@@ -68,6 +69,9 @@ function App() {
 
         {/* Master Room State route */}
         <Route path="/master-room/room-state" element={<MasterRoomState />} />
+
+        {/* Memories route */}
+        <Route path="/room/:roomId/memories" element={<Memories />} />
 
         {/* Redirect from any other route to the home page (optional) */}
         <Route path="*" element={<Navigate to="/" />} />

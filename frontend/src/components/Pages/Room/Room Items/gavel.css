@@ -37,7 +37,9 @@
   height: 40px;
   background: linear-gradient(to bottom, color-mix(in srgb, var(--gavel-color, #6d4c33) 70%, white), var(--gavel-color, #6d4c33));
   border-radius: 3px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.4),
+    -12px 12px 24px 2px rgba(0, 0, 0, 0.5);
 }
 
 .gavel-handle {
@@ -48,5 +50,7 @@
   height: 5px;
   background: linear-gradient(to right, #3c2d1e, #180f07);
   border-radius: 2px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.4),
+    -12px 12px 24px 2px rgba(0, 0, 0, 0.5);
 }

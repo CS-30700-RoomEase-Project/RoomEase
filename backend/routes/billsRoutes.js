@@ -5,7 +5,7 @@ const Room = require('../models/Room');
 const mongoose = require('mongoose');
 const User = require('../models/User');             // Added: Import the User model
 const Notification = require('../models/Notification'); // Added: Import Notification model
-
+//Test for CI/CD pipeline
 // GET active bills for a specific room
 router.get('/getBills/:roomId', async (req, res) => {
   try {
