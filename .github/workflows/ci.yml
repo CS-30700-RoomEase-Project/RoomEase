@@ -1,8 +1,7 @@
 name: CI
 
-# Allow pushes from the workflow
 permissions:
-  contents: write
+  contents: write   # allow pushes from the workflow
 
 on:
   push:
@@ -16,7 +15,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     permissions:
-      contents: read    # tests only need read
+      contents: read
     strategy:
       matrix:
         node-version: [14.19.0]
@@ -24,7 +23,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          fetch-depth: 0        # full history for merges
+          fetch-depth: 0
           persist-credentials: true
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
@@ -50,12 +49,15 @@ jobs:
       - run: npm install
       - run: rm -rf public
 
-  auto_update_non_main_branches:
+  update-branches:
     needs: deploy
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    strategy:
+      matrix:
+        branch: [Krish, Carter, John, Ishan, Will, Nathan]
+    name: auto_update_${{ matrix.branch }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -68,10 +70,16 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
 
-      - name: Merge main into personal branches
+      - name: Merge main into ${{ matrix.branch }}
         run: |
-          for branch in Krish Carter John Ishan Will Nathan; do
-            git checkout $branch
-            git merge --no-ff main
-            git push origin HEAD:$branch
-          done
+          git checkout ${{ matrix.branch }}
+          git merge --no-ff main || true
+
+      - name: Push if no conflicts
+        run: |
+          if git diff --name-only --diff-filter=U | grep .; then
+            echo "⚠️ Merge conflicts detected in ${{ matrix.branch }} – skipping push"
+            git merge --abort
+          else
+            git push origin HEAD:${{ matrix.branch }}
+          fi
