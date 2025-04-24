@@ -26,6 +26,33 @@ function GroceryItem(props) {
     setTempComment(description || "");
   }, [description]);
 
+  const awardQuestPoints = async (userId, roomId, questType) => {
+    try {
+        const response = await fetch('http://localhost:5001/api/room/award-quest-points', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json', // Ensures the body is JSON
+            },
+            body: JSON.stringify({
+                userId,
+                roomId,
+                questType
+            }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            console.log('Points awarded:', result.message);
+        } else {
+            console.error('Error:', result.message);
+        }
+    } catch (error) {
+        console.error('Error calling API:', error);
+    }
+  };
+
+
   const togglePurchased = () => {
     const updatedItems = [...items];
     updatedItems[index].purchased = !updatedItems[index].purchased;
@@ -38,6 +65,21 @@ function GroceryItem(props) {
     const requesterCount = item.requesters ? item.requesters.length : 0;
     const amountOwed = requesterCount > 0 ? cost / requesterCount : 0;
 
+    if (updatedItems[index].purchased) {
+      const notificationData = {
+        userId: userId,
+        description: `${updatedItems[index].itemName} purchased!`,
+        pageID: "/grocery",
+      };
+      const storedUser = localStorage.getItem("userData");
+      const parsedUser = JSON.parse(storedUser);
+      const currentUserId = parsedUser._id;
+      awardQuestPoints(currentUserId, room._id, "buyGrocery");
+      CallService(
+        "grocery/notifyPurchased/" + ((room) ? room._id : 1) + "/" + item._id,
+        notificationData
+      );
+    }
   };
 
   const removeItem = () => {

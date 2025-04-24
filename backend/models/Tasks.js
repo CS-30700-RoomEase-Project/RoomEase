@@ -444,34 +444,63 @@ const billSchema = new mongoose.Schema({
 
 // Method to create an "edit" notification when a bill is modified
 billSchema.methods.createEditNotification = async function(roomId) {
-    console.log("Creating bill edit notification");
-    try {
-      const User = require('./User');
-      const Notification = require('./Notification');
-      // Look up each responsible user by their custom userId
-      const usersNotified = await Promise.all(
-        this.responsible.map(async (person) => {
-          const user = await User.findOne({ userId: person.userId });
-          return user ? user._id : null;
-        })
-      );
-      const validUsersNotified = usersNotified.filter(id => id !== null);
-      
-      // Create a notification for these users with the bills page URL.
-      const notification = await Notification.create({
-        description: `The bill "${this.title}" has been updated. Please review the changes.`,
-        pageID: `/room/${roomId}/bills`, // URL as in your fixed version
-        usersNotified: validUsersNotified,
+  try {
+    const User         = require('./User');
+    const Notification = require('./Notification');
+    const title        = this.title;
+
+    // First resolve Mongo _ids for each responsible person
+    const resolved = await Promise.all(
+      this.responsible.map(async person => {
+        const user = await User.findOne({ userId: person.userId });
+        return user
+          ? { _id: user._id, paid: Boolean(person.paid) }
+          : null;
+      })
+    );
+
+    // Filter out any missing users
+    const valid = resolved.filter(x => x !== null);
+
+    // Partition into two lists
+    const paidUsers   = valid.filter(x => x.paid).map(x => x._id);
+    const unpaidUsers = valid.filter(x => !x.paid).map(x => x._id);
+
+    // Build two notifications if needed
+    const notifications = [];
+
+    if (unpaidUsers.length) {
+      notifications.push({
+        description: `The bill "${title}" has been updated and you are marked as unpaid. Please review the changes.`,
+        pageID:      `/room/${roomId}/bills`,
+        usersNotified: unpaidUsers,
         notificationType: 'Bill Updated',
-        origin: this.creatorId || null
+        origin:      this.creatorId || null
       });
-      const output = await notification.propagateNotification();
-      return output;
-    } catch (error) {
-      console.error("Error creating bill edit notification:", error);
-      throw error;
     }
-  };
+
+    if (paidUsers.length) {
+      notifications.push({
+        description: `The bill "${title}" has been updated and you are marked as paid. Please review the changes.`,
+        pageID:      `/room/${roomId}/bills`,
+        usersNotified: paidUsers,
+        notificationType: 'Bill Updated',
+        origin:      this.creatorId || null
+      });
+    }
+
+    // Create & propagate each
+    for (const data of notifications) {
+      const notif = await Notification.create(data);
+      await notif.propagateNotification();
+    }
+
+    return true;
+  } catch (err) {
+    console.error("Error creating bill edit notification:", err);
+    throw err;
+  }
+};
   
   // Method to create a "delete" notification when a bill is deleted
   billSchema.methods.createDeleteNotification = async function(roomId) {

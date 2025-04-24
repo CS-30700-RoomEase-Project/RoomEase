@@ -11,11 +11,13 @@ import Computer from "./Room Items/Computer";
 import Desk from "./Room Items/Desk";
 import Fridge from "./Room Items/Fridge";
 import Gavel from "./Room Items/Gavel";
+import Puppy from "./Room Items/PuppyCosmetic/Puppy";
 
 import BulletinPopup from "../../Shared_components/BulletinPopup/BulletinPopup";
 import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
 import RoomSettingsPopup from "../../Shared_components/RoomSettings/RoomSettingsPopup";
 import CosmeticStorePopup from "./CosmeticStorePopup";
+import QuestBell from "../../Shared_components/QuestBell/QuestBell";
 import "./Room.css";
 
 function Room() {
@@ -193,6 +195,52 @@ function Room() {
     }
   };
 
+  const handlePurchaseDecoration = async (decoration) => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/room/purchaseDecoration",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ userId: userData._id, roomId, decoration }),
+        }
+      );
+      if (!response.ok) throw new Error("Purchase decoration failed");
+      const updated = await response.json();
+      setCosmeticData(updated.cosmetic);
+      setPoints(updated.totalPoints);
+    } catch (err) {
+      console.error(err);
+      alert("Not enough points or purchase failed");
+    }
+  };
+
+  const handleToggleDecoration = async (decoration, newState) => {
+    const userData = JSON.parse(localStorage.getItem("userData"));
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/room/toggleDecoration",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: userData._id,
+            roomId,
+            decoration,
+            enabled: newState,
+          }),
+        }
+      );
+      if (!response.ok) throw new Error("Toggle decoration failed");
+      const updated = await response.json();
+      setCosmeticData(updated.cosmetic);
+    } catch (err) {
+      console.error(err);
+      alert("Toggling decoration failed");
+    }
+  };
+
   const handleInviteClick = () => {
     navigate(`/room/${roomId}/invite`);
   };
@@ -226,6 +274,35 @@ function Room() {
     }
   };
 
+  const awardQuestPoints = async (userId, roomId, questType) => {
+    try {
+      const response = await fetch(
+        "http://localhost:5001/api/room/award-quest-points",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json", // Ensures the body is JSON
+          },
+          body: JSON.stringify({
+            userId,
+            roomId,
+            questType,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log("Points awarded:", result.message);
+      } else {
+        console.error("Error:", result.message);
+      }
+    } catch (error) {
+      console.error("Error calling API:", error);
+    }
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
@@ -237,6 +314,7 @@ function Room() {
             onClick={() => navigate("/dashboard")}
             style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}
           />
+          <QuestBell></QuestBell>
           <button onClick={() => setCosmeticPopupOpen(true)}>
             Open Cosmetic Store
           </button>
@@ -311,6 +389,7 @@ function Room() {
                   room={roomData}
                   enabled={roomData.settings[0]}
                   style={{ boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}
+                  roomCosmetics={cosmeticData}
                 />
                 <span className="hover-label">Grocries</span>
               </div>
@@ -346,6 +425,7 @@ function Room() {
             </div>
 
             <div className="floorRight">
+              <Puppy visible={cosmeticData.activeDecorations?.["Puppy"]} />
               <div className="hover-container">
                 <ChoreItems
                   onClick={() => handleGoToChores(roomId)}
@@ -391,6 +471,8 @@ function Room() {
         totalPoints={points}
         onPurchase={handlePurchase}
         onSelect={handleSelect}
+        onPurchaseDecoration={handlePurchaseDecoration}
+        onToggleDecoration={handleToggleDecoration}
       />
     </>
   );

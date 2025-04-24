@@ -28,7 +28,7 @@ const MyReview = ({ isOpen, onClose }) => {
 
       try {
         const roomData = getStoredData("roomData");
-        const roomId = roomData?.roomId?.toString();
+        const roomId = roomData?._id?.toString();
         if (!roomId) {
           console.warn("No roomId found, skipping fetch");
           setLoading(false);
@@ -61,7 +61,7 @@ const MyReview = ({ isOpen, onClose }) => {
   }, [isOpen]);
 
   const userRatings = ratings[userIdFromStorage] || {};
-
+  console.log("User Ratings:", userRatings);
   const renderStarRating = (rating) => {
     const numericRating = Number.parseFloat(rating) || 0;
     const roundedRating = Math.round(numericRating);
