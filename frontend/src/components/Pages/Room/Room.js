@@ -18,6 +18,7 @@ import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
 import RoomSettingsPopup from "../../Shared_components/RoomSettings/RoomSettingsPopup";
 import CosmeticStorePopup from "./CosmeticStorePopup";
 import QuestBell from "../../Shared_components/QuestBell/QuestBell";
+import LeaderboardPopup from "../../Shared_components/RoomLeaderboard/LeaderboardPopup";
 import "./Room.css";
 
 function Room() {
@@ -322,6 +323,7 @@ function Room() {
             style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}
           />
           <QuestBell></QuestBell>
+          <LeaderboardPopup room={roomData} />
           <button onClick={() => setCosmeticPopupOpen(true)}>
             Open Cosmetic Store
           </button>
