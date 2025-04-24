@@ -3,11 +3,9 @@ name: CI
 on:
   push:
     branches:
-      - master
       - main
   pull_request:
     branches:
-      - master
       - main
 
 jobs:
@@ -28,7 +26,7 @@ jobs:
 
   deploy:
     needs: test
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -39,9 +37,9 @@ jobs:
       - run: npm install
       - run: rm -rf public
 
-  auto_update_branches:
-    needs: deploy # Only run after a successful deployment to master/main
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+  auto_update_non_main_branches:
+    needs: deploy # Only run after a successful deployment to main
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -52,32 +50,38 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
 
-      - name: Merge main to develop
-        if: github.ref == 'refs/heads/main' # Only attempt if the trigger was a push to main
+      - name: Merge main to Krish
         run: |
-          git checkout develop
+          git checkout Krish
           git merge --no-ff main
           git push
 
-      - name: Merge master to develop
-        if: github.ref == 'refs/heads/master' # Only attempt if the trigger was a push to master
+      - name: Merge main to Carter
         run: |
-          git checkout develop
-          git merge --no-ff master
-          git push
-
-      - name: Merge main to feature-branch-1 # Example for another branch
-        if: github.ref == 'refs/heads/main'
-        run: |
-          git checkout feature-branch-1
+          git checkout Carter
           git merge --no-ff main
           git push
 
-      - name: Merge master to feature-branch-1 # Example for another branch
-        if: github.ref == 'refs/heads/master'
+      - name: Merge main to John
         run: |
-          git checkout feature-branch-1
-          git merge --no-ff master
+          git checkout John
+          git merge --no-ff main
           git push
 
-      # Add more merge steps for other branches as needed
+      - name: Merge main to Ishan
+        run: |
+          git checkout Ishan
+          git merge --no-ff main
+          git push
+
+      - name: Merge main to Will
+        run: |
+          git checkout Will
+          git merge --no-ff main
+          git push
+
+      - name: Merge main to Nathan
+        run: |
+          git checkout Nathan
+          git merge --no-ff main
+          git push
