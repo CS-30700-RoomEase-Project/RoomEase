@@ -23,6 +23,7 @@ const fetchRatingRoutes = require("./routes/ratingFetchRoutes"); // ✅ NEW ROUT
 const rulesRoutes = require("./routes/rulesRoutes");
 const clauseRoutes = require("./routes/clauseRoutes");
 const memoryRoutes = require("./routes/memoryRoutes");
+const disputesRoutes = require("./routes/disputesRoutes");
 
 // Initialize app and HTTP server
 const app = express();
@@ -59,7 +60,7 @@ app.use("/api/roomstate", roomStateRoutes);
 app.use("/api/rules", rulesRoutes);
 app.use("/api/rating", ratingRoutes); // ✅ CORRECTED TO /api/rating
 app.use("/api/ratingFetch", fetchRatingRoutes); // ✅ CORRECTED TO /api/ratingFetch
-app.use("/api/disputes", require("./routes/disputesRoutes")); // ✅ NEW ROUTE
+app.use("/api/disputes", disputesRoutes); // ✅ NEW ROUTE
 app.use("/api/clauses", clauseRoutes);
 // Import and pass Socket.IO to group chat routes
 const groupChatRoutes = require("./routes/groupChatRoutes")(io);

@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 
+const DisputeSchema = require('./Disputes');
+
 const RoomSchema = new mongoose.Schema({
     roomName: { type: String, required: true },
     groupPhoto: { type: String, default: '' },
@@ -35,10 +37,24 @@ const RoomSchema = new mongoose.Schema({
     choreSwaps: {type: [{type: mongoose.Schema.Types.ObjectId, ref: 'choreSwap'}], default: []},
     rules: [{ type: String, default: ["These are your roommate rules", "Add, edit, or change rules", "Change them as you like"] }],
     roomImage: { type: Buffer, default: null },
-    roomClauses: {
-        type: String,
-        default: ""
-    }
+    roomClauses: { type: String, default: ""},
+    disputes: {
+        type: [DisputeSchema],
+        default: []
+    },
+    // pointer into `disputes[]`; -1 means “no current dispute”
+    currentDisputeIndex: {
+        type: Number,
+        default: -1
+    },
+
 }, { timestamps: true });
+
+RoomSchema.pre('save', function(next) {
+    if (this.isModified('disputes')) {
+      this.currentDisputeIndex = this.disputes.length - 1;
+    }
+    next();
+  });
 
 module.exports = mongoose.model('Room', RoomSchema);

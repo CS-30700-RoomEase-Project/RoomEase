@@ -3,6 +3,7 @@
   width: 40px;
   height: 10px;
   margin: 10px;
+  left: -25px;
 }
 
 .gavel-pad-base {
@@ -37,3 +38,9 @@
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 1px;
 }
+
+.gavel-pad-container:hover {
+  transform: scale(1.1);
+}
+
+

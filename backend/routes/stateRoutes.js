@@ -125,4 +125,23 @@ router.post("/shift", async (req, res) => {
   }
 });
   
+// 4️⃣ CLEAR the current state → Available
+// POST /api/roomstate/clear
+router.post("/clear", async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const room = await Room.findOne({ roomMembers: userId });
+    if (!room) return res.status(404).json({ message: "Room not found." });
+
+    // Mark “no current slot,” client will fall back to “Available”
+    room.currentStateIndex = -1;
+    await room.save();
+
+    res.json({ message: "Cleared to Available." });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Server error." });
+  }
+});
+
 module.exports = router;
