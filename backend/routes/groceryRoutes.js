@@ -37,13 +37,23 @@ router.post('/add/:roomID', async (req, res) => {
     }
   });
 
-  router.post('/addPoints', async (req, res) => {
+  router.post('/addPoints/:roomId/', async (req, res) => {
     try {
-      console.log("Points add:", req.body);
+
+      const roomID = req.params.roomId;
+      const room = await Room.findById(roomID);
+
+      if (!room) {
+        return res.status(404).json({ error: 'Room not found' });
+      }
+
       let updatedItem = req.body.updatedItem;
       const userId = req.body.userId;
       const user = await User.findOne({ userId });
-      user.totalPoints += 10;
+
+      const currentPoints = room.points.get(user._id) || 0;
+      room.points.set(user._id, currentPoints + 1);
+      await room.save();
       await user.save();
       updatedItem = await Grocery.findByIdAndUpdate(updatedItem._id, updatedItem, { new: true });
       updatedItem = await updatedItem.populate('requesters', 'username');

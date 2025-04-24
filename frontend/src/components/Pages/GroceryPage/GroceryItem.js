@@ -54,6 +54,9 @@ function GroceryItem(props) {
 
 
   const togglePurchased = () => {
+    if (item.requesters.length <= 0) {
+      return;
+    }
     const updatedItems = [...items];
     updatedItems[index].purchased = !updatedItems[index].purchased;
     updatedItems[index].description = tempComment;
@@ -75,10 +78,7 @@ function GroceryItem(props) {
       const parsedUser = JSON.parse(storedUser);
       const currentUserId = parsedUser._id;
       awardQuestPoints(currentUserId, room._id, "buyGrocery");
-      CallService(
-        "grocery/notifyPurchased/" + ((room) ? room._id : 1) + "/" + item._id,
-        notificationData
-      );
+
     }
   };
 
@@ -156,6 +156,9 @@ function GroceryItem(props) {
   };
 
   const togglePaid = () => {
+    if (item.requesters.length <= 0) {
+      return;
+    }
     const updatedItems = [...items];
     updatedItems[index].paid = false;
     updatedItems[index].cost = 0;
@@ -166,7 +169,13 @@ function GroceryItem(props) {
     setCost(0);
     setItems(updatedItems);
     const updatedItem = { ...item, paid: updatedItems[index].paid };
-    CallService("grocery/addPoints", {updatedItem: updatedItem, userId: userId }, editResponseHandler);
+
+    if (!room || !room._id) {
+      console.error("Room ID is missing!");
+      return;
+    }
+
+    CallService(`grocery/addPoints/${room._id}`, {updatedItem: updatedItem, userId: userId }, editResponseHandler);
   };
 
   const renderRequesters = () => {
