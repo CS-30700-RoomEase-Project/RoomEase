@@ -1,175 +1,169 @@
-import React, { useEffect, useState } from "react";
-import styles from "./RoomState.module.css";
+import React, { useEffect, useState } from "react"
+import styles from "./RoomState.module.css"
 
-const RoomState = () => {
-  const [roomState, setRoomState] = useState(null);
-  const [request, setRequest] = useState("");
-  const [level, setLevel] = useState("Low");
-  const [customLevel, setCustomLevel] = useState("");
-  const [roomColor, setRoomColor] = useState("#FFFFFF");
+export default function RoomState() {
+  const [history, setHistory] = useState([])
+  const [current, setCurrent] = useState(null)
+  const [future, setFuture]   = useState([])
+  const [idx, setIdx]         = useState(0)       // current pointer in timeline
+  const [request, setRequest] = useState("")
+  const [level, setLevel]     = useState("Low")
+  const [custom, setCustom]   = useState("")
+  const [color, setColor]     = useState("#FFFFFF")
 
-  // Fetch current room state from backend on load
+  // fetch your queued/past states
   useEffect(() => {
-    const fetchRoomState = async () => {
-      const userId = localStorage.getItem("userId");
-
+    async function load() {
       try {
-        const response = await fetch(`http://localhost:5001/api/roomstate/getRoomState/${userId}`);
-        const data = await response.json();
-
-        if (response.ok && data.roomStatus && data.roomState) {
-          setRoomState({
-            request: data.roomStatus,
-            level: "N/A",
-            color: data.roomState,
-          });
-        }
-      } catch (err) {
-        console.error("Error fetching room state:", err);
+        const userId = localStorage.getItem("userId")
+        const res = await fetch(
+          `http://localhost:5001/api/roomstate/getRoomStateQueue/${userId}`
+        )
+        if (!res.ok) throw new Error("Fetch failed")
+        const { history, current, future } = await res.json()
+        setHistory(history || [])
+        setCurrent(current || null)
+        setFuture(future || [])
+        // start index at the “current” position
+        setIdx((history || []).length)
+      } catch (e) {
+        console.error(e)
       }
-    };
+    }
+    load()
+  }, [])
 
-    fetchRoomState();
-  }, []);
+  // build one unified timeline array
+  const timeline = [
+    ...history,
+    current ? [current.request, current.level, current.color] : null,
+    ...future
+  ].filter(Boolean)
 
-  const handleRequestChange = (e) => {
-    setRequest(e.target.value);
-  };
+  const atPast   = idx > 0
+  const atFuture = idx < timeline.length - 1
 
-  const handleLevelChange = (e) => {
-    setLevel(e.target.value);
-    setCustomLevel("");
-  };
-
-  const handleCustomLevelChange = (e) => {
-    setCustomLevel(e.target.value);
-  };
-
-  const handleColorChange = (e) => {
-    setRoomColor(e.target.value);
-  };
+  const step = (dir) => {
+    setIdx(i => Math.min(Math.max(i + dir, 0), timeline.length - 1))
+  }
 
   const handleClear = () => {
-    setRoomState(null);
-  };
+    // maybe POST clear on backend...
+    setHistory(h => [...h, timeline[idx]])
+    setCurrent(null)
+    setIdx(history.length) 
+  }
 
-  const handleAddState = async (e) => {
-    e.preventDefault();
-
-    if (!request.trim()) {
-      alert("Request cannot be empty.");
-      return;
-    }
-
-    const finalLevel = customLevel ? customLevel : level;
-    const userId = localStorage.getItem("userId");
-
+  const handleAdd = async (e) => {
+    e.preventDefault()
+    if (!request.trim()) return
+    const final = custom || level
+    const userId = localStorage.getItem("userId")
     try {
-      const response = await fetch("http://localhost:5001/api/roomstate/addRoomState", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          request,
-          level: finalLevel,
-          color: roomColor,
-          userId,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        setRoomState({ request, level: finalLevel, color: roomColor });
-        setRequest("");
-        setCustomLevel("");
-        alert("Room state added successfully!");
-      } else {
-        alert(`Error: ${data.message}`);
-      }
-    } catch (error) {
-      console.error("Error adding room state:", error);
-      alert("Failed to add room state.");
+      const res = await fetch(
+        "http://localhost:5001/api/roomstate/addRoomState", {
+          method: "POST",
+          headers: { "Content-Type":"application/json" },
+          body: JSON.stringify({ request, level: final, color, userId })
+        }
+      )
+      if (!res.ok) throw new Error("Add failed")
+      // push old current to past, make new current, shift future
+      setHistory(h => current ? [...h, { request: timeline[idx][0], level: timeline[idx][1], color: timeline[idx][2] }] : h)
+      setCurrent({ request, level: final, color })
+      setFuture(f => f.slice(1))
+      setIdx(history.length)   // point at new current
+      setRequest(""); setCustom("")
+      alert("Room state updated!")
+    } catch (e) {
+      console.error(e)
+      alert("Failed to add")
     }
-  };
+  }
+
+  // unpack the one state we're looking at
+  const [req, lvl, col] = timeline[idx] || ["No State","N/A","#FFFFFF"]
 
   return (
     <div className={styles.container}>
-      <h1>Room State</h1>
+      <h1>Room State Timeline</h1>
 
-      {roomState && (
+      {/* ——— horizontal sidebar / timeline nav ——— */}
+      <div className={styles.sidebar}>
+        <button
+          className={styles.nav}
+          onClick={()=>step(-1)}
+          disabled={!atPast}
+        >‹</button>
+
         <div
-          className={styles.roomState}
-          style={{ backgroundColor: roomState.color || "#FFFFFF" }}
+          className={styles.stateBox}
+          style={{ backgroundColor: col }}
         >
-          <h2>Current Room State</h2>
-          <p>
-            <strong>Request:</strong> {roomState.request}
-          </p>
-          <p>
-            <strong>Level:</strong> {roomState.level}
-          </p>
-          <button onClick={handleClear} className={styles.clearButton}>
-            Clear Room State
-          </button>
+          <p><strong>Request:</strong> {req}</p>
+          <p><strong>Level:</strong> {lvl}</p>
         </div>
-      )}
 
-      <form onSubmit={handleAddState} className={styles.form}>
-        <div className={styles.formGroup}>
-          <label htmlFor="request">Enter Request:</label>
+        <button
+          className={styles.nav}
+          onClick={()=>step(+1)}
+          disabled={!atFuture}
+        >›</button>
+      </div>
+
+      {/* ——— action form ——— */}
+      <form onSubmit={handleAdd} className={styles.form}>
+        <div className={styles.field}>
+          <label>Enter Request:</label>
           <input
-            type="text"
-            id="request"
-            name="request"
             value={request}
-            onChange={handleRequestChange}
+            onChange={e => setRequest(e.target.value)}
             required
           />
         </div>
 
-        <div className={styles.formGroup}>
-          <label htmlFor="level">Set Level:</label>
-          <select id="level" name="level" value={level} onChange={handleLevelChange} required>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-            <option value="Custom">Custom</option>
+        <div className={styles.field}>
+          <label>Level:</label>
+          <select
+            value={level}
+            onChange={e => { setLevel(e.target.value); setCustom("") }}
+          >
+            <option>Low</option>
+            <option>Medium</option>
+            <option>High</option>
+            <option>Custom</option>
           </select>
         </div>
 
-        {level === "Custom" && (
-          <div className={styles.formGroup}>
-            <label htmlFor="customLevel">Enter Custom Level:</label>
+        {level==="Custom" && (
+          <div className={styles.field}>
+            <label>Custom Level:</label>
             <input
-              type="text"
-              id="customLevel"
-              name="customLevel"
-              value={customLevel}
-              onChange={handleCustomLevelChange}
+              value={custom}
+              onChange={e => setCustom(e.target.value)}
               required
             />
           </div>
         )}
 
-        <div className={styles.formGroup}>
-          <label htmlFor="roomColor">Select Room State Color:</label>
+        <div className={styles.field}>
+          <label>Color:</label>
           <input
             type="color"
-            id="roomColor"
-            name="roomColor"
-            value={roomColor}
-            onChange={handleColorChange}
+            value={color}
+            onChange={e => setColor(e.target.value)}
           />
         </div>
 
-        <button type="submit" className={styles.submitButton}>
-          Submit Request
-        </button>
+        <div className={styles.buttons}>
+          <button type="button" onClick={handleClear} disabled={!current}>
+            Clear Current
+          </button>
+          <button type="submit">
+            Submit New
+          </button>
+        </div>
       </form>
     </div>
-  );
-};
-
-export default RoomState;
+  )
+}
