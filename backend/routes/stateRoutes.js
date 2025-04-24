@@ -56,7 +56,10 @@ router.post("/add", async (req, res) => {
 
     // push new state and move current pointer to it
     room.roomStates.push({ request, level, color });
-    room.currentStateIndex = room.roomStates.length - 1;
+    // CHANGE
+
+    // room.currentStateIndex = room.roomStates.length - 1;
+    
     await room.save();
 
     res.json({ message: "State added." });

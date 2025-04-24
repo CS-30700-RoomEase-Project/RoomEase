@@ -1,47 +1,66 @@
+/* src/components/Pages/RoomState/RoomState.module.css */
+
 .container {
   max-width: 900px;
   margin: 0 auto;
   padding: 24px;
-  font-family: sans-serif;
   background: #121218;
-  color: white;
-}
-.title {
-  text-align: center;
-  margin-bottom: 24px;
+  font-family: sans-serif;
 }
 
-/* horizontal timeline row */
+.title {
+  text-align: center;
+  color: white;
+  margin-bottom: 24px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* timeline row */
 .timelineContainer {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: 32px;
   margin-bottom: 32px;
 }
 
-/* box for each state */
+/* force each box square */
 .stateBox {
-  width: 200px;
+  width: 220px;
+  aspect-ratio: 1 / 1;
   padding: 16px;
   border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   text-align: center;
+  color: #000 !important; /* black text */
 }
-.stateBox h4 {
-  margin: 0 0 8px;
-  text-transform: uppercase;
-  font-size: 0.9rem;
-  letter-spacing: 0.05em;
+.stateBox h4,
+.stateBox p {
+  color: #000 !important;
 }
 
-/* arrows */
+.currentBox {
+  width: 260px;       /* bump up from 220px */
+  aspect-ratio: 1 / 1.1;/* keep it square */
+}
+
+/* large white arrows */
 .arrow {
-  font-size: 2rem;
+  font-size: 4rem;
+  cursor: pointer;
+  color: #fff;
   user-select: none;
 }
 
-/* clear current button */
+/* timer under current only */
+.timer {
+  margin-top: 12px;
+  font-size: 1rem;
+  color: #000 !important;
+}
+
+/* Clear Current button */
 .clearButton {
   margin-top: 12px;
   padding: 8px 12px;
@@ -52,7 +71,7 @@
   cursor: pointer;
 }
 
-/* form below */
+/* form styling */
 .form {
   max-width: 600px;
   margin: 0 auto;
@@ -60,35 +79,45 @@
   flex-direction: column;
   gap: 16px;
 }
+
 .field {
   display: flex;
   flex-direction: column;
 }
+
 .field label {
   margin-bottom: 6px;
   font-weight: bold;
+  color: white;
 }
+
 .field input,
 .field select {
   padding: 8px;
   font-size: 1rem;
   border-radius: 4px;
   border: 1px solid #444;
+  background: #222;
+  color: white;
+  box-sizing: border-box;
 }
+
 .colorBox {
+  width: 100%;
   height: 32px;
   border-radius: 4px;
   margin-bottom: 8px;
   border: 1px solid #666;
 }
+
 .colorInput {
   width: 100%;
   height: 32px;
-  padding: 0;
   border: none;
   background: transparent;
   cursor: pointer;
 }
+
 .submitButton {
   padding: 12px;
   background: #3498db;
@@ -97,4 +126,8 @@
   color: white;
   font-size: 1rem;
   cursor: pointer;
+  transition: background 0.3s ease;
+}
+.submitButton:hover {
+  background: #2980b9;
 }
