@@ -17,9 +17,11 @@ jobs:
       matrix:
         node-version: [14.19.0]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Important for merging full history
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
@@ -29,10 +31,53 @@ jobs:
     if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Use Node.js 14.19.0
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 14.19.0
       - run: npm install
       - run: rm -rf public
+
+  auto_update_branches:
+    needs: deploy # Only run after a successful deployment to master/main
+    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Git identity
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Merge main to develop
+        if: github.ref == 'refs/heads/main' # Only attempt if the trigger was a push to main
+        run: |
+          git checkout develop
+          git merge --no-ff main
+          git push
+
+      - name: Merge master to develop
+        if: github.ref == 'refs/heads/master' # Only attempt if the trigger was a push to master
+        run: |
+          git checkout develop
+          git merge --no-ff master
+          git push
+
+      - name: Merge main to feature-branch-1 # Example for another branch
+        if: github.ref == 'refs/heads/main'
+        run: |
+          git checkout feature-branch-1
+          git merge --no-ff main
+          git push
+
+      - name: Merge master to feature-branch-1 # Example for another branch
+        if: github.ref == 'refs/heads/master'
+        run: |
+          git checkout feature-branch-1
+          git merge --no-ff master
+          git push
+
+      # Add more merge steps for other branches as needed
