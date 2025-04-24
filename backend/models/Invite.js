@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const User = require('./User');
 const Room = require('./Room');
-
+//More testing for cicd
 /**
  * This model will represent all invites sent by roommate groups
  * 
