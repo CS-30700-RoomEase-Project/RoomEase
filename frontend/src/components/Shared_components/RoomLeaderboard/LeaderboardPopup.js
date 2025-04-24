@@ -5,7 +5,7 @@ import styles from "./LeaderboardPopup.module.css";
 import trophyIcon from './trophy.png';
 import CallService from "../../SharedMethods/CallService";
 
-export default function LeaderboardPopup({ room }) {
+export default function RoomLeaderboardPopup({ room }) {
   const [isOpen, setIsOpen] = useState(false);
   const [leaderboard, setLeaderboard] = useState([]);
 
