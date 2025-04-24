@@ -116,6 +116,17 @@ function Chores() {
         try {
             if (!chore.completed) {
                 awardQuestPoints(chore.order[chore.whoseTurn]._id, roomId, "completeChore");
+                await fetch(`http://localhost:5001/api/room/${roomId}/increment-task`, {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      userId: chore.order[chore.whoseTurn]._id,
+                      mapName: 'Chores', // or 'Groceries', 'Bills'
+                    }),
+                });
+                  
             }
             const response = await fetch(`http://localhost:5001/api/chores/markComplete/${chore._id}/${roomId}`, {
                 method: "PUT",

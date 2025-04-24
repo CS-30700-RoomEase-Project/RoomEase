@@ -3,6 +3,7 @@ const User = require('../models/User');
 const Room = require('../models/Room');
 const Invite = require('../models/Invite');
 const Notification = require('../models/Notification');
+const RoomCosmetic = require('../models/RoomCosmetic');
 const mongoose = require('mongoose');
 
 const router = express.Router();
@@ -133,6 +134,16 @@ router.post('/acceptInvite', async( req, res) => {
             return res.status(404).json({ message: "Invite not found"});
         }
         console.log("Invite found");
+
+        // Create and save the RoomCosmetic using schema defaults
+        const newCosmetic = new RoomCosmetic({
+            room: room._id,
+        });
+    
+        await newCosmetic.save();
+    
+        // Associate cosmetic with user
+        user.roomCosmetics.push(newCosmetic._id);
 
         // If no issues occur add the user and room to each other's room membership arrays and 
         // return the updated room and user data. Then remove the invite from all arrays and from
