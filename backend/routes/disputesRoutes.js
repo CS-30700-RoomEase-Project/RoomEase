@@ -1,119 +1,75 @@
 const express = require("express");
-const router = express.Router();
-const Dispute = require("../models/Disputes");
-const User = require("../models/User");
-const Room = require("../models/Room");
+const router  = express.Router();
+const Room    = require("../models/Room");
 
-// Route to create a new dispute
-router.post("/addDispute/:roomId", async (req, res) => {
-    try {
-        const { roomId } = req.params;
-        const { createdBy, description } = req.body;
+// 1️⃣ ADD a new dispute
+router.post("/add", async (req, res) => {
+  const { roomId, description } = req.body;
+  const room = await Room.findById(roomId);
+  if (!room) return res.status(404).json({ message: "Room not found." });
 
-        // Validate user and room existence
-        const user = await User.findById(createdBy);
-        const room = await Room.findById(roomId);
-        if (!user || !room) {
-            return res.status(404).json({ error: "User or Room not found" });
-        }
-
-        const newDispute = new Dispute({
-            roomId,
-            createdBy,
-            description,
-        });
-
-        await newDispute.save();
-
-        res.status(201).json({ message: "Dispute created successfully!", dispute: newDispute });
-    } catch (error) {
-        console.error("Error creating dispute:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+  room.disputes.push({ description });
+  await room.save();
+  res.json({ message: "Dispute added." });
 });
 
-// Route to update a dispute's status
-router.put("/updateDispute/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { status } = req.body;
+// 2️⃣ FETCH your “window” of disputes
+// GET /api/disputes/queue/:roomId
+router.get("/queue/:roomId", async (req, res) => {
+  const room = await Room.findById(req.params.roomId);
+  if (!room) return res.status(404).json({ message: "Room not found." });
 
-        if (!["Open", "In Progress", "Resolved"].includes(status)) {
-            return res.status(400).json({ error: "Invalid status value" });
-        }
+  const idx     = Math.max(0, room.currentDisputeIndex);
+  const history = room.disputes.slice(Math.max(0, idx - 2), idx);
+  const current = room.disputes[idx]     || null;
+  const future  = room.disputes.slice(idx + 1, idx + 3);
 
-        const updatedDispute = await Dispute.findByIdAndUpdate(id, { status }, { new: true });
-
-        if (!updatedDispute) {
-            return res.status(404).json({ message: "Dispute not found" });
-        }
-
-        res.status(200).json(updatedDispute);
-    } catch (error) {
-        console.error("Error updating dispute:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+  res.json({ history, current, future });
 });
 
-// Route to delete a dispute
-router.delete("/deleteDispute/:id", async (req, res) => {
-    try {
-        const { id } = req.params;
+// 3️⃣ SHIFT the pointer left/right
+// POST /api/disputes/shift
+router.post("/shift", async (req, res) => {
+  const { roomId, direction } = req.body;
+  const room = await Room.findById(roomId);
+  if (!room) return res.status(404).json({ message: "Room not found." });
 
-        const deletedDispute = await Dispute.findByIdAndDelete(id);
-        if (!deletedDispute) {
-            return res.status(404).json({ error: "Dispute not found" });
-        }
-
-        res.json({ message: "Dispute deleted successfully", deletedDispute });
-    } catch (error) {
-        console.error("Error deleting dispute:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
+  const i = room.currentDisputeIndex;
+  if (direction === "left" && i > 0) {
+    room.currentDisputeIndex--;
+  } else if (direction === "right" && i + 1 < room.disputes.length) {
+    room.currentDisputeIndex++;
+  }
+  await room.save();
+  res.json({ currentDisputeIndex: room.currentDisputeIndex });
 });
 
-// Route to get all disputes in a room
-router.get("/getDisputes/:roomId", async (req, res) => {
-    try {
-        const { roomId } = req.params;
+// 4️⃣ CLEAR the current dispute → none
+// POST /api/disputes/clear
+// Clear → remove the current dispute from the queue
+router.post("/clear", async (req, res) => {
+  const { roomId } = req.body;
+  const room = await Room.findById(roomId);
+  if (!room) return res.status(404).json({ message: "Room not found." });
 
-        const room = await Room.findById(roomId);
-        if (!room) {
-            return res.status(404).json({ message: "Room not found." });
-        }
-
-        const disputes = await Dispute.find({ roomId }).populate("createdBy", "username");
-
-        res.json(disputes);
-    } catch (error) {
-        console.error("Error fetching disputes:", error);
-        res.status(500).json({ error: "Internal Server Error" });
+  const idx = room.currentDisputeIndex;
+  if (idx >= 0 && idx < room.disputes.length) {
+    // remove the current item
+    room.disputes.splice(idx, 1);
+    // adjust pointer: if we removed the last, back up one
+    if (idx >= room.disputes.length) {
+      room.currentDisputeIndex = room.disputes.length - 1;
+    } else {
+      room.currentDisputeIndex = idx;
     }
+  } else {
+    // nothing to clear
+    room.currentDisputeIndex = -1;
+  }
+
+  await room.save();
+  res.json({ message: "Cleared current dispute." });
 });
 
-// Route to vote on a dispute
-router.post("/vote/:id/:userId", async (req, res) => {
-    try {
-        const { id, userId } = req.params;
-        const { vote } = req.body; // true (in favor) or false (against)
-
-        if (typeof vote !== "boolean") {
-            return res.status(400).json({ error: "Invalid vote value" });
-        }
-
-        const dispute = await Dispute.findById(id);
-        if (!dispute) {
-            return res.status(404).json({ error: "Dispute not found" });
-        }
-
-        dispute.votes.set(userId, vote);
-        await dispute.save();
-
-        res.status(200).json({ message: "Vote recorded successfully", dispute });
-    } catch (error) {
-        console.error("Error voting on dispute:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-    }
-});
 
 module.exports = router;
