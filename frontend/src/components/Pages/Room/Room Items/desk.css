@@ -139,3 +139,26 @@
 .desk-leg.right {
   margin-right: 40px;
 }
+
+.hover-label {
+  position: absolute;
+  bottom: 100%;            /* sit just above the pad */
+  left: 00%;
+  transform: translateX(-50%) translateY(-4px);
+  background: rgba(0,0,0,0.8);
+  color: #fff;
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  font-size: 0.85rem;
+
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  z-index: 10;
+}
+
+.hover-container:hover .hover-label {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-8px);
+}

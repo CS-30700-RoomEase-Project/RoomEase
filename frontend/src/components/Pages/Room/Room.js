@@ -266,6 +266,13 @@ function Room() {
     }
   };
 
+  const goToSubmitDispute = () => {
+    if (roomData.settings[2]) {
+      console.log("Navigating to submit dispute with roomId:", roomId);
+      navigate(`/submit-dispute/${roomId}`);
+    }
+  };
+
   const handleBulletinClick = () => {
     if (roomData.settings[3] || roomData.settings[9] || roomData.settings[8]) {
       setShowBulletin(true);
@@ -411,6 +418,7 @@ function Room() {
                     </span>
                   </div>
                 }
+                onGavelPadClick={goToSubmitDispute}
                 style={{ boxShadow: "0 4px 8px rgba(0,0,0,0.1)" }}
               >
                 <div className="hover-container">

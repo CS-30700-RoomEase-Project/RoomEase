@@ -48,7 +48,7 @@ export default function Clock({ onClick, enabled }) {
     <div
       className="clock-container"
       onClick={onClick}
-      title={enabled ? roomStatus : ""}
+      title={roomStatus || 'Available'}
       style={{
         cursor: enabled ? "pointer" : "default",
         pointerEvents: enabled ? "auto" : "none"

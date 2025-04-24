@@ -53,8 +53,16 @@ export default function RoomState() {
     await loadQueue();
   };
 
-  // 3️⃣ clear current → next
-  const handleClear = () => shiftPointer("right");
+  // 3️⃣ clear current → Available
+  const handleClear = async () => {
+    await fetch("http://localhost:5001/api/roomstate/clear", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId }),
+    });
+    // reload queue so `current` becomes null → shows “Available”
+    await loadQueue();
+  };
 
   // 4️⃣ auto‐advance if current has expired (1 hr TTL)
   useEffect(() => {
@@ -111,11 +119,16 @@ export default function RoomState() {
         <span className={styles.arrow} onClick={() => shiftPointer("left")}>←</span>
 
         {/* Current */}
-        <div className={`${styles.stateBox} ${styles.currentBox}`} style={{ backgroundColor: currItem.color }}>
+        <div
+          className={`${styles.stateBox} ${styles.currentBox}`}
+          style={{ backgroundColor: currItem.color }}
+        >
           <h4>Current</h4>
           <p><strong>Request:</strong> {currItem.request}</p>
           <p><strong>Level:</strong> {currItem.level}</p>
-          <button onClick={handleClear} className={styles.clearButton}>Clear Current</button>
+          <button onClick={handleClear} className={styles.clearButton}>
+            Clear Current
+          </button>
           {currItem.request !== "Available" && (
             <div className={styles.timer}>{remainingSec(currItem)}s</div>
           )}
@@ -146,7 +159,10 @@ export default function RoomState() {
           <label>Level:</label>
           <select
             value={level}
-            onChange={(e) => { setLevel(e.target.value); setCustom(""); }}
+            onChange={(e) => {
+              setLevel(e.target.value);
+              setCustom("");
+            }}
           >
             <option>Low</option>
             <option>Medium</option>
@@ -177,7 +193,9 @@ export default function RoomState() {
           />
         </div>
 
-        <button type="submit" className={styles.submitButton}>Submit New</button>
+        <button type="submit" className={styles.submitButton}>
+          Submit New
+        </button>
       </form>
     </div>
   );
