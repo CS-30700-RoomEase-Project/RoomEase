@@ -54,34 +54,46 @@ jobs:
         run: |
           git checkout Krish
           git merge --no-ff main
-          git push
+          git push origin Krish # Explicitly specify the remote and branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge main to Carter
         run: |
           git checkout Carter
           git merge --no-ff main
-          git push
+          git push origin Carter
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge main to John
         run: |
           git checkout John
           git merge --no-ff main
-          git push
+          git push origin John
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge main to Ishan
         run: |
           git checkout Ishan
           git merge --no-ff main
-          git push
+          git push origin Ishan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge main to Will
         run: |
           git checkout Will
           git merge --no-ff main
-          git push
+          git push origin Will
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Merge main to Nathan
         run: |
           git checkout Nathan
           git merge --no-ff main
-          git push
+          git push origin Nathan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
