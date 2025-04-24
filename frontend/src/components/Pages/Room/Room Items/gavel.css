@@ -1,5 +1,7 @@
 .gavel-container {
   position: relative;
+  left: 50px;
+  top: -30px;
   width: 60px;
   height: 30px;
   transform: rotate(45deg);

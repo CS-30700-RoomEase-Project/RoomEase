@@ -1,7 +1,7 @@
 import "./desk.css"
 import GavelPad from "./GavelPad"
 
-function Desk({ children, gavelVisible, computer }) {
+function Desk({ children, gavelVisible, computer, onGavelPadClick }) {
   return (
     <div className="desk-wrapper">
       <div className="desk-container">
@@ -12,7 +12,10 @@ function Desk({ children, gavelVisible, computer }) {
             {gavelVisible && (
               <div className="gavel-wrapper">
                 {children}
-                <GavelPad />
+                <div className="hover-container">
+                  <GavelPad onClick={onGavelPadClick}/>
+                  <span className="hover-label">Submit a Dispute</span>
+                </div>
               </div>
             )}
           </div>
