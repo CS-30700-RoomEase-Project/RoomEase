@@ -1,4 +1,3 @@
-// MasterRoom.js
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Avatar from '../../Shared_components/AvatarButton/AvatarButton';
@@ -30,7 +29,6 @@ function MasterRoom() {
   // Room selection state
   const [selectedRoomId, setSelectedRoomId] = useState('master-room');
   const [showRoomSelector, setShowRoomSelector] = useState(false);
-  const [showTemporaryPopup, setShowTemporaryPopup] = useState(false);
 
   // UI state
   const [showBulletin, setShowBulletin] = useState(false);
@@ -39,20 +37,21 @@ function MasterRoom() {
   const [error, setError] = useState(null);
   const [userData, setUserData] = useState(null);
 
-  // Aesthetics state
+  // Cosmetic store state
   const [cosmeticData, setCosmeticData] = useState({ selected: [] });
   const [points, setPoints] = useState(0);
   const [cosmeticPopupOpen, setCosmeticPopupOpen] = useState(false);
 
-  // Custom colors
+  // Aesthetics state
   const [bannerColor, setBannerColor] = useState('');
   const [roomBgColor, setRoomBgColor] = useState('');
+  const [showTemporaryPopup, setShowTemporaryPopup] = useState(false);
 
   // --- Persisted colors: load saved values on room change ---
   useEffect(() => {
     const savedBanner = localStorage.getItem(`${selectedRoomId}-bannerColor`);
     const savedOverlay = localStorage.getItem(`${selectedRoomId}-roomBgColor`);
-    if (savedBanner)  setBannerColor(savedBanner);
+    if (savedBanner) setBannerColor(savedBanner);
     if (savedOverlay) setRoomBgColor(savedOverlay);
   }, [selectedRoomId]);
 
@@ -92,9 +91,9 @@ function MasterRoom() {
     fetchUserData();
   }, []);
 
-  // Fetch cosmetics when userData or selectedRoomId changes
+  // Fetch cosmetics whenever userData or selectedRoomId changes
   useEffect(() => {
-    if (!userData || selectedRoomId === 'master-room') return;
+    if (!userData) return;
     const fetchCosmetics = async () => {
       try {
         const response = await fetch(
@@ -115,7 +114,7 @@ function MasterRoom() {
   // Apply custom colors to CSS variables
   useEffect(() => {
     if (!Array.isArray(cosmeticData.selected)) return;
-    const keys = ['fridge','table','computer','trash','board','clock','gavel','background'];
+    const keys = ['fridge', 'table', 'computer', 'trash', 'board', 'clock', 'gavel', 'background'];
     keys.forEach((key, i) => {
       const color = cosmeticData.selected[i];
       if (color && color !== 'default') {
@@ -125,28 +124,68 @@ function MasterRoom() {
       }
     });
   }, [cosmeticData]);
-
-  // Handlers
-  const handleGoToChores = () => navigate('/chores/master-room');
+//tests part 2
+  // Navigation handlers
+  const handleGoToChores = () => navigate(`/chores/${selectedRoomId}`);
   const handleBulletinClick = () => setShowBulletin(true);
 
+  // Cosmetic store API handlers
+  const handlePurchaseDecoration = async (decoration) => {
+    const { _id: userId } = JSON.parse(localStorage.getItem('userData'));
+    try {
+      const response = await fetch(
+        'http://localhost:5001/api/room/purchaseDecoration',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, roomId: selectedRoomId, decoration }),
+        }
+      );
+      if (!response.ok) throw new Error('Purchase decoration failed');
+      const { cosmetic, totalPoints } = await response.json();
+      setCosmeticData(cosmetic);
+      setPoints(totalPoints);
+    } catch (err) {
+      console.error(err);
+      alert('Not enough points or purchase failed');
+    }
+  };
+
+  const handleToggleDecoration = async (decoration, enabled) => {
+    const { _id: userId } = JSON.parse(localStorage.getItem('userData'));
+    try {
+      const response = await fetch(
+        'http://localhost:5001/api/room/toggleDecoration',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, roomId: selectedRoomId, decoration, enabled }),
+        }
+      );
+      if (!response.ok) throw new Error('Toggle decoration failed');
+      const { cosmetic } = await response.json();
+      setCosmeticData(cosmetic);
+    } catch (err) {
+      console.error(err);
+      alert('Toggling decoration failed');
+    }
+  };
+
   const handlePurchase = async (color) => {
-    const stored = localStorage.getItem('userData');
-    if (!stored) return;
-    const { userId } = JSON.parse(stored);
+    const { _id: userId } = JSON.parse(localStorage.getItem('userData'));
     try {
       const response = await fetch(
         'http://localhost:5001/api/room/purchaseColor',
         {
           method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ userId, roomId: selectedRoomId, color })
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, roomId: selectedRoomId, color }),
         }
       );
       if (!response.ok) throw new Error('Purchase failed');
-      const updated = await response.json();
-      setCosmeticData(updated.cosmetic);
-      setPoints(updated.totalPoints);
+      const { cosmetic, totalPoints } = await response.json();
+      setCosmeticData(cosmetic);
+      setPoints(totalPoints);
     } catch (err) {
       console.error(err);
       alert('Not enough points or purchase failed');
@@ -154,26 +193,25 @@ function MasterRoom() {
   };
 
   const handleSelect = async (index, color) => {
-    const stored = localStorage.getItem('userData');
-    if (!stored) return;
-    const { userId } = JSON.parse(stored);
+    const { _id: userId } = JSON.parse(localStorage.getItem('userData'));
     try {
       const response = await fetch(
         'http://localhost:5001/api/room/selectColor',
         {
-          method:'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ userId, roomId: selectedRoomId, index, color })
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, roomId: selectedRoomId, index, color }),
         }
       );
       if (!response.ok) throw new Error('Select color failed');
-      const updated = await response.json();
-      setCosmeticData(updated.cosmetic);
+      const { cosmetic } = await response.json();
+      setCosmeticData(cosmetic);
     } catch (err) {
       console.error(err);
     }
   };
 
+  // Room selector handlers
   const handleRoomChange = (e) => setSelectedRoomId(e.target.value);
   const handleConfirm = () => {
     setShowRoomSelector(false);
@@ -185,7 +223,7 @@ function MasterRoom() {
   };
 
   if (loading) return <div>Loading...</div>;
-  if (error)   return <div>Error: {error}</div>;
+  if (error) return <div>Error: {error}</div>;
 
   return (
     <>
@@ -198,6 +236,7 @@ function MasterRoom() {
           <h1 className={style.roomTitle}>Master Room</h1>
           <div className={style.roomBannerMini}><Avatar /></div>
         </div>
+
         <div className={style.roomBackground}>
           {roomBgColor && (
             <div
@@ -205,6 +244,7 @@ function MasterRoom() {
               style={{ backgroundColor: roomBgColor, opacity: 0.5 }}
             />
           )}
+
           <div className={style.upperSection}>
             <div className={style.upperLeft} />
             <div className={style.upperMiddle}>
@@ -216,11 +256,15 @@ function MasterRoom() {
               <div className={style.roomDialWrapper}>
                 <div className={style.rope} />
                 <Tooltip label="Cosmetics">
-                  <div className={style.roomDial} onClick={() => setShowRoomSelector(true)} />
+                  <div
+                    className={style.roomDial}
+                    onClick={() => setShowRoomSelector(true)}
+                  />
                 </Tooltip>
               </div>
             </div>
           </div>
+
           <div className={style.floorItems}>
             <div className={style.floorLeft}>
               <Tooltip label="Groceries">
@@ -249,6 +293,7 @@ function MasterRoom() {
             </div>
           </div>
         </div>
+
         <div className={style.roomFloor} />
       </div>
 
@@ -273,12 +318,14 @@ function MasterRoom() {
         totalPoints={points}
         onPurchase={handlePurchase}
         onSelect={handleSelect}
+        onPurchaseDecoration={handlePurchaseDecoration}
+        onToggleDecoration={handleToggleDecoration}
       />
 
       {/* Room selector popup */}
       {showRoomSelector && (
         <div className={style.roomSelectOverlay} onClick={() => setShowRoomSelector(false)}>
-          <div className={style.roomSelectPopup} onClick={e => e.stopPropagation()}>
+          <div className={style.roomSelectPopup} onClick={(e) => e.stopPropagation()}>
             <h2 className={style.popupTitle}>Choose a room for cosmetics</h2>
             <select
               className={style.popupSelect}
@@ -286,7 +333,7 @@ function MasterRoom() {
               onChange={handleRoomChange}
             >
               <option value="master-room">Master Room</option>
-              {userData.rooms.map(room => (
+              {userData.rooms.map((room) => (
                 <option key={room._id} value={room._id}>
                   {room.roomName}
                 </option>
@@ -298,26 +345,26 @@ function MasterRoom() {
         </div>
       )}
 
-      {/* Temporary popup for Master Room */}
+      {/* Temporary manual color picker (if still needed) */}
       {showTemporaryPopup && (
         <div className={style.roomSelectOverlay} onClick={() => setShowTemporaryPopup(false)}>
-          <div className={style.roomSelectPopup} onClick={e => e.stopPropagation()}>
+          <div className={style.roomSelectPopup} onClick={(e) => e.stopPropagation()}>
             <h3>Customize Room Colors</h3>
             <div style={{ margin: '1rem 0' }}>
               <label style={{ marginRight: '0.5rem' }}>Banner Color:</label>
               <input
                 type="color"
                 value={bannerColor}
-                onChange={e => setBannerColor(e.target.value)}
-              />
+                onChange={(e) => setBannerColor(e.target.value)}
+            />
             </div>
             <div style={{ margin: '1rem 0' }}>
               <label style={{ marginRight: '0.5rem' }}>Room Overlay Color:</label>
               <input
                 type="color"
                 value={roomBgColor}
-                onChange={e => setRoomBgColor(e.target.value)}
-              />
+                onChange={(e) => setRoomBgColor(e.target.value)}
+            />
             </div>
             <button className={style.popupClose} onClick={() => setShowTemporaryPopup(false)}>Close</button>
           </div>
