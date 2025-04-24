@@ -1,0 +1,40 @@
+.container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    width: 200px;   
+    height: 200px;
+    position: relative; /* Added for absolute positioning of sleeping Zs */
+}
+
+.img {
+    position: relative;
+    top: 5%; /* Updated: move img closer to room floor */
+    width: 100%;
+    height: auto;
+}
+
+/* New sleeping Z styles */
+.sleepZ {
+    position: absolute;
+    top: 0%; /* Updated: move animation further down */
+    right: 40%;
+    font-size: 20px;
+    color: #fff;
+    font-weight: bolder;
+    font-size: 40px;
+    opacity: 0;
+    animation: zAnim 10s infinite; /* Updated: slower animation duration */
+}
+
+@keyframes zAnim {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-50px);
+    }
+}
+

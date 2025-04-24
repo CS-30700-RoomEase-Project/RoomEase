@@ -8,10 +8,13 @@ const CosmeticStorePopup = ({
   totalPoints,
   onPurchase,
   onSelect,
-  onToggleDecoration, // added new prop for toggling decorations
+  onPurchaseDecoration, // new prop for purchasing decorations
+  onToggleDecoration, // now expects (decoration, newState)
 }) => {
   const [activeTab, setActiveTab] = useState("colors"); // added for tabs
-  const availableColors = Object.keys(cosmetics.cost || {});
+  const availableColors = Object.keys(cosmetics.colorCost || {});
+  const availableDecorations = Object.keys(cosmetics.decorationCost || {});
+
   const elements = [
     "fridge",
     "table",
@@ -22,6 +25,16 @@ const CosmeticStorePopup = ({
     "gavel",
     "background",
   ];
+
+  // Helper to get active state of a decoration based on assumed order:
+  const getActiveState = (decoration) => {
+    if (!cosmetics.activeDecorations) return false;
+    if (decoration.toLowerCase() === "puppy")
+      return cosmetics.activeDecorations[0];
+    if (decoration.toLowerCase() === "fridge letters")
+      return cosmetics.activeDecorations[1];
+    return false;
+  };
 
   if (!isOpen) return null;
 
@@ -50,7 +63,14 @@ const CosmeticStorePopup = ({
           {activeTab === "colors" && (
             <>
               <h3>Colors</h3>
-              <div className="color-store">
+              <div
+                className="store"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+                  gap: "10px",
+                }}
+              >
                 {availableColors.map((color) => (
                   <div key={color} className="color-block">
                     <div
@@ -58,17 +78,40 @@ const CosmeticStorePopup = ({
                       style={{ backgroundColor: color }}
                     ></div>
                     <p>{color}</p>
-                    <p>Cost: {cosmetics.cost[color]}</p>
-                    {cosmetics.purchased[color] ? (
+                    <p>Cost: {cosmetics.colorCost[color]}</p>
+                    {cosmetics.colorsPurchased[color] ? (
                       <p className="owned">Owned</p>
                     ) : (
                       <button
                         onClick={() => onPurchase(color)}
-                        disabled={totalPoints < cosmetics.cost[color]}
+                        disabled={totalPoints < cosmetics.colorCost[color]}
                       >
                         Unlock
                       </button>
                     )}
+                  </div>
+                ))}
+              </div>
+              <h3>Select a color for each item:</h3>
+              <div className="selection-grid">
+                {elements.map((item, index) => (
+                  <div key={index} className="selector">
+                    <label>{item}</label>
+                    <select
+                      value={cosmetics.selected[index]}
+                      onChange={(e) => onSelect(index, e.target.value)}
+                    >
+                      <option key={"default"} value={"default"}>
+                        default
+                      </option>
+                      {availableColors
+                        .filter((c) => cosmetics.colorsPurchased[c])
+                        .map((color) => (
+                          <option key={color} value={color}>
+                            {color}
+                          </option>
+                        ))}
+                    </select>
                   </div>
                 ))}
               </div>
@@ -77,56 +120,47 @@ const CosmeticStorePopup = ({
           {activeTab === "decorations" && (
             <>
               <h3>Decorations</h3>
-              <div className="decoration-store">
-                {Object.keys(cosmetics.decorations || {}).length > 0 ? (
-                  Object.keys(cosmetics.decorations).map((decoration) => (
+              <div
+                className="store"
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fill, minmax(100px, 1fr))",
+                  gap: "10px",
+                }}
+              >
+                {availableDecorations.map((decoration) => {
+                  const isPurchased =
+                    cosmetics.decorationsPurchased &&
+                    cosmetics.decorationsPurchased[decoration];
+                  const active = cosmetics.activeDecorations[decoration];
+                  return (
                     <div key={decoration} className="decoration-item">
-                      <span>{decoration}</span>
-                      {cosmetics.decorations[decoration].purchased ? (
-                        <label>
-                          <input
-                            type="checkbox"
-                            checked={cosmetics.decorations[decoration].enabled}
-                            onChange={(e) =>
-                              onToggleDecoration(decoration, e.target.checked)
-                            }
-                          />
-                          Enabled
-                        </label>
+                      <p>{decoration}</p>
+                      <p>Cost: {cosmetics.decorationCost[decoration]}</p>
+                      {!isPurchased ? (
+                        <button
+                          onClick={() => onPurchaseDecoration(decoration)}
+                          disabled={
+                            totalPoints < cosmetics.decorationCost[decoration]
+                          }
+                        >
+                          Unlock
+                        </button>
                       ) : (
-                        <p className="not-owned">Not Owned</p>
+                        <button
+                          onClick={() =>
+                            onToggleDecoration(decoration, !active)
+                          }
+                        >
+                          {active ? "Disable" : "Enable"}
+                        </button>
                       )}
                     </div>
-                  ))
-                ) : (
-                  <p>No decorations available.</p>
-                )}
+                  );
+                })}
               </div>
             </>
           )}
-          <h3>Select a color for each item:</h3>
-          <div className="selection-grid">
-            {elements.map((item, index) => (
-              <div key={index} className="selector">
-                <label>{item}</label>
-                <select
-                  value={cosmetics.selected[index]}
-                  onChange={(e) => onSelect(index, e.target.value)}
-                >
-                  <option key={"default"} value={"default"}>
-                    default
-                  </option>
-                  {availableColors
-                    .filter((c) => cosmetics.purchased[c])
-                    .map((color) => (
-                      <option key={color} value={color}>
-                        {color}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            ))}
-          </div>
           <button className="close-button" onClick={onClose}>
             Close
           </button>

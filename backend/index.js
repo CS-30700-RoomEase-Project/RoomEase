@@ -9,17 +9,22 @@ const userRoutes = require("./routes/userRoutes");
 const choreRoutes = require("./routes/choreRoutes");
 const groceryRoutes = require("./routes/groceryRoutes");
 const noteRoutes = require("./routes/roomNoteRoutes");
+const leaderboardRoutes = require("./routes/roomLeaderboardRoutes");
 const updateProfileRoutes = require("./routes/updateProfileRoutes");
 const billsRoutes = require("./routes/billsRoutes");
 const notificationRoutes = require("./routes/notificationRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const inviteRoutes = require("./routes/inviteRoutes");
 const quietHoursRoutes = require("./routes/quietHoursRoutes");
+
 const roomStateRoutes = require("./routes/stateRoutes");
+
 const ratingRoutes = require("./routes/ratingRoutes"); // ✅ NEW ROUTE
 const fetchRatingRoutes = require("./routes/ratingFetchRoutes"); // ✅ NEW ROUTE
 const rulesRoutes = require("./routes/rulesRoutes");
 const clauseRoutes = require("./routes/clauseRoutes");
+const memoryRoutes = require("./routes/memoryRoutes");
+const disputesRoutes = require("./routes/disputesRoutes");
 
 // Initialize app and HTTP server
 const app = express();
@@ -45,6 +50,7 @@ app.use(express.json());
 app.use("/api/chores", choreRoutes);
 app.use("/api/grocery", groceryRoutes);
 app.use("/api/notes", noteRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/users/profile", updateProfileRoutes);
 app.use("/api/bills", billsRoutes);
@@ -56,11 +62,12 @@ app.use("/api/roomstate", roomStateRoutes);
 app.use("/api/rules", rulesRoutes);
 app.use("/api/rating", ratingRoutes); // ✅ CORRECTED TO /api/rating
 app.use("/api/ratingFetch", fetchRatingRoutes); // ✅ CORRECTED TO /api/ratingFetch
-app.use("/api/disputes", require("./routes/disputesRoutes")); // ✅ NEW ROUTE
+app.use("/api/disputes", disputesRoutes); // ✅ NEW ROUTE
 app.use("/api/clauses", clauseRoutes);
 // Import and pass Socket.IO to group chat routes
 const groupChatRoutes = require("./routes/groupChatRoutes")(io);
 app.use("/api/groupchat", groupChatRoutes);
+app.use("/api/memories", memoryRoutes);
 
 // Socket.IO Events
 io.on("connection", (socket) => {

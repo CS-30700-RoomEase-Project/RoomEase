@@ -1,12 +1,24 @@
 const mongoose = require('mongoose');
 
+const DisputeSchema = require('./Disputes');
+
 const RoomSchema = new mongoose.Schema({
     roomName: { type: String, required: true },
     groupPhoto: { type: String, default: '' },
     settings: [{ type: Boolean }],
     tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task', default: [] }],
-    roomStatus: { type: String, default: 'Available' },
-    roomState: { type: String, default: 'FFFFFF'},
+    // chronological list of every room‐state the user has set
+    roomStates: [{
+        request: { type: String, required: true },
+        level:   { type: String, required: true },
+        color:   { type: String, required: true },
+        timestamp:{ type: Date, default: Date.now }
+    }],
+    // pointer into that array
+    currentStateIndex: {
+        type: Number,
+        default: (doc) => doc.roomStates.length - 1
+    },
     groupChat: [{
         senderId: { type: String, required: true }, // User ID (as string)
         message: { type: String, required: true },
@@ -25,10 +37,24 @@ const RoomSchema = new mongoose.Schema({
     choreSwaps: {type: [{type: mongoose.Schema.Types.ObjectId, ref: 'choreSwap'}], default: []},
     rules: [{ type: String, default: ["These are your roommate rules", "Add, edit, or change rules", "Change them as you like"] }],
     roomImage: { type: Buffer, default: null },
-    roomClauses: {
-        type: String,
-        default: ""
-    }
+    roomClauses: { type: String, default: ""},
+    disputes: {
+        type: [DisputeSchema],
+        default: []
+    },
+    // pointer into `disputes[]`; -1 means “no current dispute”
+    currentDisputeIndex: {
+        type: Number,
+        default: -1
+    },
+
 }, { timestamps: true });
+
+RoomSchema.pre('save', function(next) {
+    if (this.isModified('disputes')) {
+      this.currentDisputeIndex = this.disputes.length - 1;
+    }
+    next();
+  });
 
 module.exports = mongoose.model('Room', RoomSchema);

@@ -1,12 +1,12 @@
-import "./gavel-pad.css"
+// src/components/Pages/Room/Room Items/GavelPad.js
+import React from "react";
+import "./gavel-pad.css";
 
-function GavelPad() {
+export default function GavelPad({ onClick }) {
   return (
-    <div className="gavel-pad-container">
-      <div className="gavel-pad-base"></div>
-      <div className="gavel-pad-top"></div>
+    <div className="gavel-pad-container" onClick={onClick}>
+      <div className="gavel-pad-base" />
+      <div className="gavel-pad-top" />
     </div>
-  )
+  );
 }
-
-export default GavelPad
