@@ -1,110 +1,133 @@
+/* src/components/Pages/RoomState/RoomState.module.css */
+
 .container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #121218;
+  font-family: sans-serif;
+}
+
+.title {
+  text-align: center;
+  color: white;
+  margin-bottom: 24px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+/* timeline row */
+.timelineContainer {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  padding: 20px;
-  height: 100vh;
-  width: 100%;
-  background: linear-gradient(to right, #bc9974, #f7e4d2);
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 32px;
 }
 
-/* RoomState box dynamically changes color */
-.roomState {
-  width: 100%;
-  max-width: 500px;
-  padding: 20px;
+/* force each box square */
+.stateBox {
+  width: 220px;
+  aspect-ratio: 1 / 1;
+  padding: 16px;
   border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   text-align: center;
-  color: white; /* Ensure text is readable */
-  font-weight: bold;
+  color: #000 !important; /* black text */
+}
+.stateBox h4,
+.stateBox p {
+  color: #000 !important;
 }
 
-/* Add slight text shadow for readability */
-.roomState h2, .roomState p {
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+.currentBox {
+  width: 260px;       /* bump up from 220px */
+  aspect-ratio: 1 / 1.1;/* keep it square */
 }
 
-.noState {
-  width: 100%;
-  max-width: 500px;
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+/* large white arrows */
+.arrow {
+  font-size: 4rem;
+  cursor: pointer;
+  color: #fff;
+  user-select: none;
 }
 
-.roomState h2,
-.noState h2 {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #bc9974;
-}
-
-/* Ensure the form is well-spaced */
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  width: 100%;
-  max-width: 500px;
-  padding: 25px;
-  background-color: rgba(40, 38, 38, 0.8);
-  border-radius: 8px;
-}
-
-/* Fix spacing for form inputs */
-.formGroup {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.formGroup label {
-  font-weight: bold;
-}
-
-.formGroup input,
-.formGroup select {
-  width: 100%;
-  padding: 12px;
-  margin-top: 5px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
+/* timer under current only */
+.timer {
+  margin-top: 12px;
   font-size: 1rem;
+  color: #000 !important;
+}
+
+/* Clear Current button */
+.clearButton {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #e74c3c;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* form styling */
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  margin-bottom: 6px;
+  font-weight: bold;
+  color: white;
+}
+
+.field input,
+.field select {
+  padding: 8px;
+  font-size: 1rem;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background: #222;
+  color: white;
   box-sizing: border-box;
 }
 
-/* Ensure buttons are uniform */
-.submitButton,
-.clearButton {
+.colorBox {
   width: 100%;
-  padding: 12px;
-  font-size: 1rem;
+  height: 32px;
   border-radius: 4px;
+  margin-bottom: 8px;
+  border: 1px solid #666;
+}
+
+.colorInput {
+  width: 100%;
+  height: 32px;
+  border: none;
+  background: transparent;
   cursor: pointer;
-  text-align: center;
 }
 
 .submitButton {
-  background-color: #007bff;
-  color: white;
+  padding: 12px;
+  background: #3498db;
   border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
-
 .submitButton:hover {
-  background-color: #0056b3;
-}
-
-.clearButton {
-  background-color: #e74c3c;
-  color: white;
-  border: none;
-}
-
-.clearButton:hover {
-  background-color: #c0392b;
+  background: #2980b9;
 }

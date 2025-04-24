@@ -12,11 +12,13 @@ import RoomState from "./components/Pages/RoomState/RoomState"; // Import RoomSt
 import Notifications from "./components/Pages/Notifications/Notifications"; //import notifications
 import InvitePage from "./components/Pages/InvitePage/InvitePage"; // Import InvitePage component
 import Disputes from "./components/Pages/Disputes/Disputes";
+import SubmitDispute from "./components/Pages/SubmitDispute/SubmitDispute";
 import MasterRoom from "./components/Pages/MasterRoom/MasterRoom"; // Import MasterRoom components
 import MasterRoomState from "./components/Pages/MasterRoom/MasterPages/RoomState/MasterRoomState"; // Import MasterRoomState component
 import NotesPopup from "./components/Shared_components/BulletinPopup/NotesPopup";
 import HouseRules from "./components/Pages/HouseRules/HouseRules"; // Import HouseRules component
 import Memories from "./components/Pages/Memories/Memories"; // Import Memories component
+
 
 function App() {
   return (
@@ -42,6 +44,9 @@ function App() {
 
         {/* Disputes route */}
         <Route path="/disputes/:roomId" element={<Disputes />} />
+
+        {/* Submit Disputes route */}
+        <Route path="/submit-dispute/:roomId" element={<SubmitDispute />}/>
 
         {/* Room page route */}
         <Route path="/room/:roomId" element={<Room />}/>

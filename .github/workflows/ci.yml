@@ -1,38 +1,85 @@
 name: CI
 
+permissions:
+  contents: write   # allow pushes from the workflow
+
 on:
   push:
     branches:
-      - master
       - main
   pull_request:
     branches:
-      - master
       - main
 
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         node-version: [14.19.0]
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
       - run: npm install
 
   deploy:
     needs: test
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
       - name: Use Node.js 14.19.0
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: 14.19.0
       - run: npm install
       - run: rm -rf public
+
+  update-branches:
+    needs: deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        branch: [Krish, Carter, John, Ishan, Will, Nathan]
+    name: auto_update_${{ matrix.branch }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+          persist-credentials: true
+
+      - name: Set Git identity
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+
+      - name: Merge main into ${{ matrix.branch }}
+        run: |
+          git checkout ${{ matrix.branch }}
+          git merge --no-ff main || true
+
+      - name: Push if no conflicts
+        run: |
+          if git diff --name-only --diff-filter=U | grep .; then
+            echo "⚠️ Merge conflicts detected in ${{ matrix.branch }} – skipping push"
+            git merge --abort
+          else
+            git push origin HEAD:${{ matrix.branch }}
+          fi
