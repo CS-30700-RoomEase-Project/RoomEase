@@ -50,11 +50,4 @@ const RoomSchema = new mongoose.Schema({
 
 }, { timestamps: true });
 
-RoomSchema.pre('save', function(next) {
-    if (this.isModified('disputes')) {
-      this.currentDisputeIndex = this.disputes.length - 1;
-    }
-    next();
-  });
-
 module.exports = mongoose.model('Room', RoomSchema);
