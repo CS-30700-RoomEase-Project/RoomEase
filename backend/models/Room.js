@@ -5,8 +5,18 @@ const RoomSchema = new mongoose.Schema({
     groupPhoto: { type: String, default: '' },
     settings: [{ type: Boolean }],
     tasks: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Task', default: [] }],
-    roomStatus: { type: String, default: 'Available' },
-    roomState: { type: String, default: 'FFFFFF'},
+    // chronological list of every room‐state the user has set
+    roomStates: [{
+        request: { type: String, required: true },
+        level:   { type: String, required: true },
+        color:   { type: String, required: true },
+        timestamp:{ type: Date, default: Date.now }
+    }],
+    // pointer into that array
+    currentStateIndex: {
+        type: Number,
+        default: (doc) => doc.roomStates.length - 1
+    },
     groupChat: [{
         senderId: { type: String, required: true }, // User ID (as string)
         message: { type: String, required: true },
