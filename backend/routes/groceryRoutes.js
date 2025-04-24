@@ -37,6 +37,33 @@ router.post('/add/:roomID', async (req, res) => {
     }
   });
 
+  router.post('/addPoints/:roomId/', async (req, res) => {
+    try {
+
+      const roomID = req.params.roomId;
+      const room = await Room.findById(roomID);
+
+      if (!room) {
+        return res.status(404).json({ error: 'Room not found' });
+      }
+
+      let updatedItem = req.body.updatedItem;
+      const userId = req.body.userId;
+      const user = await User.findOne({ userId });
+
+      const currentPoints = room.points.get(user._id) || 0;
+      room.points.set(user._id, currentPoints + 1);
+      await room.save();
+      await user.save();
+      updatedItem = await Grocery.findByIdAndUpdate(updatedItem._id, updatedItem, { new: true });
+      updatedItem = await updatedItem.populate('requesters', 'username');
+      res.status(200).json(updatedItem);
+    } catch (error) {
+      console.error('Error updating grocery:', error);
+      res.status(500).json({ error: 'Server error while updating grocery' });
+    }
+  });
+
   router.post('/remove/:itemID', async (req, res) => {
     try {
       const itemID = req.params.itemID;
@@ -176,7 +203,7 @@ router.post('/add/:roomID', async (req, res) => {
   
 
   router.post("/notifyPurchased/:roomId/:itemId/", async (req, res) => {
-    const { userId, description, pageID } = req.body;
+    const { userId, amountOwed, pageID } = req.body;
     const { roomId, itemId } = req.params;
     try {
       // Optionally, get the notifying user (for origin)
@@ -190,7 +217,8 @@ router.post('/add/:roomID', async (req, res) => {
       }
   
       item.purchaser = user._id;
-
+      const purchaserName = user.username;
+      const description = `You owe $${amountOwed} to ${purchaserName} for purchasing ${item.itemName}`;
       await item.save();
 
       // Create the notification with usersNotified equal to the requesters array from the grocery item
