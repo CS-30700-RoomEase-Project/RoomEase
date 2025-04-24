@@ -4,7 +4,8 @@ const User = require("../models/User");
 const Room = require("../models/Room");
 const Notification = require("../models/Notification");
 const RoomCosmetic = require("../models/RoomCosmetic");
-const RoomQuest = require("../models/RoomQuest");
+const RoomQuest = require('../models/RoomQuest');
+const Wrapped = require('../models/Wrapped');
 
 const router = express.Router();
 
@@ -57,6 +58,150 @@ router.post("/createRoom", async (req, res) => {
     res.status(500).json({ message: "Server error", error });
   }
 });
+
+router.post('/:roomId/check-wrapped', async (req, res) => {
+  const { roomId } = req.params;
+  console.log("trying");
+  console.log(roomId);
+
+  try {
+      const room = await Room.findById(roomId).populate('completedTasks');
+      if (!room) {
+          console.log("room not found");
+          return res.status(404).json({ message: 'Room not found' });
+      }
+
+      let shouldCreateNewWrapped = false;
+
+      if (room.completedTasks.length === 0) {
+          shouldCreateNewWrapped = true;
+      } else {
+          const lastWrapped = room.completedTasks[room.completedTasks.length - 1];
+          const now = new Date();
+          const lastDate = new Date(lastWrapped.date);
+          console.log("now", now);
+          console.log("last", lastDate);
+
+          // Check if the last wrapped date is from a different month or year
+          if (
+              lastDate.getMonth() !== now.getMonth() ||
+              lastDate.getFullYear() !== now.getFullYear()
+          ) {
+              shouldCreateNewWrapped = true;
+              // Award 10 points to first place in each map
+              console.log("awarding points");
+              console.log("lastwrapped:", lastWrapped);
+              ["Chores", "Groceries", "Bills"].forEach(category => {
+                const entries = lastWrapped.get(category) || [];
+                console.log("entries:", entries);
+                if (entries.length === 0) return;
+
+                // Sort by value descending
+                entries.sort((a, b) => b.value - a.value);
+                console.log("before entries");
+                const winner = entries[0]?.user;
+                console.log("here");
+                if (!winner) return;
+
+                const winnerId = winner._id ? winner._id.toString() : winner.toString();
+                console.log("winner", winner);
+                const currentPoints = room.points.get(winnerId) || 0;
+                room.points.set(winnerId, currentPoints + 10);
+              });
+
+              await room.save();
+          }
+      }
+
+      if (shouldCreateNewWrapped) {
+          const newWrapped = new Wrapped({ date: new Date() });
+          await newWrapped.save();
+
+          room.completedTasks.push(newWrapped._id);
+          await room.save();
+      }
+
+      return res.status(200).json({ message: 'Check complete', updated: shouldCreateNewWrapped });
+  } catch (error) {
+      console.error('Error checking wrapped:', error);
+      return res.status(500).json({ message: 'Server error', error });
+  }
+});
+
+router.post('/:roomId/increment-task', async (req, res) => {
+  const { roomId } = req.params;
+  const { userId, mapName } = req.body;
+
+  if (!["Chores", "Groceries", "Bills"].includes(mapName)) {
+    console.log("bad mapname");
+    return res.status(400).json({ message: "Invalid map name" });
+  }
+
+  try {
+    const room = await Room.findById(roomId).populate({
+      path: 'completedTasks',
+      populate: [
+        { path: 'Chores.user', select: 'username' },
+        { path: 'Groceries.user', select: 'username' },
+        { path: 'Bills.user', select: 'username' }
+      ]
+    });
+
+    if (!room) return res.status(404).json({ message: "Room not found" });
+
+    const currentMonth = new Date().getMonth();
+    const currentWrapped = room.completedTasks.find(wrapped =>
+      new Date(wrapped.date).getMonth() === currentMonth &&
+      new Date(wrapped.date).getFullYear() === new Date().getFullYear()
+    );
+
+    if (!currentWrapped) {
+      return res.status(404).json({ message: "No Wrapped document for this month" });
+    }
+
+    // Check if user exists
+    let finalUserId = userId;
+
+    if (mapName === "Bills") {
+      const userDoc = await User.findOne({ userId: userId }); // userId field in DB
+      if (userDoc) {
+        finalUserId = userDoc._id.toString(); // replace with actual ObjectId
+      } else {
+        console.warn("User not found in 'userId' field for Bills:", userId);
+        // You can choose to continue or return an error here
+        return res.status(400).json({ message: "User not found for Bills task" });
+      }
+    } else {
+      const userExists = await User.exists({ _id: userId });
+      if (!userExists) {
+        console.log("User not found by _id:", userId);
+        return res.status(400).json({ message: "User does not exist" });
+      }
+    }
+
+
+    // Find and update the value
+    const taskArray = currentWrapped[mapName];
+    const entry = taskArray.find(entry => entry.user._id?.toString?.() === finalUserId || entry.user?.toString?.() === finalUserId);
+
+
+    if (entry) {
+      entry.value += 1;
+    } else {
+      taskArray.push({ user: finalUserId, value: 1 });
+    }
+
+    await currentWrapped.save();
+    return res.status(200).json({ message: "Value incremented", updated: currentWrapped });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+
+
 
 // Utility: check if two dates are on the same day
 function isSameDay(date1, date2) {
@@ -256,7 +401,16 @@ router.get("/getRoom", async (req, res) => {
   const { roomId, userId } = req.query;
   try {
     // Find the room
-    let room = await Room.findOne({ _id: roomId });
+    let room = await Room.findOne({ _id: roomId })
+      .populate({
+        path: 'completedTasks',
+        populate: [
+          { path: 'Chores.user', select: 'username' },
+          { path: 'Groceries.user', select: 'username' },
+          { path: 'Bills.user', select: 'username' }
+        ]
+      });
+
     console.log("Room found:", room);
     // Check if the room exists
     if (!room) {
