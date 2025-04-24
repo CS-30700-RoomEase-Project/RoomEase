@@ -1,3 +1,4 @@
+// frontend/src/components/Pages/SubmitDispute/SubmitDispute.js
 import React, { useState, useEffect, useCallback } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./SubmitDispute.module.css";
@@ -5,7 +6,7 @@ import styles from "./SubmitDispute.module.css";
 export default function SubmitDispute() {
   const { roomId } = useParams();
   const [current, setCurrent]         = useState(null);
-  const [future, setFuture]           = useState([]);
+  const [next, setNext]               = useState(null);
   const [description, setDescription] = useState("");
   const [loading, setLoading]         = useState(true);
   const [error, setError]             = useState(null);
@@ -17,9 +18,9 @@ export default function SubmitDispute() {
     try {
       const res = await fetch(`http://localhost:5001/api/disputes/queue/${roomId}`);
       if (!res.ok) throw new Error(res.statusText);
-      const { current, future } = await res.json();
+      const { current, next } = await res.json();
       setCurrent(current);
-      setFuture(future || []);
+      setNext(next);
     } catch (err) {
       console.error(err);
       setError("Could not load disputes");
@@ -32,12 +33,12 @@ export default function SubmitDispute() {
     loadQueue();
   }, [loadQueue]);
 
-  // 2️⃣ shift pointer
-  const shiftPointer = async (direction) => {
+  // 2️⃣ advance to next dispute
+  const advance = async () => {
     await fetch("http://localhost:5001/api/disputes/shift", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ roomId, direction }),
+      body: JSON.stringify({ roomId, direction: "right" }),
     });
     await loadQueue();
   };
@@ -84,11 +85,8 @@ export default function SubmitDispute() {
           </button>
         </div>
 
-        {/* Up‐arrow between them */}
-        <span
-          className={styles.arrow}
-          onClick={() => shiftPointer("left")}
-        >
+        {/* Arrow to advance */}
+        <span className={styles.arrow} onClick={advance}>
           ↑
         </span>
 
@@ -96,12 +94,12 @@ export default function SubmitDispute() {
         <div className={styles.disputeBox}>
           <h2 className={styles.sectionTitle}>Next</h2>
           <p className={styles.disputeTitle}>
-            {future[0]?.description || "No next dispute"}
+            {next?.description || "No next dispute"}
           </p>
         </div>
       </div>
 
-      {/* Submission form at bottom */}
+      {/* Submission form */}
       <form onSubmit={handleAdd} className={styles.form}>
         <textarea
           className={styles.textarea}
