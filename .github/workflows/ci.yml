@@ -1,5 +1,9 @@
 name: CI
 
+# Allow pushes from the workflow
+permissions:
+  contents: write
+
 on:
   push:
     branches:
@@ -11,13 +15,17 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read    # tests only need read
     strategy:
       matrix:
         node-version: [14.19.0]
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # Important for merging full history
+          token: ${{ secrets.GITHUB_TOKEN }}
+          fetch-depth: 0        # full history for merges
+          persist-credentials: true
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -28,8 +36,13 @@ jobs:
     needs: test
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          persist-credentials: true
       - name: Use Node.js 14.19.0
         uses: actions/setup-node@v3
         with:
@@ -38,68 +51,27 @@ jobs:
       - run: rm -rf public
 
   auto_update_non_main_branches:
-    needs: deploy # Only run after a successful deployment to main
+    needs: deploy
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
-      - name: Set up Git identity
+          persist-credentials: true
+
+      - name: Set Git identity
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
 
-      - name: Merge and Push to Krish
+      - name: Merge main into personal branches
         run: |
-          git checkout Krish
-          git merge --no-ff main
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push origin HEAD:Krish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Merge and Push to Carter
-        run: |
-          git checkout Carter
-          git merge --no-ff main
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push origin HEAD:Carter
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Merge and Push to John
-        run: |
-          git checkout John
-          git merge --no-ff main
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push origin HEAD:John
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Merge and Push to Ishan
-        run: |
-          git checkout Ishan
-          git merge --no-ff main
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push origin HEAD:Ishan
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Merge and Push to Will
-        run: |
-          git checkout Will
-          git merge --no-ff main
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push origin HEAD:Will
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Merge and Push to Nathan
-        run: |
-          git checkout Nathan
-          git merge --no-ff main
-          git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
-          git push origin HEAD:Nathan
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          for branch in Krish Carter John Ishan Will Nathan; do
+            git checkout $branch
+            git merge --no-ff main
+            git push origin HEAD:$branch
+          done
