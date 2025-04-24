@@ -124,7 +124,7 @@ function MasterRoom() {
       }
     });
   }, [cosmeticData]);
-//tests
+//tests part 2
   // Navigation handlers
   const handleGoToChores = () => navigate(`/chores/${selectedRoomId}`);
   const handleBulletinClick = () => setShowBulletin(true);
