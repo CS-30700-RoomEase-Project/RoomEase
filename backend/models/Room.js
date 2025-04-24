@@ -28,7 +28,7 @@ const RoomSchema = new mongoose.Schema({
     monthlyRatings: [{ type: String, default: [] }],
     points: { type: Map, of: Number, default: () => ({})},
     houseRules: [{ type: String, default: [] }],
-    completedTasks: [],
+    completedTasks: {type:[{type:mongoose.Schema.Types.ObjectId, ref: 'Wrapped'}], default: []},
     bulletinNotes: { type: [String], default: [] },
     bulletinPhotos: [{ type: Array, default: [] }],
     outGoingInvites: { type: Array, default: [] },
