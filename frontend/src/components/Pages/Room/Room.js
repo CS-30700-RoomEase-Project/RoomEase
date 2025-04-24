@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Avatar from "../../Shared_components/AvatarButton/AvatarButton";
 import GroupChat from "../../Shared_components/Messages/GroupChat";
@@ -18,6 +18,7 @@ import RoomSettingsPopup from "../../Shared_components/RoomSettings/RoomSettings
 import CosmeticStorePopup from "./CosmeticStorePopup";
 import QuestBell from "../../Shared_components/QuestBell/QuestBell";
 import "./Room.css";
+import LeaderboardPopup from "../../Shared_components/LeaderboardPopup/LeaderboardPopup";
 
 function Room() {
   const { roomId } = useParams();
@@ -34,6 +35,9 @@ function Room() {
   const [cosmeticPopupOpen, setCosmeticPopupOpen] = useState(false);
   const [cosmeticData, setCosmeticData] = useState({});
   const [points, setPoints] = useState(0);
+  const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+
+  const hasCheckedWrapped = useRef(false);
 
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("userData"));
@@ -43,6 +47,29 @@ function Room() {
       navigate("/login");
       return;
     }
+
+    const checkWrapped = async () => {
+      if (hasCheckedWrapped.current) {
+        return;
+      }
+      hasCheckedWrapped.current = true;
+      try {
+        const response = await fetch(`http://localhost:5001/api/room/${roomId}/check-wrapped`, {
+          method: 'POST',
+        });
+    
+        const data = await response.json();
+        if (response.ok) {
+          console.log('Wrapped check result:', data);
+          // You can trigger UI updates or alerts here if needed
+        } else {
+          console.error('Error from server:', data.message);
+        }
+      } catch (error) {
+        console.error('Network error:', error);
+      }
+    }
+    
 
     const fetchRoomData = async () => {
       try {
@@ -104,9 +131,10 @@ function Room() {
         console.error("Error fetching cosmetics:", err);
       }
     };
-
+    checkWrapped();
     fetchRoomData();
     fetchCosmetics();
+    
   }, [roomId, navigate]);
 
   useEffect(() => {
@@ -270,6 +298,7 @@ const awardQuestPoints = async (userId, roomId, questType) => {
           </button>
           <h1 className="roomTitle">{roomData.roomName}</h1>
           <div className="roomBannerMini">
+            <button onClick={() => setLeaderboardOpen(true)}>Wrapped</button>
             {roomData.settings[7] && (
               <RateButton style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }} />
             )}
@@ -419,6 +448,10 @@ const awardQuestPoints = async (userId, roomId, questType) => {
         totalPoints={points}
         onPurchase={handlePurchase}
         onSelect={handleSelect}
+      />
+      <LeaderboardPopup
+        isOpen={leaderboardOpen}
+        onClose={() => setLeaderboardOpen(false)}
       />
     </>
   );

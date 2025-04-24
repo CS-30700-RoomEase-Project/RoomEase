@@ -290,8 +290,23 @@ const BillsExpenses = () => {
     navigate(`/room/${roomId}`);
   };
 
-  const handleMarkAsPaid = (billId, e) => {
+  const handleMarkAsPaid = async (billId, e, bill) => {
     e.stopPropagation();
+    console.log(bill.responsible);
+    await Promise.all(
+      bill.responsible.map(user =>
+        fetch(`http://localhost:5001/api/room/${roomId}/increment-task`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: user.userId, // direct from bill.responsible
+            mapName: 'Bills',
+          }),
+        })
+      )
+    );
     fetch(`http://localhost:5001/api/bills/markAsPaid/${billId}/${roomId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -483,7 +498,7 @@ const BillsExpenses = () => {
                 )}
                 {bill.paymaster && <div>Paymaster: {bill.paymaster}</div>}
                 <div>
-                  <button onClick={e => handleMarkAsPaid(bill._id, e)}>
+                  <button onClick={e => handleMarkAsPaid(bill._id, e, bill)}>
                     Mark "{bill.title}" as Paid
                   </button>
                   {bill.frequency && bill.frequency !== "none" && !bill.isFinished && (
