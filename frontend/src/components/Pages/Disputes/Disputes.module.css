@@ -1,3 +1,5 @@
+/* frontend/src/components/Pages/Disputes/Disputes.module.css */
+
 .container {
   display: flex;
   flex-direction: column;
@@ -5,7 +7,7 @@
   align-items: center;
   padding: 20px;
   width: 100%;
-  min-height: 100vh; /* Ensures it covers the whole viewport height */
+  min-height: 100vh;
   background: linear-gradient(to right, #bc9974, #f7e4d2);
 }
 
@@ -13,16 +15,22 @@ h1 {
   margin-bottom: 20px;
 }
 
+p {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+}
+
+/* switch to 2 columns so each pair sits side-by-side */
 .voteContainer {
   width: 100%;
-  max-width: 800px; /* Adjusted max width */
+  max-width: 800px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* 3 columns for 3x2 grid */
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
 }
 
 .voteOption {
-  position: relative; /* Needed for absolute positioning of the voting icon */
+  position: relative;
 }
 
 .voteButton {
@@ -43,13 +51,18 @@ h1 {
 
 .votingIcon {
   position: absolute;
-  bottom: 5px; /* Adjust the position of the icon */
+  bottom: 5px;
   left: 5px;
-  width: 20px;  /* Adjust size of the icon */
+  width: 20px;
   height: auto;
 }
 
-p {
+/* Disputes.module.css */
+
+.timer {
+  margin-top: 20px;
   font-size: 1.2rem;
-  margin-bottom: 10px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
 }
