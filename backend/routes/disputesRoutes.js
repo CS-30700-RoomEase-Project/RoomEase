@@ -31,7 +31,7 @@ router.get("/queue/:roomId", async (req, res) => {
     ? room.disputes[idx + 1]
     : null;
 
-  res.json({ current, next });
+  res.json({ current, next, roomMembers: room.roomMembers});
 });
 
 // 3️⃣ SHIFT the pointer left/right
