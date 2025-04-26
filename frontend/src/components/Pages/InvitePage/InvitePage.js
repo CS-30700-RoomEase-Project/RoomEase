@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import InviteEntry from './InviteEntry';
 import style from './InvitePage.module.css';
-import InviteEntry from './InviteEntry'
 
 function InvitePage() {
     const navigate = useNavigate();
