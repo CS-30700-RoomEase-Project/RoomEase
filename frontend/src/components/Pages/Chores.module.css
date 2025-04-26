@@ -1,175 +1,167 @@
-/* Chores.module.css */
-
-
-
+/* Overlay container for full-screen layout */
 .choresAppContainer {
-    position:fixed;
-    top:0;
-    bottom: 0;
-    right: 0;
-    left: 0;
+    position: fixed;
+    inset: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
-    background-color: antiquewhite;
-    height: 100vh;
-    padding: 20px;
-}
-
-
-.choresHeader {
+    padding: 2rem;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(4px);
+    overflow: hidden;
+  }
+  
+  /* Header row */
+  .choresHeader {
     display: flex;
-    justify-content: center; /* Center the header */
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
+    gap: 1rem;
     width: 100%;
-    position: relative;
-    margin-bottom: 0; /* Space between header and list */
-    
-}
-
-.addChore {
-    width:15%;
-    display: flex;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Reset & restyle ONLY buttons inside this header */
+  .choresHeader > button {
+    /* reset any external/global CSS */
+    all: unset;
+    box-sizing: border-box;
+  
+    /* font smoothing for crisp edges */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  
+    /* apply intended styles */
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background-color: green;
-    border-radius: 5px;
-    height:80%;
-}
-
-.addChore:hover {
-    background-color: yellowgreen;
-}
-
-
-.titleText {
-    margin-left: 25%;
-    margin-right: 10%;
-    width: 20%;
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    border-color: black;
-    background-color: antiquewhite;
-    border-radius: 5px;
-}
-
-
-.logoutButton {
-    color:white;
-    background-color: maroon; /* Optional: Style adjustments */
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 15%;
-    height: 80%;
-}
-
-.logoutButton:hover {
-    background-color: red;
-}
-
-.pointsButton {
-    color:white;
-    background-color: blue; /* Optional: Style adjustments */
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 15%;
-    height: 80%;
-}
-
-.pointsButton:hover {
-    background-color: aqua;
-}
-
-.list {
+    padding: 0.5rem 1rem;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff !important;
+    text-shadow: none;
+    background: linear-gradient(135deg, #8b5cf6, #6366f1) !important;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:
+      0 4px 6px -2px rgba(0,0,0,0.2),
+      0 2px 4px -1px rgba(0,0,0,0.1);
+  }
+  
+  /* Hover state */
+  .choresHeader > button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 10px 15px -3px rgba(139,92,246,0.4),
+      0 4px 6px   -2px rgba(139,92,246,0.3);
+  }
+  
+  /* Override any global h4 gradient-clip inside header buttons */
+  .choresHeader > button h4 {
+    background: none !important;
+    -webkit-background-clip: unset !important;
+    -webkit-text-fill-color: unset !important;
+    color: #fff !important;
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+  }
+  
+  /* Scrollable list area */
+  .list {
+    flex: 1;
+    width: 100%;
+    max-width: 90%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(99,102,241,0.4);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    width: 90%;
-    overflow-y: auto; /* Enables vertical scrolling */
-    background-color: white;
-    border: 1px solid #ccc;
-    padding-top: 2%;
-    padding-bottom: 3%;
-    padding-left: 2%;
-    padding-right: 2%;
-    gap: 5%;
-}
-
-.listItem, .listItemMarked {
-    display: flex;
-    justify-content: space-between; /* Pushes buttons to the right */
-    align-items: center; /* Align items vertically */
-    padding: 10px;
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    height: 20%;
-}
-
-.listItemMarked {
-    background-color: #ababab;
-}
-
-.buttonContainer {
-    height: 80%;
-    width: 30%;
-    display: flex;
-    gap: 8px; /* Adds spacing between buttons */
-}
-
-.markButton, .editButton, .deleteButton, .commentButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    gap: 0.75rem;
+    box-shadow:
+      0 4px 6px -2px rgba(0,0,0,0.2),
+      0 2px 4px -1px rgba(0,0,0,0.1);
+  }
+  
+  /* Empty / no-chores message */
+  .list > p {
+    color: #e2e8f0;
     text-align: center;
-    font-size: 80%;
-}
-
-.commentButton {
-    width: 25%;
-    border-radius: 10%;
-    color: white;
-    background-color: blue;
-}
-
-.commentButton:hover {
-    background-color: aqua;
-}
-
-.markButton {
-    width: 25%;
-    border-radius: 10%;
-    color: white;
-    background-color: green;
-}
-
-.markButton:hover {
-    background-color: greenyellow;
-}
-
-.editButton {
-    width: 25%;
-    border-radius: 10%;
-    color: white;
-    background-color: green;
-}
-
-.editButton:hover {
-    background-color: greenyellow;
-}
-
-.deleteButton {
-    width: 25%;
-    border-radius: 10%;
-    color: white;
-    background-color: maroon;
-}
-
-.deleteButton:hover {
-    background-color: red;
-}
+    margin: auto;
+  }
+ .titleText {  
+    color: #e2e8f0;
+  } 
+  /* Individual chore entry */
+  .listItem,
+  .listItemMarked {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6rem, 1fr)) auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 0.5rem;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+  .listItemMarked {
+    opacity: 0.7;
+  }
+  
+  /* Button container inside each item */
+  .buttonContainer {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-end;
+  }
+  
+  /* Action buttons */
+  .commentButton,
+  .markButton,
+  .editButton,
+  .deleteButton {
+    flex: 1;
+    padding: 0.4rem 0.6rem;
+    font-size: 0.85rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .commentButton { background: #6366f1; color: #fff; }
+  .markButton    { background: #10b981; color: #fff; }
+  .editButton    { background: #f59e0b; color: #fff; }
+  .deleteButton  { background: #ef4444; color: #fff; }
+  
+  .commentButton:hover,
+  .markButton:hover,
+  .editButton:hover,
+  .deleteButton:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 6px 10px -3px rgba(0,0,0,0.3),
+      0 3px 5px  -2px rgba(0,0,0,0.15);
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .choresHeader {
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .list {
+      max-width: 100%;
+      padding: 0.75rem;
+    }
+    .listItem {
+      font-size: 0.9rem;
+    }
+  }
+  

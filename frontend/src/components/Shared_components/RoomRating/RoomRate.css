@@ -1,82 +1,103 @@
+/* Consistent glassy modal */
 .modal {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 1000;
-  background-color: rgba(0, 0, 0, 0); /* Keep transparent */
+  background: transparent;
 }
 
+/* Content panel */
 .content {
-  background-color: rgba(15, 23, 42, 0.95); /* Deep bluish-gray from first CSS */
-  overflow: hidden;
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  backdrop-filter: blur(4px);
+  border-radius: 10px;
   padding: 2rem;
-  border-radius: 12px;
-  width: 100%;
+  width: 90%;
   max-width: 400px;
+  text-align: center;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.2),
+    0 4px 6px   -2px rgba(0, 0, 0, 0.1);
   animation: fadeIn 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1); /* Subtle border */
 }
 
+/* Fade-in animation */
 @keyframes fadeIn {
   from {
-      opacity: 0;
-      transform: translateY(-10px);
+    opacity: 0;
+    transform: translateY(-10px);
   }
   to {
-      opacity: 1;
-      transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
+/* Section heading */
 h4 {
-  color: #e7e7e7;
   font-size: 1.5rem;
+  font-weight: 700;
   margin-bottom: 1.5rem;
-  text-align: center;
-  font-family: 'Inter', sans-serif; /* Matching font */
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
+/* Input group wrapper */
 .input-group {
+  width: 100%;
   margin-bottom: 1rem;
+  text-align: left;
 }
 
+/* Labels */
 label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #e7e7e7;
+  color: #e2e8f0;
   font-weight: 500;
-  text-align: center;
+  text-align: left;
 }
-select {
 
-  text-align: center;
-}
+/* Text fields & selects */
+select,
 input[type="text"],
 input[type="number"] {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #334155; /* Darker border */
+  border: 1px solid rgba(99, 102, 241, 0.4);
   border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
   font-size: 1rem;
-  transition: border-color 0.2s ease;
-  background-color: #1e293b; /* Darker input field */
-  color: #e7e7e7;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
 }
 
-input[type="text"]:focus,
-input[type="number"]:focus {
-  outline: none;
-  border-color: #3b82f6; /* Blue focus */
-  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.3);
+select {
+  text-align: center;
 }
 
 input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: #8b5cf6;
   margin-right: 0.5rem;
-  width: 16px;
-  height: 16px;
 }
 
+/* Focus states */
+select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+}
+
+/* Button container */
 .button-group {
   display: flex;
   justify-content: flex-end;
@@ -84,109 +105,121 @@ input[type="checkbox"] {
   margin-top: 2rem;
 }
 
+/* Base button reset & styling */
 button {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 6px;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
   font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow:
+    0 4px 6px -2px rgba(0, 0, 0, 0.2),
+    0 2px 4px -1px rgba(0, 0, 0, 0.1);
 }
 
 button:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 15px -3px rgba(139, 92, 246, 0.4),
+    0 4px 6px   -2px rgba(139, 92, 246, 0.3);
 }
 
 button:active {
   transform: translateY(0);
 }
 
+/* Save & Close buttons */
 .save-button {
-  background-color: #3b82f6; /* Blue to match original theme */
-  color: white;
-}
-
-.save-button:hover {
-  background-color: #60a5fa; /* Lighter blue */
+  /* uses base button styles */
 }
 
 .close-button {
-  background-color: #ef4444; /* Red to match first CSS */
-  color: #ffffff;
+  background: linear-gradient(135deg, #ef4444, #f87171);
 }
 
-.close-button:hover {
-  background-color: #f87171;
-}
-
+/* Read-only fields */
 .read-only {
-  background-color: #334155;
+  background: rgba(255, 255, 255, 0.1);
   color: #777;
   cursor: not-allowed;
 }
 
+/* Chat filter toggle */
 .chat-filter-toggle {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  color: #e2e8f0;
   cursor: pointer;
-  padding: 10px;
-  background-color: #1e293b; /* Darker gray for toggle */
-  border-radius: 5px;
-  display: inline-block;
-  margin-top: 10px;
-  color: white;
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .chat-filter-toggle.enabled {
-  background-color: #3b82f6; /* Blue */
-  color: white;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
 }
 
 .chat-filter-toggle.disabled {
-  background-color: #ef4444; /* Red */
-  color: white;
+  background: linear-gradient(135deg, #ef4444, #f87171);
 }
 
+.chat-filter-toggle:hover {
+  transform: translateY(-1px);
+}
+
+/* Star rating */
 .star-rating {
   display: flex;
-  gap: 5px;
-  cursor: pointer;
+  gap: 0.5rem;
+  justify-content: center;
 }
+
 .star {
-  font-size: 24px;
-  color: #ccc;
-  transition: color 0.2s;
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.2s ease;
 }
+
 .star.selected {
   color: gold;
+  text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
 }
 
-
+/* Select container */
 .select-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  margin-top: 1rem;
 }
 
+/* Roommate dropdown */
 #roommate-select {
-  width: 80%; /* Adjust width as needed */
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #334155;
-  background-color: #1e293b;
-  color: #e7e7e7;
-  font-size: 1rem;
-  text-align: center; /* Ensures text inside is centered */
-}
-
-#roommate-select {
-  display: block;
-  margin: 0 auto;
   width: 80%;
+  max-width: 300px;
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  font-size: 1rem;
   text-align: center;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.content {
-  text-align: center;
+#roommate-select:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
 }
