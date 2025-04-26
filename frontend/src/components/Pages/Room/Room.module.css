@@ -1,86 +1,259 @@
+/* ──────────────
+   ROOT VARIABLES
+────────────────*/
+:root {
+  --banner-h: clamp(4rem, 8vh, 6rem);          /* 80 px → 4–6 rem depending on viewport */
+  --floor-h : clamp(2.5rem, 6vh, 4rem);        /* 50 px → responsive */
+  --gap-s   : 1rem;                            /* 16 px */
+  --gap-m   : 1.5rem;                          /* 24 px */
+  --title-cl: #bc9974;
+  --bg-grad : linear-gradient(#1a1a1a, #2a2a2a);
+  --floor-grad: linear-gradient(to right,#6d5640,#8b6b4f,#6d5640);
+}
 
+/* ──────────────
+   BASE
+────────────────*/
 html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background: #0d0a1a;
 }
 
+/* ──────────────
+   LAYOUT
+────────────────*/
 .appContainer {
-    display: flex;
-    flex-direction: column; /* Ensuring column layout */
-    justify-content: top;  /* Centers the container vertically */
-    align-items: left;  /* Centers the container horizontally */
-    height: 100vh;  /* Full viewport height */
-    width: 100%;  /* Full viewport width */
-    overflow: auto;
-    overflow-x: hidden;
-    box-sizing: border-box;  /* Ensures padding and border are included in width */
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;         /* full viewport height, respects browser UI */
+  width: 100%;
+  overflow-y: auto;
+  box-sizing: border-box;
 }
 
+/* ──────────────
+   ROOM BANNER
+────────────────*/
+/* ──────────────
+   ROOM BANNER — improved scaling & spacing
+────────────────*/
 .roomBanner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    height: 80px;
-    padding: 0 24px;
-    background: linear-gradient(to right, #1a1a1a, #2a2a2a);
-    box-sizing: border-box;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    position: relative;
-    z-index: 10;
-  }
+  /* core layout */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;                     /* let items wrap on very narrow viewports */
   
-  .roomBannerMini {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 16px;
-    height: 100%;
-  }
+  /* responsive sizing */
+  height: var(--banner-h);             /* still uses clamp() from :root */
+  padding-inline: clamp(0.75rem, 4vw, 2.5rem);
+  row-gap: 0.5rem;                     /* vertical breathing room when wrapping */
+  
+  /* styling */
+  width: 100%;
+  background: var(--bg-grad);
+  box-shadow: 0 0.25rem 0.75rem rgba(0,0,0,.15);
+  border-bottom: 1px solid rgba(255,255,255,.05);  /* subtle separator */
+  position: relative;
+  z-index: 10;
+  box-sizing: border-box;
+}
 
+/* child wrapper for left-side icons / mini controls */
+.roomBannerMini {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1.2vw, var(--gap-s));  /* tighten on small, loosen on wide */
+  flex: 0 1 auto;                           /* allow shrink but don’t grow unnecessarily */
+}
+
+/* title scales a bit more aggressively on giant displays */
 .roomTitle {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
-    color: #bc9974;
-    align-self: top;
-    justify-self: center;
-    animation: fadeIn 1.5s ease-in-out;
-  }
+  font-size: clamp(1.75rem, 2.2vw + 0.5rem, 4rem);
+  font-weight: 700;
+  letter-spacing: 0.125rem;
+  color: var(--title-cl);
+  margin: 0;                                /* prevent unexpected extra space */
+  white-space: nowrap;                      /* keep on one line unless wrapped */
+  animation: fadeIn 1.5s ease-in-out;
+  flex: 1 0 auto;                           /* grow to fill remaining width */
+  text-align: center;                       /* keep centered when mini groups grow */
+}
 
+/* optional: icon / button sizing inside the banner */
+.roomBannerMini > * {
+  font-size: clamp(1rem, 1.5vw, 1.75rem);
+  line-height: 1;
+}
+
+/* ──────────────
+   SMALL PHONE PORTRAIT (≤ 360 px)
+────────────────*/
+@media (max-width: 22.5rem) { /* 360 px */
+  .roomTitle {
+    font-size: 1.5rem;
+    letter-spacing: 0.06rem;
+  }
+}
+
+/* ──────────────
+   XL-DESKTOP (≥ 1600 px) — update gaps to match banner tweaks
+────────────────*/
+@media (min-width: 100rem) {  /* 1600 px */
+  :root {
+    --gap-s: 1.25rem;
+    --gap-m: 2rem;
+  }
+  .roomBannerMini {
+    gap: var(--gap-s);
+  }
+}
+
+
+/* ──────────────
+   ROOM BODY
+────────────────*/
 .roomBackground {
-    width: 100vw;
-    height: 80%;
-    flex-grow: 1;
-    margin: 0;
-    align-items: center;
-    position: relative;
-    display: flex;
-    background-color: var(--background-color, black); 
-    box-sizing: border-box;
-    }
+  flex: 1 1 auto;                      /* fill remaining space */
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--background-color, #000);
+  position: relative;
+  box-sizing: border-box;
+}
 
 .roomFloor {
-    width: 100%;
-    height: 50px;
-    background: linear-gradient(to right, #6d5640, #8b6b4f, #6d5640);
-    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3);
-  }
-/* Messages container */
-.messages-container {
-    height: 400px; /* Fixed height */
-    max-height: 400px; /* Ensure it does not grow beyond this */
-    overflow-y: auto; /* Enables vertical scrolling */
-    overflow-x: hidden; /* Prevents horizontal scrolling */
-    padding: 10px;
-    margin-bottom: 20px;
-    background-color: #fff;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    display: flex;
-    flex-direction: column-reverse; /* Newest messages at the bottom */
+  width: 100%;
+  height: var(--floor-h);
+  background: var(--floor-grad);
+  box-shadow: inset 0 0.125rem 0.3125rem rgba(0,0,0,.3);
 }
+
+/* ──────────────
+   MESSAGES
+────────────────*/
+.messages-container {
+  /* take up to 40 vh but never exceed 480 px */
+  height: clamp(18rem, 40vh, 30rem);          /* 30 rem ≈ 480 px */
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--gap-s);
+  margin-bottom: var(--gap-m);
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0.375rem;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+/* ──────────────
+   XL-DESKTOP (≥ 1600 px)
+────────────────*/
+@media (min-width: 100rem) {  /* 1600 px */
+  :root {
+    --gap-s: 1.25rem;
+    --gap-m: 2rem;
+  }
+  .messages-container {
+    /* give chat a bit more vertical room on very tall displays */
+    height: clamp(22rem, 35vh, 36rem);
+  }
+}
+
+/* ───────────────────────────────────────────────
+   PROFESSIONAL ROOM-BANNER RE-STYLE
+   (add AFTER your current stylesheet)
+─────────────────────────────────────────────────*/
+
+/* 1 ▸ palette & elevation tweaks */
+:root{
+  /* banner */
+  --banner-grad: linear-gradient(135deg,#191622 0%,#0d0a1a 60%,#191622 100%);
+  --banner-border: rgba(255,255,255,.07);
+  /* accent */
+  --accent-100:#8a72ff;
+  --accent-200:#6b4dff;
+  --accent-300:#5537ff;
+  /* neutral */
+  --surface-100:#262335;
+  --surface-200:#1d1a29;
+  --on-surface:#e8e6f5;
+  /* state */
+  --danger:#ff3b30;
+}
+
+/* 2 ▸ new utility token for *all* square buttons in the banner */
+.iconBtn{
+  --size:clamp(2.25rem,2.6vw,2.75rem);
+  inline-size:var(--size);
+  block-size:var(--size);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:.55rem;
+  background:linear-gradient(135deg,var(--accent-100),var(--accent-200));
+  color:var(--on-surface);
+  box-shadow:0 .15rem .45rem rgba(0,0,0,.35);
+  cursor:pointer;
+  transition:transform .15s ease,box-shadow .15s ease,background .15s ease;
+}
+.iconBtn:hover{
+  transform:translateY(-1px) scale(1.05);
+  box-shadow:0 .35rem .65rem rgba(0,0,0,.45);
+  background:linear-gradient(135deg,var(--accent-200),var(--accent-300));
+}
+.iconBtn svg, .iconBtn i{
+  inline-size:55%;
+  block-size:55%;
+}
+
+/* 3 ▸ tiny badge for unread counts, easily re-usable */
+.badge{
+  position:absolute;
+  top:-0.25rem;
+  right:-0.25rem;
+  min-inline-size:1.1rem;
+  padding-inline:.25em;
+  border-radius:999px;
+  background:var(--danger);
+  color:#fff;
+  font-size:.65rem;
+  font-weight:600;
+  line-height:1.1rem;
+  text-align:center;
+}
+
+/* 4 ▸ banner container polish */
+.roomBanner{
+  background:var(--banner-grad);
+  border-bottom:1px solid var(--banner-border);
+  backdrop-filter:blur(8px);         /* subtle glass effect */
+  -webkit-backdrop-filter:blur(8px); /* Safari */
+  gap:clamp(.5rem,1.5vw,1.25rem);
+  padding-block:0;                   /* remove accidental vertical drift */
+}
+
+/* 5 ▸ title refinement */
+.roomTitle{
+  color:var(--on-surface);
+  text-shadow:0 1px 3px rgba(0,0,0,.35);
+  letter-spacing:.045em;
+}
+
+/* 6 ▸ icon groups */
+.roomBannerMini > *{                 /* left-hand quick-actions */
+  color:var(--on-surface);
+  inline-size:clamp(1.8rem,2.3vw,2.4rem);
+  block-size:clamp(1.8rem,2.3vw,2.4rem);
+}
+
+/* ───────────────────────────────────────────────
+   OPTIONAL – example markup (abbreviated)
+─────────────────────────────────────────────────*/
