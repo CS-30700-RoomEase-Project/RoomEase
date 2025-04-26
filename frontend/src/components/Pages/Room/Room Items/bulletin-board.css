@@ -1,131 +1,115 @@
+/* ─────────────────────────────
+   BULLETIN-BOARD  (responsive)
+─────────────────────────────*/
 .bulletin-board-container {
-    position: relative;
-    width: 400px; /* Increased from 150px */
-    height: 160px; /* Increased from 120px */
-    margin: 20px;
-    transition: transform 0.3s ease;
-  }
-  
-  .bulletin-board-container:hover {
-    transform: scale(1.03);
-  }
-  
-  .bulletin-frame {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background-color: var(--board-color, #593f29);
-    border-radius: 4px;
-    box-shadow:
-    inset 0 2px 8px rgba(0, 0, 0, 0.4),
-    -12px 12px 24px 2px rgba(0, 0, 0, 0.5);
-    padding: 5px;
-  }
-  
-  .bulletin-cork {
-    width: 100%;
-    height: 100%;
-    background-color: #f9dfb4;
-    border-radius: 2px;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  .bulletin-cork::before {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-      radial-gradient(circle at 30% 40%, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-      radial-gradient(circle at 50% 60%, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-      radial-gradient(circle at 70% 80%, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-      radial-gradient(circle at 90% 10%, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
-  }
-  
-  .bulletin-note {
-    position: absolute;
-    width: 55px; /* Increased from 40px */
-    height: 55px; /* Increased from 40px */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transform: rotate(var(--rotation, -5deg));
-  }
-  
-  .bulletin-note.yellow {
-    background-color: #fff9c4;
-    top: 15px;
-    left: 20px;
-    --rotation: -5deg;
-  }
-  
-  .bulletin-note.blue {
-    background-color: #bbdefb;
-    top: 25px;
-    right: 20px;
-    --rotation: 5deg;
-  }
-  
-  .bulletin-note.green {
-    background-color: #c8e6c9;
-    bottom: 15px;
-    left: 30px;
-    --rotation: 3deg;
-  }
-  
-  .note-lines {
-    position: relative;
-    width: 80%;
-    height: 60%;
-    margin: 8px auto;
-  }
-  
-  .note-lines::before,
-  .note-lines::after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 1px;
-    background-color: rgba(0, 0, 0, 0.2);
-  }
-  
-  .note-lines::before {
-    top: 33%;
-  }
-  
-  .note-lines::after {
-    top: 66%;
-  }
-  
-  .bulletin-pin {
-    position: absolute;
-    width: 8px; /* Increased from 6px */
-    height: 8px; /* Increased from 6px */
-    border-radius: 50%;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  }
-  
-  .bulletin-pin.red {
-    background-color: #e74c3c;
-    top: 10px;
-    left: 40px;
-  }
-  
-  .bulletin-pin.blue {
-    background-color: #3498db;
-    top: 20px;
-    right: 40px;
-  }
-  
-  .bulletin-pin.green {
-    background-color: #2ecc71;
-    bottom: 10px;
-    left: 50px;
-  }
-  
-  .bulletin-pin.yellow {
-    background-color: #f1c40f;
-    bottom: 20px;
-    right: 30px;
-  }
-  
+  /* the board’s WIDTH drives every other size --------------------------------*/
+  --board-w   : clamp(15rem, 22vw, 28rem);   /* 240 px ←→ 448 px on most desktops */
+  --note-s    : calc(var(--board-w) * 0.14); /* 14 % of board width  → ~55 px      */
+  --pin-s     : calc(var(--board-w) * 0.02); /* 2 %  of board width  → ~8 px       */
+
+  position   : relative;
+  width      : var(--board-w);
+  aspect-ratio: 5 / 2;                       /* keeps ~400×160 ratio */
+  margin     : 1.25rem;                      /* ~20 px gap at default size */
+  transition : transform .3s ease;
+}
+
+.bulletin-board-container:hover { transform: scale(1.03); }
+
+/* FRAME & CORK ---------------------------------------------------------------*/
+.bulletin-frame {
+  position : relative;
+  width    : 100%;
+  height   : 100%;
+  background-color: var(--board-color, #593f29);
+  border-radius: .25rem;
+  box-shadow:
+    inset 0 .125rem .5rem rgba(0,0,0,.4),
+    -.75rem .75rem 1.5rem .125rem rgba(0,0,0,.5);
+  padding  : .3125rem;                       /* 5 px default */
+  box-sizing: border-box;
+}
+
+.bulletin-cork {
+  width : 100%;
+  height: 100%;
+  background: #f9dfb4;
+  border-radius: .125rem;
+  position: relative;
+  overflow: hidden;
+}
+
+/* cork grain */
+.bulletin-cork::before {
+  content   : "";
+  position  : absolute;
+  inset     : 0;
+  background-size: 1.25rem 1.25rem;          /* 20 px default */
+  background:
+    radial-gradient(circle at 10% 20%, rgba(0,0,0,.05) 1px, transparent 1px),
+    radial-gradient(circle at 30% 40%, rgba(0,0,0,.05) 1px, transparent 1px),
+    radial-gradient(circle at 50% 60%, rgba(0,0,0,.05) 1px, transparent 1px),
+    radial-gradient(circle at 70% 80%, rgba(0,0,0,.05) 1px, transparent 1px),
+    radial-gradient(circle at 90% 10%, rgba(0,0,0,.05) 1px, transparent 1px);
+}
+
+/* NOTES ----------------------------------------------------------------------*/
+.bulletin-note {
+  position: absolute;
+  width   : var(--note-s);
+  height  : var(--note-s);
+  box-shadow: 0 .125rem .25rem rgba(0,0,0,.1);
+  transform : rotate(var(--rotation,-5deg));
+}
+
+/* individual notes use %-based placement so they follow board size ----------*/
+.bulletin-note.yellow {
+  background: #fff9c4;
+  top : 10%;
+  left: 5%;
+  --rotation: -5deg;
+}
+.bulletin-note.blue {
+  background: #bbdefb;
+  top : 16%;
+  right: 5%;
+  --rotation: 5deg;
+}
+.bulletin-note.green {
+  background: #c8e6c9;
+  bottom: 9%;
+  left  : 7.5%;
+  --rotation: 3deg;
+}
+
+/* faint ruled lines on each note */
+.note-lines {
+  position: relative;
+  width : 80%;
+  height: 60%;
+  margin: 8% auto;
+}
+.note-lines::before,
+.note-lines::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 1px;
+  background: rgba(0,0,0,.2);
+}
+.note-lines::before { top: 33%; }
+.note-lines::after  { top: 66%; }
+
+/* PINS -----------------------------------------------------------------------*/
+.bulletin-pin {
+  position: absolute;
+  width : var(--pin-s);
+  height: var(--pin-s);
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,.2);
+}
+
+.bulletin-pin.red    { background:#e74c3c; top: 6%;  left: 10%; }
+.bulletin-pin.blue   { background:#3498db; top: 12%; right: 10%; }
+.bulletin-pin.green  { background:#2ecc71; bottom: 6%;  left: 12.5%; }
+.bulletin-pin.yellow { background:#f1c40f; bottom: 12%; right: 7.5%; }

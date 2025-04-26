@@ -1,60 +1,157 @@
+/* CosmeticPopup.module.css */
+
+/* Overlay/backdrop */
 .cosmetic-popup .popup-overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
+    inset: 0;
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(4px);
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 10rem;
     z-index: 1000;
-}
-
-.cosmetic-popup .popup-content {
-    background: white;
-    padding: 20px;
-    border-radius: 12px;
-    width: 600px;
+    animation: fadeIn 0.2s ease;
+    box-sizing: border-box;
+  }
+  
+  /* Fade-in animation */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  
+  /* Popup content panel */
+  /* Popup content panel */
+  .cosmetic-popup .popup-content {
+    background: rgba(30, 41, 59, 0.8);
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    backdrop-filter: blur(4px);
+    border-radius: 0.75rem;
+    padding: 6rem;
+    width: 70%;            /* fill overlay inner space */
+    /* max-width: 600px;      but never exceed this */
     max-height: 80vh;
     overflow-y: auto;
-    color: white;
-}
-
-.color-store {
+    box-shadow:
+      0 10px 15px -3px rgba(0, 0, 0, 0.2),
+      0 4px 6px   -2px rgba(0, 0, 0, 0.1);
+    color: #e2e8f0;
+    box-sizing: border-box;
+    margin: 4rem;             /* centered by overlay */
+    padding-left: 4rem;
+  }
+  
+  /* Color store grid */
+  .cosmetic-popup .color-store {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-}
-
-.color-block {
-    width: 100px;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  /* Individual color block */
+  .cosmetic-popup .color-block {
+    flex: 1 1 4rem;
+    min-width: 4rem;
     text-align: center;
-}
-
-.color-preview {
-    width: 40px;
-    height: 40px;
-    border-radius: 4px;
-    margin: auto;
-    border: 1px solid #ccc;
-}
-
-.selection-grid {
-    margin-top: 20px;
-}
-
-.selector {
-    margin-bottom: 10px;
-}
-
-.close-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-}
-
-.tabs button.active {
-    background-color: lightblue;
+  }
+  
+  /* Preview swatch */
+  .cosmetic-popup .color-preview {
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0 auto 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-sizing: border-box;
+  }
+  
+  /* Selection grid wrapper */
+  .cosmetic-popup .selection-grid {
+    margin-top: 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr));
+    gap: 1rem;
+    box-sizing: border-box;
+  }
+  
+  /* Selector label + control */
+  .cosmetic-popup .selector {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .cosmetic-popup .selector label {
+    font-size: 1rem;
+    color: #e2e8f0;
+    font-weight: 500;
+  }
+  
+  .cosmetic-popup .selector select {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    border: 1px solid rgba(99, 102, 241, 0.4);
+    background: rgba(255, 255, 255, 0.1);
+    color: #e2e8f0;
+    font-size: 1rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+  }
+  
+  .cosmetic-popup .selector select:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+  }
+  
+  /* Close button */
+  .cosmetic-popup .close-button {
+    all: unset;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, #ef4444, #f87171);
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow:
+      0 4px 6px -2px rgba(0, 0, 0, 0.2),
+      0 2px 4px -1px rgba(0, 0, 0, 0.1);
+    box-sizing: border-box;
+  }
+  
+  .cosmetic-popup .close-button:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 10px 15px -3px rgba(239, 68, 68, 0.4),
+      0 4px 6px   -2px rgba(239, 68, 68, 0.3);
+  }
+  
+  /* Tabs active state */
+  .cosmetic-popup .tabs button.active {
+    background: linear-gradient(135deg, #8b5cf6, #6366f1);
     transform: scale(1.05);
-    transition: transform 0.2s, background-color 0.2s;
-}
+    transition: transform 0.2s ease, background 0.2s ease;
+    color: #fff;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .cosmetic-popup .popup-content {
+      padding: 1.5rem;
+      width: calc(100% - 2rem);
+    }
+    .cosmetic-popup .color-preview {
+      width: 2rem;
+      height: 2rem;
+    }
+    .cosmetic-popup .color-block { min-width: 3.5rem; }
+  }
+  
