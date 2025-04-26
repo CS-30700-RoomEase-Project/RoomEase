@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Avatar from "../../Shared_components/AvatarButton/AvatarButton";
 import GroupChat from "../../Shared_components/Messages/GroupChat";
@@ -15,12 +15,12 @@ import Puppy from "./Room Items/PuppyCosmetic/Puppy";
 
 import BulletinPopup from "../../Shared_components/BulletinPopup/BulletinPopup";
 import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
-import RoomSettingsPopup from "../../Shared_components/RoomSettings/RoomSettingsPopup";
-import CosmeticStorePopup from "./CosmeticStorePopup";
+import LeaderboardPopup from "../../Shared_components/LeaderboardPopup/LeaderboardPopup";
 import QuestBell from "../../Shared_components/QuestBell/QuestBell";
 import RoomLeaderboardPopup from "../../Shared_components/RoomLeaderboard/LeaderboardPopup";
+import RoomSettingsPopup from "../../Shared_components/RoomSettings/RoomSettingsPopup";
+import CosmeticStorePopup from "./CosmeticStorePopup";
 import "./Room.css";
-import LeaderboardPopup from "../../Shared_components/LeaderboardPopup/LeaderboardPopup";
 
 function Room() {
   const { roomId } = useParams();
@@ -351,13 +351,53 @@ function Room() {
             style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }}
           />
           <QuestBell></QuestBell>
-          <RoomLeaderboardPopup room={roomData} />
-          <button onClick={() => setCosmeticPopupOpen(true)}>
-            Open Cosmetic Store
-          </button>
-          <h1 className="roomTitle">{roomData.roomName}</h1>
+          <RoomLeaderboardPopup room={roomData} /> 
+          <h1 className="roomTitle">{roomData.roomName}</h1> 
           <div className="roomBannerMini">
-            <button onClick={() => setLeaderboardOpen(true)}>Wrapped</button>
+          <button
+              aria-label="Open Cosmetic Store"
+              onClick={() => setCosmeticPopupOpen(true)}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M6 7h12l1 13H5L6 7z" />
+                <path d="M9 7V5a3 3 0 0 1 6 0v2" />
+              </svg>
+            </button>
+
+            <button
+              aria-label="Open Wrapped / Leaderboard"
+              onClick={() => setLeaderboardOpen(true)}
+            >
+
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M3 21h18" />
+              <rect x="6"  y="11" width="3" height="10" rx="1" />
+              <rect x="11" y="6"  width="3" height="15" rx="1" />
+              <rect x="16" y="14" width="3" height="7"  rx="1" />
+            </svg>
+
+            </button>
+
             {roomData.settings[7] && (
               <RateButton style={{ boxShadow: "0 2px 4px rgba(0,0,0,0.1)" }} />
             )}
