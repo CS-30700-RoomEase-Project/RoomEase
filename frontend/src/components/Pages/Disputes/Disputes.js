@@ -84,7 +84,7 @@ export default function Disputes() {
 
       <div className={styles.voteContainer}>
         {voters.map((id, idx) => {
-          const label = `User ${idx + 1}: ${id.slice(-4)}`;
+          const label = `User ${idx + 1}`;
           return (
             <div key={id} className={styles.voteOption}>
               <button
