@@ -42,7 +42,7 @@ export default function RoomLeaderboardPopup({ room }) {
           <p className={styles.description}>
             See who’s been the most active and earned the most points!
           </p>
-          {leaderboard.length > 0 ? (
+          {leaderboard.length > 1 ? (
             <ul className={styles.leaderboardList}>
               {leaderboard.map((entry, index) => (
                 <li key={index} className={styles.leaderboardItem}>
