@@ -65,14 +65,7 @@ roomease/
 │   └── src/
 │       ├── components/
 │       │   ├── Pages/
-│       │   │   ├── Dashboard.js
-│       │   │   ├── RoomState/
-│       │   │   │   ├── RoomState.js
-│       │   │   │   └── RoomState.module.css
-│       │   │   └── SubmitDispute/
-│       │   │       └── SubmitDispute.js
 │       │   └── RoomItems/
-│       │       └── Clock.js
 │       ├── SharedMethods/
 │       │   └── CallService.js
 │       └── App.js
