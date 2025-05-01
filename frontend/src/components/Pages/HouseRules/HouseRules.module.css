@@ -1,73 +1,114 @@
+/* Animated dashboard gradient */
+@keyframes gradientBackground {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Page container */
 .container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    height: 100vh;
-    width: 100%;
-    background: linear-gradient(to right, #bc9974, #f7e4d2);
-    box-sizing: border-box;
-  }
-  
-  h2 {
-    color: #8f64f4;
-    font-size: 2rem;
-    margin-bottom: 20px;
-  }
-  
-  .rulesList {
-    width: 80%;
-    max-width: 600px;
-    background: #171616;
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  }
-  
-  .ruleItem {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .removeButton {
-    background-color: red;
-    color: white;
-    padding: 5px 10px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .removeButton:hover {
-    background-color: darkred;
-  }
-  
-  .formGroup {
-    margin-top: 20px;
-    display: flex;
-    gap: 10px;
-  }
-  
-  .input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 1rem;
-  }
-  
-  .addButton {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .addButton:hover {
-    background-color: #0056b3;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  min-height: 100vh;
+  width: 100%;
+  background: linear-gradient(135deg, #120a24, #1a1133, #0d0a1a);
+  background-size: 400% 400%;
+  animation: gradientBackground 15s ease infinite;
+  color: #f8fafc;
+  box-sizing: border-box;
+}
+
+/* Section heading */
+h2 {
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Rules list container */
+.rulesList {
+  width: 80%;
+  max-width: 600px;
+  background: rgba(30, 41, 59, .95);
+  border: 1px solid rgba(99, 102, 241, .2);
+  border-radius: 1rem;
+  padding: 1.25rem;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,.5),
+              0 0 30px rgba(139,92,246,.2);
+}
+
+/* Individual rule item */
+.ruleItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255,255,255,.15);
+}
+.ruleItem:last-child {
+  border-bottom: none;
+}
+
+/* Remove button (danger) */
+.removeButton {
+  padding: .6rem 1.25rem;
+  font-weight: 500;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: .5rem;
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
+.removeButton:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+}
+
+/* Form group layout */
+.formGroup {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+/* Text input */
+.input {
+  flex: 1;
+  padding: .65rem .75rem;
+  font-size: 1rem;
+  color: #f8fafc;
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.25);
+  border-radius: .5rem;
+  box-sizing: border-box;
+}
+.input:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 6px rgba(139,92,246,.5);
+}
+
+/* Add button (primary) */
+.addButton {
+  padding: .75rem 1.5rem;
+  font-weight: 500;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  color: #f8fafc;
+  border: none;
+  border-radius: .5rem;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.addButton:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 15px -3px rgba(139, 92, 246, .4),
+    0 4px 6px -2px rgba(139, 92, 246, .3);
+}
