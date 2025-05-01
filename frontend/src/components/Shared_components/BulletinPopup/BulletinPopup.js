@@ -7,8 +7,8 @@ import "reactjs-popup/dist/index.css";
 import style from "./BulletinPopup.module.css";
 import "../../Pages/Room/Room Items/RoomItems.css";
 
-import QHLogo          from "./QuietHoursIcon.png";
-import NotesImage      from "./notes.png";
+import QHLogo          from "./QuietHours.png";
+import NotesImage      from "./RoomNotes.png";
 import RoomClausesIcon from "./RoomClauses.png";
 import MemoriesIcon    from "./Memories.png";
 
