@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react';
-import Popup from 'reactjs-popup';
-import styles from './ChorePointsPopup.module.css';
+import React, { useState, useEffect } from "react";
+import Popup from "reactjs-popup";
+import styles from "./ChorePointsPopup.module.css";
 
 const ChorePointsPopup = ({ isOpen, onClose, roomId }) => {
-  const [difficultyLevels, setDifficultyLevels] = useState({ Easy: 3, Medium: 5, Hard: 7 });
+  const [difficultyLevels, setDifficultyLevels] = useState({
+    Easy: 3,
+    Medium: 5,
+    Hard: 7,
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [points, setPoints] = useState({});
@@ -11,33 +15,36 @@ const ChorePointsPopup = ({ isOpen, onClose, roomId }) => {
   useEffect(() => {
     const fetchData = async () => {
       if (!roomId || !isOpen) return;
-  
+
       setLoading(true);
       setError(null);
-  
+
       try {
         // First API call: difficulty levels
-        const difficultyRes = await fetch(`http://localhost:5001/api/chores/getPoints/${roomId}`);
-        if (!difficultyRes.ok) throw new Error("Failed to fetch difficulty levels");
+        const difficultyRes = await fetch(
+          `http://localhost:5001/api/chores/getPoints/${roomId}`
+        );
+        if (!difficultyRes.ok)
+          throw new Error("Failed to fetch difficulty levels");
         const difficultyData = await difficultyRes.json();
         setDifficultyLevels(difficultyData.chorePoints);
-  
+
         // Second API call: room points
-        const pointsRes = await fetch(`http://localhost:5001/api/room/points/${roomId}`);
+        const pointsRes = await fetch(
+          `http://localhost:5001/api/room/points/${roomId}`
+        );
         if (!pointsRes.ok) throw new Error("Failed to fetch room points");
         const pointsData = await pointsRes.json();
         setPoints(pointsData.points); // Adjust based on actual response structure
-  
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-  
+
     fetchData();
   }, [roomId, isOpen]);
-  
 
   const handleChange = (e, level) => {
     setDifficultyLevels((prev) => ({
@@ -48,11 +55,14 @@ const ChorePointsPopup = ({ isOpen, onClose, roomId }) => {
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/api/chores/putPoints/${roomId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(difficultyLevels),
-      });
+      const response = await fetch(
+        `http://localhost:5001/api/chores/putPoints/${roomId}`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(difficultyLevels),
+        }
+      );
 
       if (!response.ok) throw new Error("Failed to update difficulty levels");
 
@@ -68,7 +78,7 @@ const ChorePointsPopup = ({ isOpen, onClose, roomId }) => {
       {(close) => (
         <div className={styles.popupContainer}>
           <h2>Adjust Chore Points</h2>
-  
+
           {loading ? (
             <p>Loading...</p>
           ) : error ? (
@@ -86,7 +96,7 @@ const ChorePointsPopup = ({ isOpen, onClose, roomId }) => {
                   ))}
                 </ul>
               </div>
-  
+
               {/* Inputs for chore point levels */}
               <div className={styles.inputs}>
                 {Object.keys(difficultyLevels).map((level) => (
@@ -96,12 +106,17 @@ const ChorePointsPopup = ({ isOpen, onClose, roomId }) => {
                       type="number"
                       value={difficultyLevels[level]}
                       onChange={(e) => handleChange(e, level)}
+                      style={{ color: "black" }}
                     />
                   </div>
                 ))}
                 <div className={styles.buttonGroup}>
-                  <button className={styles.saveButton} onClick={handleSubmit}>Save</button>
-                  <button className={styles.cancelButton} onClick={close}>Cancel</button>
+                  <button className={styles.saveButton} onClick={handleSubmit}>
+                    Save
+                  </button>
+                  <button className={styles.cancelButton} onClick={close}>
+                    Cancel
+                  </button>
                 </div>
               </div>
             </>
@@ -110,7 +125,6 @@ const ChorePointsPopup = ({ isOpen, onClose, roomId }) => {
       )}
     </Popup>
   );
-  
 };
 
 export default ChorePointsPopup;
