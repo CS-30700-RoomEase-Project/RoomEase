@@ -1,16 +1,16 @@
 // src/Shared_components/BulletinPopup/BulletinPopup.js
 
-import React, { useState, useEffect } from "react";
-import Popup from "reactjs-popup";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
-import style from "./BulletinPopup.module.css";
 import "../../Pages/Room/Room Items/RoomItems.css";
+import style from "./BulletinPopup.module.css";
 
-import QHLogo          from "./QuietHours.png";
-import NotesImage      from "./RoomNotes.png";
+import MemoriesIcon from "./Memories.png";
+import QHLogo from "./QuietHours.png";
 import RoomClausesIcon from "./RoomClauses.png";
-import MemoriesIcon    from "./Memories.png";
+import NotesImage from "./RoomNotes.png";
 
 import RoomClausesPopup from "../../Pages/RoomClauses/RoomClauses";
 
@@ -77,37 +77,30 @@ export default function BulletinPopup({
     onClose();
     navigate(`/room/${roomId}/memories`);
   };
-  /* Short helpers */
   const gotoHours   = () => navigate(`/quiet-hours/${roomId}`);
   const gotoRules   = () => navigate(`/house-rules/${roomId}`);
   const openNotes   = () => onOpenNotes?.();
-    
 
-    const awardQuestPoints = async (userId, roomId, questType) => {
-        try {
-            const response = await fetch('http://localhost:5001/api/room/award-quest-points', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json', // Ensures the body is JSON
-                },
-                body: JSON.stringify({
-                    userId,
-                    roomId,
-                    questType
-                }),
-            });
-    
-            const result = await response.json();
-    
-            if (response.ok) {
-                console.log('Points awarded:', result.message);
-            } else {
-                console.error('Error:', result.message);
-            }
-        } catch (error) {
-            console.error('Error calling API:', error);
-        }
-    };
+  const awardQuestPoints = async (userId, roomId, questType) => {
+    try {
+      const response = await fetch('http://localhost:5001/api/room/award-quest-points', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId, roomId, questType }),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        console.log('Points awarded:', result.message);
+      } else {
+        console.error('Error:', result.message);
+      }
+    } catch (error) {
+      console.error('Error calling API:', error);
+    }
+  };
 
   return (
     <>
@@ -127,19 +120,26 @@ export default function BulletinPopup({
 
                 {/* Quiet Hours */}
                 {settings[0] && (
-                  <div className={style.quietHoursWrapper}>
+                  <div
+                    className={style.quietHoursWrapper}
+                    title="Quiet Hours"
+                    onClick={gotoHours}
+                  >
                     <img
                       src={QHLogo}
                       className={style.quietHours}
                       alt="Quiet Hours"
-                      onClick={gotoHours}
                     />
                   </div>
                 )}
 
                 {/* House Rules */}
                 {settings[1] && (
-                  <div className={style.rulesBox} onClick={gotoRules}>
+                  <div
+                    className={style.rulesBox}
+                    title="View House Rules"
+                    onClick={gotoRules}
+                  >
                     <div className={style.rulesList}>
                       {rules.map((r, i) => (
                         <p key={i} className={style.ruleItem}>
@@ -147,7 +147,6 @@ export default function BulletinPopup({
                         </p>
                       ))}
                     </div>
-                    <p className={style.viewMore}>Click to view more</p>
                   </div>
                 )}
 
@@ -198,7 +197,6 @@ export default function BulletinPopup({
         </div>
       </Popup>
 
-      {/* Room Clauses Editor */}
       {showClauses && (
         <RoomClausesPopup
           isOpen={showClauses}
