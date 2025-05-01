@@ -1,129 +1,186 @@
+/* Page container — uses dashboard-style animated gradient */
+@keyframes gradientBackground {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 .container {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  padding: 20px;
+  padding: 1rem;
   height: 100vh;
   width: 100%;
-  background: linear-gradient(to right, #bc9974, #f7e4d2);
+  background: linear-gradient(135deg, #120a24, #1a1133, #0d0a1a);
+  background-size: 400% 400%;
+  animation: gradientBackground 15s ease infinite;
   box-sizing: border-box;
+  color: #f8fafc;
 }
 
+/* Primary “Open” button — matches .addButton styling */
 .openPopupButton {
-  padding: 12px 20px;
+  padding: .75rem 1.5rem;
   font-size: 1rem;
-  background-color: #bc9974;
-  color: white;
+  font-weight: 500;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  color: #f8fafc;
   border: none;
-  border-radius: 5px;
+  border-radius: .5rem;
   cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
 }
-
 .openPopupButton:hover {
-  background-color: #a67c52;
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 15px -3px rgba(139, 92, 246, .4),
+    0 4px 6px -2px rgba(139, 92, 246, .3);
 }
 
+/* Overlay — matches theme’s popupOverlay */
 .popupOverlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
+  inset: 0;
+  background: rgba(0, 0, 0, .55);
+  backdrop-filter: blur(4px);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 1000;
+  animation: fadeIn .2s ease;
 }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
+/* Popup content — adopts theme’s popupMenu look */
 .popupContent {
-  background-color: white;
-  padding: 25px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
+  background: rgba(30, 41, 59, .95);
+  border: 1px solid rgba(99, 102, 241, .2);
+  border-radius: 1rem;
   width: 90%;
-  max-width: 400px;
+  max-width: 500px;
+  padding: 2rem;
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,.5), 0 0 30px rgba(139,92,246,.2);
+  color: #f8fafc;
+  overflow-y: auto;
+  animation: modalSlideIn .3s cubic-bezier(.175,.885,.32,1.275);
+}
+@keyframes modalSlideIn {
+  from { transform: translateY(-20px) scale(.96); opacity: 0; }
+    to { transform: translateY(0)   scale(1);  opacity: 1; }
 }
 
+/* Popup heading with gradient text */
 .popupContent h2 {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: #bc9974;
+  font-size: 1.75rem;
+  font-weight: 600;
+  margin: 0 0 1rem;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
+/* Form layout */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 1rem;
   width: 100%;
 }
-
 .form label {
-  font-weight: bold;
-  color: black;
+  display: block;
+  margin-bottom: .4rem;
+  font-weight: 500;
+  color: #f8fafc;
 }
 
+/* Inputs & selects — matches theme’s form elements */
 .form input,
 .form select {
   width: 100%;
-  padding: 12px;
-  margin-top: 5px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
   box-sizing: border-box;
+  padding: .65rem .75rem;
+  font-size: 1rem;
+  color: #f8fafc;
+  background: rgba(255, 255, 255, .08);
+  border: 1px solid rgba(255, 255, 255, .25);
+  border-radius: .5rem;
+}
+.form input:focus,
+.form select:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 6px rgba(139, 92, 246, .5);
 }
 
+/* Time-format toggle buttons */
 .timeFormatContainer {
   display: flex;
   justify-content: center;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 1rem;
+  margin-top: .5rem;
 }
-
 .timeFormatButton {
-  padding: 10px;
-  background-color: #f7e4d2;
-  color: black;
-  border: 2px solid #bc9974;
-  border-radius: 4px;
-  cursor: pointer;
+  padding: .5rem 1rem;
   font-size: 1rem;
+  border-radius: .5rem;
+  border: 1px solid rgba(255, 255, 255, .25);
+  background: rgba(255, 255, 255, .08);
+  color: #f8fafc;
+  cursor: pointer;
+  transition: background .2s, border .2s, transform .2s, box-shadow .2s;
 }
-
+.timeFormatButton:hover:not(.active) {
+  background: rgba(255, 255, 255, .12);
+}
 .timeFormatButton.active {
-  background-color: #bc9974;
-  color: white;
-}
-
-.timeFormatButton:hover {
-  background-color: #a67c52;
-}
-
-.submitButton {
-  background-color: #007bff;
-  color: white;
-  padding: 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.submitButton:hover {
-  background-color: #0056b3;
-}
-
-.closePopupButton {
-  margin-top: 10px;
-  background-color: red;
-  color: white;
-  padding: 10px;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
   border: none;
-  border-radius: 4px;
-  cursor: pointer;
+  color: #f8fafc;
+}
+.timeFormatButton.active:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 12px -2px rgba(139, 92, 246, .4),
+    0 3px  5px -1px rgba(139, 92, 246, .3);
 }
 
+/* Primary submit button */
+.submitButton {
+  margin-top: 1rem;
+  padding: .75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  color: #f8fafc;
+  border: none;
+  border-radius: .5rem;
+  cursor: pointer;
+  transition: transform .2s, box-shadow .2s;
+}
+.submitButton:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 15px -3px rgba(139, 92, 246, .4),
+    0 4px  6px -2px rgba(139, 92, 246, .3);
+}
+
+/* Danger “close” button */
+.closePopupButton {
+  margin-top: .75rem;
+  padding: .6rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: .5rem;
+  cursor: pointer;
+  transition: background .2s, transform .2s;
+}
 .closePopupButton:hover {
-  background-color: darkred;
+  background: #dc2626;
+  transform: translateY(-2px);
 }
