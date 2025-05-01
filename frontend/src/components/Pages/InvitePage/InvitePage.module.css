@@ -1,157 +1,210 @@
+/* ───────────────────────────────────────────────
+   INVITE PAGE – THEMED TO DASHBOARD STYLE
+   (builds on the global styles you pasted above)
+─────────────────────────────────────────────────*/
 
-html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-
-}
-
+/* Root container — re-uses the animated gradient from billsAppContainer */
 .invitePageContainer {
     display: flex;
-    flex-direction: column; /* Ensuring column layout */
-    justify-content: top;  
-    align-items: left;  
-    height: 100vh;  /* Full viewport height */
-    width: 100%;  
-    overflow: auto;
+    flex-direction: column;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #120a24, #1a1133, #0d0a1a);
+    background-size: 400% 400%;
+    animation: gradientBackground 15s ease infinite;        /* keyframes already declared globally */
+    color: #f8fafc;
     overflow-x: hidden;
-    box-sizing: border-box;  /* Ensures padding and border are included in width */
-}
-
-.invitePageBanner {
-    display: flex;
-    justify-content: center; /* Centers items horizontally */
-    align-items: center;  /* Centers items vertically */
-    width: 100%;
-    height: 15%;
-    padding: 10px;
-    background: black; 
-    box-sizing: border-box;
-}
-
-.invitePageTitle {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
-    color: #bc9974;
-    animation: fadeIn 1.5s ease-in-out;
-}
-
-.invitePageContent {
-    width: 100vw;
-    height: 85%;
-    flex-grow: 1;
-    margin: 0;
-    align-items: center;
-    justify-content: start;
     position: relative;
-    display: flex;
-    flex-direction: column;
-    background-color: black;
-    box-sizing: border-box;
-}
-
-.invitePageInvites {
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: start;
-    display: flex;
-    flex-direction: column;
-}
-
-.inputContainer {
-    width: 85vw;
-    height: 20%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-}
-.inputBox {
-    width: 80%;
-    padding: 5px !important;
-    margin: 10px 0;
-    border-radius: 5px;
-}
+  }
   
-.inviteButton {
-    width: 20%;
-    background: tan;
-    cursor: pointer;
-}
-
-.inviteButtonText {
-    width: 90%;
-    height: 90%;
-    font-size: 0.5rem;
-    font-weight: bold;
-    color: white;
-}
-
-/* CSS for the InviteEntry component */
-.inviteEntry {
-    width: 80%;
-    height: 20%;
+  /* ───────────────────────────────────────────────
+     HEADER / BANNER
+  ─────────────────────────────────────────────────*/
+  .invitePageBanner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem 2.5rem;
+    background: rgba(180, 190, 255, .8);                   /* blurred glass like .navbar */
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(99, 102, 241, .2);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,.15);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+  }
+  
+  .invitePageTitle {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -.5px;
+    text-shadow: 0 2px 4px rgba(0,0,0,.3);
+    background: linear-gradient(90deg, #8b5cf6, #6366f1);  /* gradient text */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: fadeIn 1.5s ease-in-out;
+  }
+  
+  /* ───────────────────────────────────────────────
+     MAIN CONTENT AREA
+  ─────────────────────────────────────────────────*/
+  .invitePageContent {
+    flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.2);
-    border-radius: 10px;
-    /* border: 2px solid gold; */
+    padding: 2.5rem;
+    gap: 2rem;
+  }
+  
+  /* ───────────────────────────────────────────────
+     INPUT BAR
+  ─────────────────────────────────────────────────*/
+  .inputContainer {
+    width: 100%;
+    max-width: 750px;
+    display: flex;
+    gap: 1rem;
+  }
+  
+  .inputBox {
+    flex: 1;
+    padding: .75rem 1rem !important;
+    font-size: 1rem;
+    color: #f8fafc;
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.25);
+    border-radius: .5rem;
+  }
+  .inputBox:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 6px rgba(139, 92, 246, .5);
+  }
+  
+  /* action button */
+  .inviteButton {
+    padding: .75rem 1.5rem;
+    border: none;
+    border-radius: .5rem;
+    background: linear-gradient(90deg, #8b5cf6, #6366f1);
+    color: #f8fafc;
+    font-weight: 500;
+    cursor: pointer;
+    transition: transform .2s, box-shadow .2s;
+  }
+  .inviteButton:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 15px -3px rgba(139, 92, 246, .4),
+                0 4px  6px -2px rgba(139, 92, 246, .3);
+  }
+  
+  /* ───────────────────────────────────────────────
+     INVITE LIST
+  ─────────────────────────────────────────────────*/
+  .invitePageInvites {
+    width: 100%;
+    max-width: 750px;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* entry card style (parallels .billItem) */
+  .inviteEntry {
+    position: relative;
+    background: rgba(30,41,59,.4);
+    border-left: 3px solid rgba(139,92,246,.5);
+    border-radius: 1rem;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 10px -2px rgba(0,0,0,.25);
+    transition: transform .25s, box-shadow .25s;
+    cursor: default;
     animation: fadeIn 1.5s ease-in-out;
-}
-
-.inviteEntryTop {
-    width: 95%;
-    height: 50%;
+  }
+  .inviteEntry:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px -4px rgba(0,0,0,.35), 0 0 15px rgba(139,92,246,.2);
+  }
+  .inviteEntry::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 1rem;
+    background: radial-gradient(circle at top left, rgba(139,92,246,.12) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity .25s;
+    pointer-events: none;
+  }
+  .inviteEntry:hover::before { opacity: 1; }
+  
+  /* entry layout */
+  .inviteEntryTop,
+  .inviteEntryBottom {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
     align-items: center;
-}
-
-.inviteEntryTarget {
+    gap: .75rem;
+  }
+  .inviteEntryTop { justify-content: space-between; margin-bottom: .5rem; }
+  
+  .inviteEntryTarget,
+  .inviteEntrySource {
     font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
-    color: #bc9974;
-}
+    font-weight: 600;
+    letter-spacing: .5px;
+    color: #f8fafc;
+  }
+  
+  .inviteEntrySource { color: #cbd5e1; }                /* subtler secondary text */
+  
+  /* remove / X button */
+  /* ───────────────────────────────────────────────
+   PATCH —  Fix oversized “X” & solid-purple invite button
+─────────────────────────────────────────────────*/
 
-.removeInvite {
-    height: 60%;
-    width: 3%;
-    background-color: red;
-    justify-content: center;
-    align-items: center;
-}
-
-.removeInviteCrossLine {
-    border-radius: 10%;
-    height: 70%;
-    width: 20%;
-    justify-self: center;
-    align-self: flex-end;
-    background: white;
-}
-
-.inviteEntryBottom {
-    width: 95%;
-    height: 50%;
-    display: flex;
-    flex-direction: row;
-    justify-content: start;
-    align-items: center;
-}
-
-.inviteEntrySource {
-    font-size: 1rem;
-    font-weight: bold;
-    margin-bottom: 10px;
-    letter-spacing: 2px;
-    color: #877766fd;
-}
+/* 1️⃣  REMOVE BUTTON (“X”)  */
+.removeInvite{
+    position: relative;                 /* anchor the pseudo-elements */
+  }
+  
+  /* redraw the cross so it stays inside the 32×32 box */
+  .removeInvite::before,
+  .removeInvite::after{
+    content:"";
+    position:absolute;
+    top:50%;
+    left:50%;
+    width:18px;                         /* fixed, not % of page */
+    height:2px;
+    background:#ff0000;
+    border-radius:1px;
+    transform-origin:center;
+  }
+  .removeInvite::before{ transform:translate(-50%,-50%) rotate(45deg); }
+  .removeInvite::after { transform:translate(-50%,-50%) rotate(-45deg); }
+  
+  /* 2️⃣  INVITE BUTTON GRADIENT
+        (override any earlier rule that set it solid purple) */
+  .inviteButton{
+    background:linear-gradient(90deg,#2d2344 0%,#21235a 100%) !important;
+  }
+  .inviteButton:hover{
+    background:linear-gradient(90deg,#5e2db4 0%,#302b8b 100%) !important;
+  }
+  
+  
+  /* ───────────────────────────────────────────────
+     UTILITIES / ANIMATIONS
+  ─────────────────────────────────────────────────*/
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  
+  /* responsive tweaks */
+  @media (max-width: 768px) {
+    .invitePageTitle { font-size: 1.75rem; }
+    .inputContainer { flex-direction: column; }
+    .inviteButton   { width: 100%; text-align: center; }
+  }
+  
