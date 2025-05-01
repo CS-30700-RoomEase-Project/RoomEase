@@ -1,20 +1,29 @@
+/* frontend/src/components/Pages/Queue/Queue.module.css */
+
+/* Full-screen glassy backdrop */
 .container {
   min-height: 100vh;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(to bottom right, #d2b48c, #cbb292);
-  color: #000;
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(4px);
+  color: #e2e8f0;
   text-align: center;
 }
 
+/* Page title with gradient text */
 .title {
   font-size: 2.5rem;
+  font-weight: 700;
   margin-bottom: 1.5rem;
+  background: linear-gradient(90deg, #8b5cf6, #6366f1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
-/* vertical stack: Current ↑ Next */
+/* Vertical stack of dispute queue */
 .queue {
   display: flex;
   flex-direction: column;
@@ -22,51 +31,81 @@
   gap: 1rem;
   margin-bottom: 2rem;
   width: 100%;
+  max-width: 800px;
 }
 
+/* The “card” for each dispute */
 .disputeBox {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  max-width: 400px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow:
+    0 4px 6px -2px rgba(0, 0, 0, 0.2),
+    0 2px 4px -1px rgba(0, 0, 0, 0.1);
   width: 90%;
+  max-width: 400px;
 }
 
+/* Section headings inside each card */
 .sectionTitle {
   font-size: 1.5rem;
+  font-weight: 600;
   margin-bottom: 1rem;
+  color: #e2e8f0;
 }
 
+/* The dispute’s own title */
 .disputeTitle {
   font-size: 1.25rem;
   min-height: 3rem;
   margin-bottom: 1rem;
-  color: purple;
+  color: #8b5cf6;
 }
 
+/* Arrow between current & next */
 .arrow {
   font-size: 3rem;
   cursor: pointer;
   user-select: none;
-  color: white
+  color: #8b5cf6;
+  transition: transform 0.2s ease;
+}
+.arrow:hover {
+  transform: translateY(-2px);
 }
 
-.clearButton {
-  background: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  border: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  font-size: 0.9rem;
+/* Shared button base for Clear & Submit */
+.clearButton,
+.submitButton {
+  all: unset;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  color: #fff;
+  background: linear-gradient(135deg, #8b5cf6, #6366f1);
+  border-radius: 0.5rem;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow:
+    0 4px 6px -2px rgba(0, 0, 0, 0.2),
+    0 2px 4px -1px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.clearButton:hover,
+.submitButton:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 15px -3px rgba(139, 92, 246, 0.4),
+    0 4px 6px   -2px rgba(139, 92, 246, 0.3);
 }
 
-.clearButton:hover {
-  background: #f0f0f0;
-}
-
+/* Form layout */
 .form {
   display: flex;
   flex-direction: column;
@@ -76,27 +115,34 @@
   gap: 1rem;
 }
 
+/* Text area styling */
 .textarea {
   width: 100%;
   min-height: 120px;
   padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 1rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(99, 102, 241, 0.4);
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
   resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.textarea:focus {
+  outline: none;
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
 }
 
-.submitButton {
-  background: #fff;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  border: none;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.submitButton:hover {
-  background: #f0f0f0;
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .title {
+    font-size: 2rem;
+  }
+  .disputeBox {
+    padding: 1rem;
+    width: 95%;
+  }
+  .textarea {
+    min-height: 100px;
+  }
 }

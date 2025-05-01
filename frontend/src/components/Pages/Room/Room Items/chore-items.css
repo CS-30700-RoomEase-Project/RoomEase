@@ -1,23 +1,33 @@
+/* ───────────────────────────────
+   CHORE-ITEMS (responsive)
+───────────────────────────────*/
 .chore-items-container {
+  /* master knobs ------------------------------------------------------------*/
+  --chore-w    : clamp(12rem, 18vw, 22rem); /* 192 px ↔ 352 px on most desktops */
+  --base-scale : 1.5;                      /* default enlarged look            */
+
   position: relative;
-  display: flex;
+  display : flex;
   align-items: flex-end;
   justify-content: center;
-  width: 200px; /* Increased width */
-  height: 220px; /* Slightly increased height */
+
+  width : var(--chore-w);
+  aspect-ratio: 10 / 11;                   /* preserves 200×220 proportion     */
   margin: 0;
-  transition: transform 0.3s ease;
-  transform: scale(1.5); /* Always scaled up */
-  transform-origin: bottom center; /* Keeps it grounded to the floor */
+
+  transform: scale(var(--base-scale));
+  transform-origin: bottom center;
+  transition: transform .3s ease;
 }
 
 .chore-items-container:hover {
-  transform: scale(1.6); /* Slightly less dramatic scale for control */
+  transform: scale(calc(var(--base-scale) + 0.1)); /* 1.5 ➔ 1.6 by default */
 }
 
+/* broom or other item positions expressed in % so they follow the resize ----*/
 .broom-position {
-  position: absolute;
-  bottom: 70px; /* Tweak as needed */
-  left: 35px;
+  position : absolute;
+  bottom   : 32%;   /* 70 px of 220 px → 32% */
+  left     : 17.5%; /* 35 px of 200 px → 17.5% */
   transform: rotate(-15deg);
 }
