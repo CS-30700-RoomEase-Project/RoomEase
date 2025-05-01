@@ -2,8 +2,8 @@
     position: relative;
     display: inline-block;
     font-size: 24px;
-    height: 100px;
-    width: 100px;
+    height: 80px;
+    width: 80px;
     color: #fffdfd;
     cursor: pointer;
 }
@@ -16,8 +16,8 @@
 
 .quest-bell .quest-count {
     position: absolute;
-    top:  20px;
-    right: 20px;
+    top:  10px;
+    right: 10px;
     background-color: red;
     color: white;
     border-radius: 50%;
