@@ -1,5 +1,6 @@
 .modal {
     background-color: white;
+    color: black;
     border-radius: 10px;
     text-align: center;
     width: 95%;
@@ -26,6 +27,7 @@ h6 {
     border: 1px solid #ccc;
     border-radius: 6px;
     font-size: 14px;
+    color: black !important;
     box-sizing: border-box; /* Prevents content from overflowing */
 }
 
@@ -34,6 +36,7 @@ h6 {
     width: 100%;
     text-align: left;
     margin: 5px 0;
+    color: black !important;
 }
 
 /* Ensure selection content is clearly visible */
@@ -87,4 +90,24 @@ h6 {
 
 .cancelButton:hover {
     background-color: red;
+}
+
+.popupMenu{
+    color:#000 !important;
+    background:#fff;
+}
+
+/* Make all option menu text black */
+.modal option {
+    color: black;
+}
+
+/* Ensure the text in the option button (select trigger) is black */
+.modal .selectTrigger {
+    color: black;
+}
+
+.modal select,
+.modal option {
+    color: black !important;
 }
