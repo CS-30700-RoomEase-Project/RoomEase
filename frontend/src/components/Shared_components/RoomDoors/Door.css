@@ -16,14 +16,13 @@
     border-radius: 5px;
 }
 
-.room-door:hover {
-    transform: scale(1.1);
-}
 
 .room-name {
-    margin-top: 10px;
-    height: 10px;
-    width: 100%;
+    margin-top: 10px;  /* pull text upward */
+    margin-bottom: 5px;
+    padding: 0;         /* remove any extra padding */
+    position: relative;
+    z-index: 2;
     font-size: 1.2rem;
     text-align: center;
     font-weight: bold;
