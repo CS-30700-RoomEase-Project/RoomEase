@@ -254,6 +254,7 @@
 .roomWrapper {
   position: relative;
   transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-top: 5%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -261,7 +262,7 @@
 }
 
 .roomWrapper:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(15px) scale(1.02);
   z-index: 2;
 }
 
