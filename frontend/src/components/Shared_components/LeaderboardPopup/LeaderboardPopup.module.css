@@ -1,0 +1,139 @@
+/* LeaderboardPopup.module.css */
+
+/* Overlay/backdrop */
+.popup-container {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+    animation: fadeIn 0.2s ease;
+  }
+  
+  /* Fade-in for container */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  
+  /* Popup window */
+  .popup-content {
+    background: rgba(255, 255, 255, 1);
+    color: #1f2937; /* dark text */
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px   -2px rgba(0, 0, 0, 0.05);
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    animation: slideUp 0.3s ease;
+  }
+  
+  /* Slide-up inner animation */
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0);     opacity: 1; }
+  }
+  
+  /* Header */
+  .popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  .popup-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #111827;
+  }
+  .popup-header .close-btn {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 1.25rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  .popup-header .close-btn:hover {
+    transform: scale(1.1);
+  }
+  
+  /* Control group */
+  .controls {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+  }
+  .controlGroup label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+    color: #374151;
+  }
+  .controlGroup select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    background: #f9fafb;
+    color: #111827;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .controlGroup select:focus {
+    outline: none;
+    border-color: #6366f1;
+  }
+  
+  /* Leaderboard list */
+  .leaderboard-list {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .leaderboard-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #1f2937;
+  }
+  .leaderboard-item .rank {
+    font-weight: 700;
+    color: #4f46e5;
+  }
+  
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    font-style: italic;
+    color: #6b7280;
+    margin-top: 1rem;
+  }
+  
+  /* Loading state */
+  .loading-container {
+    background: #ffffff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px   -2px rgba(0, 0, 0, 0.05);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    color: #374151;
+  }
+  

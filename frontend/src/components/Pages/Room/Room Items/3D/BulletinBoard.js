@@ -1,44 +1,7 @@
-// "use client"
-// import "./bulletin-board.css"
-
-// function BulletinBoard({ onClick, enabled }) {
-//   return (
-//     <div
-//       className="bulletin-board-container"
-//       onClick={onClick}
-//       title={enabled ? "Bulletin Board" : ""}
-//       style={{
-//         cursor: enabled ? "pointer" : "default",
-//         pointerEvents: enabled ? "auto" : "none",
-//       }}
-//     >
-//       <div className="bulletin-frame">
-//         <div className="bulletin-cork">
-//           <div className="bulletin-note yellow">
-//             <div className="note-lines"></div>
-//           </div>
-//           <div className="bulletin-note blue">
-//             <div className="note-lines"></div>
-//           </div>
-//           <div className="bulletin-note green">
-//             <div className="note-lines"></div>
-//           </div>
-//           <div className="bulletin-pin red"></div>
-//           <div className="bulletin-pin blue"></div>
-//           <div className="bulletin-pin green"></div>
-//           <div className="bulletin-pin yellow"></div>
-//         </div>
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default BulletinBoard
-
-// BulletinBoard3D.jsx
+// BulletinBoard.jsx
 "use client";
 
-import { Box, Cylinder, RoundedBox, Sphere, useCursor } from '@react-three/drei';
+import { Box, Html, RoundedBox, useCursor } from '@react-three/drei';
 import React, { useRef, useState } from 'react';
 import * as THREE from 'three';
 
@@ -47,7 +10,7 @@ const Note = ({ position, rotation, color, linesColor = '#00000033' }) => {
   const noteHeight = 0.6;
   const noteDepth = 0.01;
   const lineWidth = noteWidth * 0.8;
-  const lineHeight = 0.005; // Very thin lines
+  const lineHeight = 0.005;
   const lineSpacing = 0.1;
 
   return (
@@ -55,12 +18,11 @@ const Note = ({ position, rotation, color, linesColor = '#00000033' }) => {
       <Box args={[noteWidth, noteHeight, noteDepth]}>
         <meshStandardMaterial color={color} roughness={0.8} />
       </Box>
-      {/* Note Lines - decorative */}
       {[...Array(3)].map((_, i) => (
         <Box
           key={i}
-          args={[lineWidth, lineHeight, noteDepth + 0.001]} // Slightly above the note
-          position={[0, noteHeight / 2 - lineSpacing * (i + 1.5) , 0.001]}
+          args={[lineWidth, lineHeight, noteDepth + 0.001]}
+          position={[0, noteHeight / 2 - lineSpacing * (i + 1.5), 0.001]}
         >
           <meshBasicMaterial color={linesColor} transparent opacity={0.5} />
         </Box>
@@ -76,12 +38,14 @@ const Pin = ({ position, color }) => {
 
   return (
     <group position={position}>
-      <Sphere args={[pinHeadRadius, 16, 16]} position={[0, 0, pinShaftHeight / 2 + 0.01]}>
+      <mesh position={[0, 0, pinShaftHeight / 2 + 0.01]}>
+        <sphereGeometry args={[pinHeadRadius, 16, 16]} />
         <meshStandardMaterial color={color} roughness={0.5} metalness={0.1} />
-      </Sphere>
-      <Cylinder args={[pinShaftRadius, pinShaftRadius, pinShaftHeight, 8]} position={[0, 0, 0.01]}>
+      </mesh>
+      <mesh position={[0, 0, 0.01]}>
+        <cylinderGeometry args={[pinShaftRadius, pinShaftRadius, pinShaftHeight, 8]} />
         <meshStandardMaterial color="silver" metalness={0.8} roughness={0.2} />
-      </Cylinder>
+      </mesh>
     </group>
   );
 };
@@ -93,81 +57,81 @@ function BulletinBoard({
   rotation = [0, 0, 0],
   scale = 1,
 }) {
-  const groupRef = useRef();
+  const ref = useRef();
   const [hovered, setHovered] = useState(false);
   useCursor(enabled && hovered);
 
-  // Dimensions
-  const boardWidth = 4;
-  const boardHeight = 1.8;
-  const frameThickness = 0.1;
-  const corkDepth = 0.05;
-
-  // Colors
-  const frameColor = '#654321'; // Brown
-  const corkColor = '#D2B48C'; // Tan / Cork color
-
-  const handleBoardClick = (event) => {
+  const handleClick = (e) => {
     if (enabled && onClick) {
-      event.stopPropagation(); // Important if this is part of a larger clickable scene
-      onClick(event);
+      e.stopPropagation();
+      onClick(e);
     }
   };
 
+  // Board dimensions & colors
+  const boardW = 4, boardH = 1.8, frameTh = 0.1, corkD = 0.05;
+  const frameColor = '#654321', corkColor = '#D2B48C';
+
   return (
-    <group ref={groupRef} position={position} rotation={rotation} scale={scale}>
+    <group
+      ref={ref}
+      position={position}
+      rotation={rotation}
+      scale={scale}
+      onPointerOver={e => (e.stopPropagation(), setHovered(true))}
+      onPointerOut={() => setHovered(false)}
+      onClick={handleClick}
+    >
+      {/* Tooltip */}
+      {hovered && enabled && (
+        <Html position={[0, boardH / 2 + 0.2, 0]} center occlude style={{ pointerEvents: 'none' }}>
+          <div style={{
+            background: 'rgba(0,0,0,0.7)',
+            color: '#fff',
+            padding: '4px 8px',
+            borderRadius: '4px',
+            fontSize: '0.75rem',
+            whiteSpace: 'nowrap'
+          }}>
+            Bulletin Board
+          </div>
+        </Html>
+      )}
+
       {/* Frame */}
-      <RoundedBox
-        args={[boardWidth, boardHeight, frameThickness]} // width, height, depth
-        radius={0.05}
-        smoothness={4}
-        onClick={handleBoardClick}
-        onPointerOver={(e) => (e.stopPropagation(), setHovered(true))}
-        onPointerOut={() => setHovered(false)}
-      >
+      <RoundedBox args={[boardW, boardH, frameTh]} radius={0.05} smoothness={4}>
         <meshStandardMaterial color={frameColor} roughness={0.7} metalness={0.1} />
       </RoundedBox>
 
-      {/* Cork Area */}
+      {/* Cork */}
       <Box
-        args={[
-          boardWidth - frameThickness * 1.5,
-          boardHeight - frameThickness * 1.5,
-          corkDepth,
-        ]}
-        position={[0, 0, frameThickness / 2 - corkDepth / 2 + 0.01]} // Positioned inside the frame, slightly forward
-        onClick={handleBoardClick}
-        onPointerOver={(e) => (e.stopPropagation(), setHovered(true))}
-        onPointerOut={() => setHovered(false)}
+        args={[boardW - frameTh * 1.5, boardH - frameTh * 1.5, corkD]}
+        position={[0, 0, frameTh/2 - corkD/2 + 0.01]}
       >
         <meshStandardMaterial color={corkColor} roughness={0.9} />
 
-        {/* Notes - position them on the Z-surface of the cork */}
+        {/* Notes */}
         <Note
-          position={[-boardWidth * 0.25, boardHeight * 0.15, corkDepth / 2 + 0.005]}
-          rotation={[0, 0, THREE.MathUtils.degToRad(10)]}
-          color="#FFFACD" // LemonChiffon (yellowish)
+          position={[-boardW*0.25, boardH*0.15, corkD/2 + 0.005]}
+          rotation={[0,0,THREE.MathUtils.degToRad(10)]}
+          color="#FFFACD"
         />
         <Note
-          position={[boardWidth * 0.2, boardHeight * 0.25, corkDepth / 2 + 0.005]}
-          rotation={[0, 0, THREE.MathUtils.degToRad(-8)]}
-          color="#ADD8E6" // LightBlue
+          position={[boardW*0.2, boardH*0.25, corkD/2 + 0.005]}
+          rotation={[0,0,THREE.MathUtils.degToRad(-8)]}
+          color="#ADD8E6"
         />
         <Note
-          position={[-boardWidth * 0.1, -boardHeight * 0.2, corkDepth / 2 + 0.005]}
-          rotation={[0, 0, THREE.MathUtils.degToRad(5)]}
-          color="#90EE90" // LightGreen
+          position={[-boardW*0.1, -boardH*0.2, corkD/2 + 0.005]}
+          rotation={[0,0,THREE.MathUtils.degToRad(5)]}
+          color="#90EE90"
         />
 
-        {/* Pins - position them as if holding the notes, slightly in front of notes */}
-        {/* Pin for yellow note */}
-        <Pin position={[-boardWidth * 0.25 +0.2, boardHeight * 0.15 + 0.2, corkDepth / 2 + 0.015]} color="red" />
-        {/* Pin for blue note */}
-        <Pin position={[boardWidth * 0.2 - 0.2, boardHeight * 0.25 + 0.2, corkDepth / 2 + 0.015]} color="blue" />
-        {/* Pin for green note */}
-        <Pin position={[-boardWidth * 0.1 + 0.2, -boardHeight * 0.2 + 0.2, corkDepth / 2 + 0.015]} color="green" />
-        {/* Extra pin */}
-        <Pin position={[boardWidth * 0.3, -boardHeight * 0.3, corkDepth / 2 + 0.015]} color="yellow" />
+        {/* Pins */}
+        <Pin position={[-boardW*0.25+0.2, boardH*0.15+0.2, corkD/2+0.015]} color="red" />
+        <Pin position={[boardW*0.2-0.2, boardH*0.25+0.2, corkD/2+0.015]} color="blue" />
+        <Pin position={[-boardW*0.1+0.2, -boardH*0.2+0.2, corkD/2+0.015]} color="green" />
+        <Pin position={[boardW*0.3, -boardH*0.3, corkD/2+0.015]} color="yellow" />
       </Box>
     </group>
   );

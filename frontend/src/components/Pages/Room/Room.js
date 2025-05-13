@@ -16,8 +16,10 @@ import Gavel from "./Room Items/3D/Gavel";
 import BulletinPopup from "../../Shared_components/BulletinPopup/BulletinPopup";
 import NotesPopup from "../../Shared_components/BulletinPopup/NotesPopup";
 import LeaderboardPopup from "../../Shared_components/LeaderboardPopup/LeaderboardPopup";
+import { Trophy3D } from "./Room Items/3D/Trophy3D";
 // import QuestBell from "../../Shared_components/QuestBell/QuestBell";
 import QuestBoard from "../../Shared_components/QuestBell/QuestBoard";
+import RoomLeaderboardPopup from "../../Shared_components/RoomLeaderboard/LeaderboardPopup";
 import RoomSettingsPopup from "../../Shared_components/RoomSettings/RoomSettingsPopup";
 import CosmeticStorePopup from "./CosmeticStorePopup";
 import ChoreItems from "./Room Items/3D/ChoreItems";
@@ -27,7 +29,6 @@ import "./Room.css";
 import tileImg from "./carpet.png";
 import tileImg2 from "./carpet2.png";
 import tileImg3 from "./fancycarpet.png";
-
 function Room() {
   const { roomId } = useParams();
   const navigate = useNavigate();
@@ -44,6 +45,7 @@ function Room() {
   const [cosmeticData, setCosmeticData] = useState({});
   const [points, setPoints] = useState(0);
   const [leaderboardOpen, setLeaderboardOpen] = useState(false);
+  const [alltimeopen, setAlltimeopen] = useState(false);
 
   const hasCheckedWrapped = useRef(false);
 
@@ -614,7 +616,7 @@ function Room() {
 
         {/* ===== 3D Room Canvas Section ===== */}
         <div className="canvasWrapper">
-          <Canvas camera={{ position: [2, 8, 11], fov: 55 }}>
+          <Canvas camera={{ position: [7, 7, 7], fov: 55 }}>
             <ambientLight intensity={0.3} />
             <spotLight
               position={[10, 15, 10]}
@@ -625,7 +627,13 @@ function Room() {
               shadow-mapSize-width={1024}
               shadow-mapSize-height={1024}
             />
-            <RoomScene roomData={roomData} handleBulletinClick={handleBulletinClick} roomId={roomId} handleSettingsClick={handleSettingsClick}/>
+            <RoomScene
+              roomData={roomData}
+              handleBulletinClick={handleBulletinClick}
+              roomId={roomId}
+              handleSettingsClick={handleSettingsClick}
+              onalltimeopen={() => setAlltimeopen(true)}
+            />
 
             <OrbitControls
               enablePan={true}
@@ -680,7 +688,15 @@ function Room() {
       <LeaderboardPopup
         isOpen={leaderboardOpen}
         onClose={() => setLeaderboardOpen(false)}
+        room={roomData}
       />
+      <RoomLeaderboardPopup
+        room={roomData}
+        isOpen={alltimeopen}
+        onClose={() => setAlltimeopen(false)}
+      />
+
+      
     </>
   );
 }
@@ -705,7 +721,7 @@ function StarField({ count = 1000 }) {
 }
 
 function RoomScene(
-  { roomData, cosmeticData, handleBulletinClick, handleSettingsClick, setCosmeticData, setPoints, points, roomId } = {} // Pass props if needed
+  { roomData, cosmeticData, handleBulletinClick, handleSettingsClick, onalltimeopen, setCosmeticData, setPoints, points, roomId } = {} // Pass props if needed
 ) {
   const { scene } = useThree();
   const navigate = useNavigate();
@@ -759,7 +775,7 @@ function RoomScene(
       <ambientLight intensity={1} />
       <StarField count={2000} />
       <directionalLight
-        position={[5, 10, 5]}
+        position={[5, 10, 7]}
         intensity={1}
         castShadow
         shadow-mapSize-width={1024}
@@ -770,11 +786,11 @@ function RoomScene(
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
         <Plane args={[10, 10]}>
           <meshStandardMaterial
-            color="grey"
+            color="beige"
             roughness={0.8}
             metalness={0.1}
             side={THREE.DoubleSide}
-            // map={texture2}
+            map={texture2}
           />
         </Plane>
       </mesh>
@@ -827,14 +843,14 @@ function RoomScene(
       </Text>
 
       {/* === Colorful Carpet === */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1, 0.02, 1]} receiveShadow>
-        <planeGeometry args={[7, 7]} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[1.2, 0.02, 1.2]} receiveShadow>
+        <circleGeometry args={[3.5, 32]} />
         <meshStandardMaterial
         color={cssColor2}
         roughness={0.8}
         metalness={0.1}
         side={THREE.DoubleSide}
-        map={texture2}
+        map={texture3}
       />
       </mesh>
       {/* === Placeholder components === */}
@@ -876,8 +892,8 @@ function RoomScene(
       </group>
 
       <group onPointerOver={() => setHoveredComponent("Dining Table")} onPointerOut={() => setHoveredComponent(null)}>
-        <DiningTable position={[2.3, 0, 1.7]} scale={2} rotation={[0,Math.PI/2,0]} />
-        {hoveredComponent === "Dining Table" && <Html position={[1.6, 1.2, 1.8]}></Html>}
+        <DiningTable position={[1.6, 0.05, 1.6]} scale={2} rotation={[0,Math.PI/2,0]} />
+        {hoveredComponent === "Dining Table" && <Html position={[1.6, 1.3, 1.8]}></Html>}
       </group>
 
       <group onPointerOver={() => setHoveredComponent("Desk")} onPointerOut={() => setHoveredComponent(null)}>
@@ -925,12 +941,18 @@ function RoomScene(
         </Html>}
       </group>
 
-      <QuestBoard position={[2.2, 1.7, 2.5]} rotation={[-Math.PI/2,0,0]}> </QuestBoard>
-      <LeaderboardPopup
+      <QuestBoard position={[1.6, 1.7, 2.5]} rotation={[-Math.PI/2,0,0]}> </QuestBoard>
+      {/* <LeaderboardPopup
         position={[0, 3, 0]}
         roomId={roomId}
         roomData={roomData}
-        ></LeaderboardPopup>
+        ></LeaderboardPopup> */}
+        <Trophy3D 
+          onClick={onalltimeopen}    // ← call the parent setter  
+          position={[1.8, 1.64, 1]} 
+          rotation={[0, Math.PI, 0]} 
+          scale={0.5} 
+      />
     </group>
   );
 }

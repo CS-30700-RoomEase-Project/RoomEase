@@ -8,8 +8,8 @@ function Gavel({ position = [0, 1, 0], enabled, onClick }) {
   const [hovered, setHovered] = useState(false);
   const [swinging, setSwinging] = useState(false);
   const cssColor = getComputedStyle(document.documentElement)
-  .getPropertyValue('--gavel-color')
-  .trim() || '#FFD700';
+    .getPropertyValue('--gavel-color')
+    .trim() || '#FFD700';
   // Base tilt resting rotation
   const baseRotation = [0.3, 0.2, Math.PI / 4];
 
@@ -65,14 +65,14 @@ function Gavel({ position = [0, 1, 0], enabled, onClick }) {
       </mesh>
 
       {/* === Handle === */}
-      <mesh position={[0, -0.5, 0]} rotation={[0, 0, 0]}>
+      <mesh position={[0, -0.5, 0]}>
         <cylinderGeometry args={[0.05, 0.05, 0.6, 16]} />
         <meshStandardMaterial color="#c7a079" />
       </mesh>
 
-      {/* === Centered Invisible Hitbox (Final Fix) === */}
+      {/* === Centered Invisible Hitbox === */}
       <mesh position={[0, -0.2, 0]}>
-        <boxGeometry args={[1.2, 1.2, 1.2]} />
+        <boxGeometry args={[0.6, 0.8, 0.6]} />
         <meshBasicMaterial transparent opacity={0} />
       </mesh>
     </group>
