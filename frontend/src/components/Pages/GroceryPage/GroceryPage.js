@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from "react";
-import styles from "./GroceryPage.module.css";
+import React, { useEffect, useRef, useState } from "react";
 import CallService from "../../SharedMethods/CallService";
 import GroceryItem from "./GroceryItem";
+import styles from "./GroceryPage.module.css";
 
 function GroceryPage({room}) {
   const [items, setItems] = useState([]);
