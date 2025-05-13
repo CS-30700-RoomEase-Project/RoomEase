@@ -1,0 +1,25 @@
+/* This file contains shared styles for room items */
+
+.room-item {
+  transition: transform 0.3s ease;
+}
+
+.room-item:hover {
+  transform: scale(1.05);
+}
+
+/* Common color schemes */
+:root {
+  --wood-dark: #8b5a2b;
+  --wood-medium: #a67c52;
+  --wood-light: #c19a6b;
+
+  --metal-dark: #757575;
+  --metal-medium: #9e9e9e;
+  --metal-light: #bdbdbd;
+
+  --accent-blue: #2196f3;
+  --accent-green: #4caf50;
+  --accent-red: #f44336;
+  --accent-yellow: #ffeb3b;
+}
