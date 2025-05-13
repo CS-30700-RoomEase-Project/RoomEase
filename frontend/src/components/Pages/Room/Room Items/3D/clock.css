@@ -1,0 +1,92 @@
+/* ───────────────────────────────
+   CLOCK  (responsive desktop)
+───────────────────────────────*/
+.clock-container {
+  /* master width drives every detail */
+  --clock-w : clamp(7.5rem, 11vw, 12.5rem);  /* 120 px ↔ 200 px */
+  --hover-m : 0.05;                          /* +5 % zoom on hover */
+
+  position: relative;
+  width   : var(--clock-w);
+  aspect-ratio: 1 / 1;                       /* perfect circle */
+  margin  : 1.25rem;                         /* ~20 px */
+  transition: transform .3s ease;
+}
+
+.clock-container:hover {
+  transform: scale(calc(1 + var(--hover-m)));
+}
+
+/* FRAME & FACE --------------------------------------------------------------*/
+.clock-frame {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+      45deg,
+      var(--clock-color, #171818),
+      color-mix(in srgb, var(--clock-color, #171818) 90%, yellow)
+  );
+  box-shadow:
+    inset 0 .125rem .5rem rgba(0,0,0,.4),
+    -.75rem .75rem 1.5rem .125rem rgba(0,0,0,.5);
+  z-index: 1;
+}
+
+.clock-face {
+  position : absolute;
+  inset    : 5%;
+  border-radius: 50%;
+  background: #fff;
+  transition: background-color .3s ease;
+  z-index  : 2;
+}
+
+/* CENTER DOT ----------------------------------------------------------------*/
+.clock-center {
+  position : absolute;
+  width  : calc(var(--clock-w) * 0.06);      /* 6 % of width  → ~8 px @ 140 px */
+  height : calc(var(--clock-w) * 0.06);
+  background: #e74c3c;
+  border-radius: 50%;
+  top : 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 5;
+}
+
+/* HANDS  (sizes as % of clock width) ----------------------------------------*/
+.clock-hour,
+.clock-minute,
+.clock-second {
+  position: absolute;
+  bottom  : 50%;
+  left    : 50%;
+  transform-origin: bottom center;
+}
+
+.clock-hour {
+  width : calc(var(--clock-w) * 0.028);      /* ≈4 px @ 140 px */
+  height: calc(var(--clock-w) * 0.18);       /* ≈25 px @ 140 px */
+  background: #2c3e50;
+  border-radius: 20%;
+  margin-left: calc(var(--clock-w) * -0.014);
+  z-index: 4;
+}
+
+.clock-minute {
+  width : calc(var(--clock-w) * 0.022);      /* ≈3 px */
+  height: calc(var(--clock-w) * 0.25);       /* ≈35 px */
+  background: #34495e;
+  border-radius: 20%;
+  margin-left: calc(var(--clock-w) * -0.011);
+  z-index: 3;
+}
+
+.clock-second {
+  width : calc(var(--clock-w) * 0.007);      /* ≈1 px */
+  height: calc(var(--clock-w) * 0.285);      /* ≈40 px */
+  background: #e74c3c;
+  margin-left: calc(var(--clock-w) * -0.0035);
+  z-index: 2;
+}

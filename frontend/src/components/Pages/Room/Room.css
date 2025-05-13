@@ -1,39 +1,39 @@
-html,
-body {
+/* ========== Global resets and sizing ========== */
+html, body, #root {
   margin: 0;
   padding: 0;
-  height: 100%;
   width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 }
 
+/* ========== App container & layout ========== */
 .appContainer {
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  height: 100vh;
+  height: 100%;        /* fill viewport */
   width: 100%;
-  overflow: auto;
   overflow-x: hidden;
-  box-sizing: border-box;
-  background-color: #d1ae7c; /* Light background to keep it fresh */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for the container */
+  background-color: #d1ae7c;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
+/* ========== Banner at top ========== */
 .roomBanner {
+  flex-shrink: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
   height: 80px;
   padding: 0 24px;
-  background: linear-gradient(to right, #1e1920, #1a141b); /* Muted gradient */
-  box-sizing: border-box;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); /* More pronounced shadow for the banner */
+  background: linear-gradient(to right, #1e1920, #1a141b);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   position: relative;
   z-index: 10;
 }
 
+/* small controls area inside banner */
 .roomBannerMini {
   display: flex;
   justify-content: flex-end;
@@ -42,104 +42,73 @@ body {
   height: 100%;
 }
 
+/* title in banner */
 .roomTitle {
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 10px;
   letter-spacing: 2px;
   color: #ecf0f1;
-  align-self: top;
-  justify-self: center;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
   animation: fadeIn 1.5s ease-in-out;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2); /* Subtle text shadow */
 }
 
+/* ========== (You can re‑enable your old 2D layout here) ========== */
 .roomBackground {
   width: 100%;
   height: 80%;
   flex-grow: 1;
-  margin: 0;
   position: relative;
   display: flex;
   flex-direction: column;
   background-image: url('tile.png');
-  background-color: var(--background-color, #9591b5); /* Muted, slightly warm grey */
-  background-repeat: repeat; /* ensures the image repeats */
-  background-size: 50px 50px; /* adjust to make the tile smaller */
+  background-color: var(--background-color, #9591b5);
+  background-repeat: repeat;
+  background-size: 50px 50px;
   background-blend-mode: multiply;
-  box-sizing: border-box;
+  flex: 1;             /* grow to fill all available space */
+  overflow: hidden;
 }
 
 
-/* Room sections for positioning */
-.upperSection {
+.roomCanvas {
+  position: absolute;
+  top: 0; left: 0;
   width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.upperSection, .floorItems {
+  width: 100%;
+  display: flex;
+}
+
+.upperSection {
   height: 35%;
-  display: flex;
-}
-
-.upperLeft {
-  width: 33.33%;
-  height: 100%;
-}
-
-.upperMiddle {
-  width: 33.33%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.upperRight {
-  width: 33.33%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .floorItems {
-  width: 100%;
   height: 65%;
-  display: flex;
   align-items: flex-end;
 }
 
-.floorLeft,
-.floorMiddle,
-.floorRight {
+.upperLeft, .upperMiddle, .upperRight,
+.floorLeft, .floorMiddle, .floorRight {
   width: 33.33%;
-  height: 100%;
   display: flex;
   justify-content: center;
-  align-items: flex-end;
+  align-items: center;
 }
 
 .roomFloor {
   width: 100%;
   height: 60px;
-  background: linear-gradient(to right, #121414, #121517); /* Muted gradient */
-  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2), 0 -2px 5px rgba(0, 0, 0, 0.1); /* Inner and bottom shadow for depth */
+  background: linear-gradient(to right, #121414, #121517);
+  box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.2),
+              0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
-/* Messages container */
-.messages-container {
-  height: 400px;
-  max-height: 400px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  padding: 10px;
-  margin-bottom: 20px;
-  background-color: #fff;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  display: flex;
-  flex-direction: column-reverse;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-}
-
-/* Hover container and label */
+/* ========== Hover Tooltip ========== */
 .hover-container {
   position: relative;
   display: inline-block;
@@ -147,22 +116,20 @@ body {
 
 .hover-label {
   visibility: hidden;
-  background-color: rgba(0, 0, 0, 0.7); /* Darker muted label background */
-  color: #fff;
-  text-align: center;
-  padding: 4px 8px;
-  border-radius: 4px;
+  opacity: 0;
   position: absolute;
   bottom: 110%;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 20;
+  padding: 4px 8px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
   font-size: 0.75rem;
   white-space: nowrap;
+  border-radius: 4px;
   pointer-events: none;
-  opacity: 0;
   transition: opacity 0.3s ease;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Shadow for the label */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .hover-container:hover .hover-label {
@@ -170,13 +137,24 @@ body {
   opacity: 1;
 }
 
-/* Fade-in animation */
+/* ========== Fade‑in keyframes ========== */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
+/* ========== 3D Canvas container ========== */
+.canvasWrapper {
+  flex: 1;                /* take remaining space below banner */
+  position: relative;
+  overflow: hidden;
+}
+
+/* CSS - Ensure your canvas container is sized */
+.canvasWrapper {
+  flex: 1;
+  height: calc(100vh - 80px); /* Adjust for your nav bar */
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}

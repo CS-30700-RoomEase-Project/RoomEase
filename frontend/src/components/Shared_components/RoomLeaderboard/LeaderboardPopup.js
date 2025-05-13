@@ -1,16 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
-import styles from "./LeaderboardPopup.module.css";
-import trophyIcon from './trophy.png';
 import CallService from "../../SharedMethods/CallService";
+import styles from "./LeaderboardPopup.module.css";
 
-export default function RoomLeaderboardPopup({ room }) {
-  const [isOpen, setIsOpen] = useState(false);
+export default function RoomLeaderboardPopup({ room, isOpen, onClose }) {
+  const [selectedMonthIndex, setSelectedMonthIndex] = useState(0);
+  const [selectedMap, setSelectedMap] = useState("Chores");
   const [leaderboard, setLeaderboard] = useState([]);
-
-  const openPopup = () => setIsOpen(true);
-  const closePopup = () => setIsOpen(false);
 
   useEffect(() => {
     if (isOpen && room && room._id) {
@@ -26,18 +23,8 @@ export default function RoomLeaderboardPopup({ room }) {
   }, [isOpen, room]);
 
   return (
-    <div>
-      {/* Trophy Button */}
-      <img 
-        src={trophyIcon} 
-        alt="View Leaderboard" 
-        className={styles.trophyButton} 
-        onClick={openPopup} 
-      />
-
-      {/* Popup */}
-      <Popup open={isOpen} modal nested onClose={closePopup}>
-        <div className={styles.leaderboardModal}>
+    <Popup open={isOpen} modal nested onClose={onClose}>
+      <div className={styles.leaderboardModal}>
           <h2 className={styles.title}>Room Leaderboard</h2>
           <p className={styles.description}>
             See who’s been the most active and earned the most points!
@@ -57,11 +44,10 @@ export default function RoomLeaderboardPopup({ room }) {
           ) : (
             <p className={styles.noData}>No activity recorded yet.</p>
           )}
-          <button className={styles.closeButton} onClick={closePopup}>
+          <button className={styles.closeButton} onClick={onClose}>
             Close
           </button>
         </div>
       </Popup>
-    </div>
   );
 }
