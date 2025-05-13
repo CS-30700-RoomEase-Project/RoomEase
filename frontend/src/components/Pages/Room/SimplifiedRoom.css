@@ -1,0 +1,14 @@
+:root {
+  /* Base wall color */
+  --background-color: #9591b5;
+
+  /* Slightly darker (≈10% darker) for floor & right wall */
+  --background-color-dark: #8682a2;
+}
+
+/* Usage example (see notes below) */
+/* 
+  In your component, keep using:
+    color="var(--background-color)" for back & left walls
+    color="var(--background-color-dark)" for floor & right wall
+*/

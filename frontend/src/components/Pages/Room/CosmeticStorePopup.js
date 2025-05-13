@@ -17,7 +17,7 @@ const CosmeticStorePopup = ({
 
   const elements = [
     "fridge",
-    "table",
+    "carpet",
     "computer",
     "trash",
     "board",

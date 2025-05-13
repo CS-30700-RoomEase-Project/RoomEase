@@ -1,0 +1,92 @@
+.broom-container {
+  position: relative;
+  height: 200px; /* Slightly taller for more proportion */
+  width: 30px;
+  transform: rotate(-12deg); /* Slightly more tilt for realism */
+  transform-origin: bottom center;
+}
+
+.broom-handle {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px; /* Slightly wider for more proportional appearance */
+  height: 170px; /* Taller handle */
+  background: linear-gradient(to bottom, #d4a04d, #a67c3e, #8b5f2d); /* Natural wood gradient */
+  border-radius: 6px; /* Rounded edges */
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.4),
+    -12px 12px 24px 2px rgba(0, 0, 0, 0.5);
+}
+
+.broom-connector {
+  position: absolute;
+  bottom: 170px; /* Adjusted from 155px */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 18px; /* Wider connector */
+  height: 10px; /* Increased height for better proportion */
+  background-color: #b28b4b; /* Brass or metal-like color */
+  border-radius: 4px;
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.4),
+    -12px 12px 24px 2px rgba(0, 0, 0, 0.5);
+}
+
+.broom-head {
+  position: absolute;
+  bottom: 180px; /* Adjusted from 162px */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px; /* Slightly wider head */
+  height: 25px; /* Increased height for a more substantial look */
+  background-color: #b28b4b; /* Brass or metal-like color */
+  border-radius: 4px;
+  box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.4),
+    -12px 12px 24px 2px rgba(0, 0, 0, 0.5);
+}
+
+.broom-bristles {
+  position: absolute;
+  bottom: -8px; /* Adjusted for better bristle placement */
+  left: 0;
+  width: 100%;
+  height: 20px; /* Increased bristle length */
+  background: linear-gradient(to bottom, #c7a35c, #d9c277); /* Natural straw-like gradient */
+  border-radius: 0 0 6px 6px; /* Rounded bottom edges */
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15); /* Inner shadow for texture */
+}
+
+.broom-bristles::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px; /* Thicker line for more emphasis */
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.15),
+    rgba(0, 0, 0, 0.15) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}
+
+.broom-bristles::after {
+  content: "";
+  position: absolute;
+  top: 5px; /* Slight gap for a more realistic bristle look */
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.1),
+    rgba(0, 0, 0, 0.1) 3px,
+    transparent 3px,
+    transparent 6px
+  );
+}

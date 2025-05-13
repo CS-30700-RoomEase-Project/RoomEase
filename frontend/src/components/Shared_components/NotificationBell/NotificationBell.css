@@ -1,83 +1,126 @@
+/* ----- Bell wrapper ----- */
 .notification-bell {
     position: relative;
-    display: inline-block;
-    font-size: 24px;
-    height: 100px;
-    width: 100px;
-    color: #fffdfd;
-    cursor: pointer;
-}
-
-.notification-bell .bell-icon {
-    height: 100%;
-    width: 100%;
-    font-size: 24px;
-}
-
-.notification-bell .notification-count {
-    position: absolute;
-    top:  20px;
-    right: 20px;
-    background-color: red;
-    color: white;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.dropdown {
-    position: absolute;
-    top: 110%; /* Moves dropdown below the bell */
-    left: 50%;
-    transform: translateX(-50%); /* Centers it below the bell */
-    display: flex;
-    flex-direction: column;
-    min-width: 180px; /* Ensures enough space for text */
-    background: rgb(32, 1, 37);
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
-    z-index: 10;
-    padding: 8px;
-}
-
-.dropdownItem {
-    width: 100%;
-    height: 40px;
-    border-radius: 5px;
-    cursor: pointer;
-    background-color: rgb(107, 96, 76);
-    font-size: 16px;
-    border: none;
-    color: white;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding: 10px;
-    text-align: center;
-}
-
-.notificationsContainer {
-    margin: 5px;
-    padding: 5px;
-    background: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-    z-index: 1; /* Make sure content stays above the button */
-}
-
-.notificationItem {
-    background: #fff;
-    font-size: smaller;
-    margin: 5px 0;
-    padding: 5px;
+    width: 64px;            /* larger */
+    height: 64px;
+    cursor: pointer;
+  }
+  
+  .notification-bell .bell-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+  
+  /* Red badge */
+  .notification-bell .notification-count {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: #e12d39;
+    color: #fff;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    line-height: 1;
+  }
+  
+  /* ----- Dropdown panel ----- */
+  .dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    max-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    background: #48414d;                   /* white card */
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-height: 50px; /* Set a maximum height */
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
     overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 2; /* Limits text to 2 lines */
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-}
-
+    z-index: 1000;
+  }
+  
+  /* Header (Go to + title) */
+  .dropdownHeader {
+    background: #4b5563;
+    color: #48414d;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .dropdownHeader h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  
+  .dropdownHeader button {
+    background: transparent;
+    border: none;
+    color: #48414d;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  
+  .dropdownHeader button:hover {
+    color: #48414d;
+  }
+  
+  /* Scrollable notifications list */
+  .notificationsContainer {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.75rem 1rem;
+    background: #411d5b;
+  }
+  
+  /* Each notification card */
+  .notificationItem {
+    background: #ffffff;
+    margin-bottom: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 6px;
+    border: 1px solid #e5e7eb;
+    font-size: 0.85rem;
+    line-height: 1.3;
+    color: #1f2937;
+    transition: background 0.2s ease;
+  }
+  
+  .notificationItem:hover {
+    background: #f3f4f6;
+  }
+  
+  /* Loading / error states */
+  .errorText, .notificationsContainer p {
+    text-align: center;
+    color: #9ca3af;
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+  }
+  
+  /* WebKit scrollbar */
+  .notificationsContainer::-webkit-scrollbar {
+    width: 6px;
+  }
+  .notificationsContainer::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 3px;
+  }
+  .notificationsContainer::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+  }
+  .notificationsContainer::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+  }
+  

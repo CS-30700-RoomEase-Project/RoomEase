@@ -1,149 +1,28 @@
+:root {
+  --table-color: #d7c0ac;
+  --drawer-color: #7a4a1a;
+}
+
 .desk-wrapper {
   transform: scale(1.2);
   transform-origin: bottom right;
 }
 
 .computer-wrapper {
-  /* Removed position: absolute */
-  transform: translateY(34%); 
+  transform: translateY(34%);
   z-index: 10;
   pointer-events: auto;
 }
 
 .gavel-wrapper {
-  /* Removed position: absolute */
-  transform: translateY(-15%); /* Match any adjustments made to computer-wrapper */
+  transform: translateY(-15%);
   z-index: 9;
-}
-
-
-.desk-container {
-  position: relative; 
-  width: 400px;
-  height: 200px;
-  margin: 0;
-  align-self: flex-end;
-}
-
-.desk-surface {
-  position: relative;
-  width: 100%;
-  height: 20px;
-  background: linear-gradient(to right, var(--table-color,#8b5a2b), color-mix(in srgb, var(--table-color,#8b5a2b) 80%,#ffe39c), var(--table-color,#8b5a2b));
-  border-radius: 4px 4px 0 0;
-  box-shadow:
-  inset 0 2px 8px rgba(0, 0, 0, 0.4),
-  -12px 12px 24px 2px rgba(0, 0, 0, 0.5);
-  z-index: 2;
-}
-
-.desk-items {
-  position: absolute;
-  bottom: 0px;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-end;
-  
-}
-
-.desk-structure {
-  position: relative;
-  width: 100%;
-  height: 180px;
-  
-}
-
-.desk-drawer {
-  position: relative;
-  width: 80%;
-  height: 40px;
-  margin: 0 auto;
-  background-color: #4a4a49;
-  border-radius: 2px;
-  box-shadow: inset 0 -2px 5px rgba(0, 0, 0, 0.2);
-}
-
-.drawer-handle {
-  position: absolute;
-  width: 40px;
-  height: 6px;
-  background-color: #dac1af;
-  border-radius: 3px;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-}
-
-.desk-legs {
-  position: relative;
-  width: 100%;
-  height: 140px;
-  display: flex;
-  justify-content: space-between;
-}
-
-.desk-leg {
-  width: 20%;
-  height: 92%;
-  background-color: #323231;
-  border-radius: 0 0 4px 4px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  padding: 4px 0;
-  box-shadow:
-    inset 0 2px 8px rgba(0, 0, 0, 0.4),
-    -12px 12px 24px 2px rgba(0, 0, 0, 0.5);
-}
-
-.desk-drawer-segment {
-  background-color: #3c3c3b;
-  flex: 1;
-  margin: 2px 0;
-  border-radius: 2px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.drawer-segment-handle {
-  width: 20px;
-  height: 4px;
-  background-color: var(--table-color, #b8a98f);
-  border-radius: 2px;
-}
-.desk-drawer {
-  position: relative;
-  width: 80%;
-  height: 45px;
-  margin: 0 auto;
-  background-color: rgb(70, 64, 64); /* So segments are visible */
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  padding: 0 0;
-  gap: 0;
-  box-shadow:
-    inset 0 2px 8px rgba(0, 0, 0, 0.4),
-    -12px 12px 24px 2px rgba(0, 0, 0, 0.5);
-}
-
-
-
-.desk-leg.left {
-  margin-left: 40px;
-}
-
-.desk-leg.right {
-  margin-right: 40px;
 }
 
 .hover-label {
   position: absolute;
-  bottom: 100%;            /* sit just above the pad */
-  left: 00%;
+  bottom: 100%;
+  left: 0%;
   transform: translateX(-50%) translateY(-4px);
   background: rgba(0,0,0,0.8);
   color: #fff;
@@ -151,7 +30,6 @@
   border-radius: 4px;
   white-space: nowrap;
   font-size: 0.85rem;
-
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.2s ease, transform 0.2s ease;
