@@ -1,8 +1,8 @@
 import React from "react";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
+import GroceryPage from "./GroceryPage.js";
 import "./GroceryPopUp.css";
-import GroceryPage from "./GroceryPage.js"
 
     
 
@@ -19,10 +19,10 @@ export default function GroceryPopUp({ room, isOpen, onClose }) {
             contentClassName="grocery-popup-content"
         >
             <div className="grocery-modal">
-                <GroceryPage room = {room}/>
-                <button className="close-button" onClick={onClose}>
+                <GroceryPage room = {room} onClick={onClose}/>
+                {/* <button className="close-button" onClick={onClose}>
                     Close
-                </button>
+                </button> */}
             </div>
         </Popup>
     );
