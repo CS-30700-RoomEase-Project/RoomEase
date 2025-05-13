@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import './NotificationBell.css';
-import bellIcon from './bell-icon.png'; 
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import Popup from 'reactjs-popup';
+import './NotificationBell.css';
+import bellIcon from './bell-icon.png';
 
 /**
  * TODO: display notifications when clicked and display a true count of notifications
@@ -81,7 +81,7 @@ const NotificationBell = () => {
                 <div className='dropdown'>
                     <button onClick={handleGoToNotifications} className='dropdownItem'>Go To Notifications</button>
                     <div className='notificationsContainer'>
-                        <h2>Notifications</h2>
+                        {/* <h2>Notifications</h2> */}
                         {loading ? (
                             <p>Loading notifications...</p>
                         ) : error ? (
