@@ -12,7 +12,7 @@ const RoomPoster = ({ roomId, position = [0, 0, 0], size = [2.4, 1.7] }) => {
   useEffect(() => {
     const fetchRoomImage = async () => {
       try {
-        const res = await fetch(`http://localhost:5001/api/room/roomImage/${roomId}`);
+        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/room/roomImage/${roomId}`);
         if (!res.ok) return console.warn("No image found for room", roomId);
         const blob = await res.blob();
         const blobUrl = URL.createObjectURL(blob);

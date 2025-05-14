@@ -64,7 +64,7 @@ function Room() {
       }
       hasCheckedWrapped.current = true;
       try {
-        const response = await fetch(`http://localhost:5001/api/room/${roomId}/check-wrapped`, {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/api/room/${roomId}/check-wrapped`, {
           method: 'POST',
         });
     
@@ -84,7 +84,7 @@ function Room() {
     const fetchRoomData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/room/getRoom?roomId=${roomId}&userId=${userData.userId}`,
+          `${process.env.REACT_APP_API_URL}/api/room/getRoom?roomId=${roomId}&userId=${userData.userId}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
@@ -121,7 +121,7 @@ function Room() {
     const fetchCosmetics = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/room/getCosmetic?roomId=${roomId}&userId=${userData.userId}`,
+          `${process.env.REACT_APP_API_URL}/api/room/getCosmetic?roomId=${roomId}&userId=${userData.userId}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },

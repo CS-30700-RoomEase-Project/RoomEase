@@ -97,7 +97,7 @@ function MasterRoom() {
     const fetchCosmetics = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/room/getCosmetic?roomId=${selectedRoomId}&userId=${userData.userId}`,
+          `${process.env.REACT_APP_API_URL}/api/room/getCosmetic?roomId=${selectedRoomId}&userId=${userData.userId}`,
           { method: 'GET', headers: { 'Content-Type': 'application/json' } }
         );
         if (!response.ok) throw new Error(`Cosmetic fetch error: ${response.status}`);
