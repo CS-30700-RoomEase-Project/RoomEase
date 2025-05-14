@@ -29,7 +29,7 @@ const GoogleSignIn = () => {
         console.log("Sending request with data:", userData);
         
         try {
-            const response = await fetch('http://localhost:5001/api/users/register', {
+            const response = await fetch(process.env.REACT_APP_API_URL + '/api/users/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(userData),
