@@ -63,7 +63,7 @@ const BillsExpenses = () => {
   useEffect(() => {
     if (roomId) {
       if (roomId === "master-room") {
-        fetch(`http://localhost:5001/api/bills/getBillsMaster/${userData.userId}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/bills/getBillsMaster/${userData.userId}`)
           .then((res) => res.json())
           .then((data) => {
             console.log("Fetched aggregated active bills data:", data);
@@ -77,7 +77,7 @@ const BillsExpenses = () => {
           })
           .catch((err) => console.error(err));
       } else {
-        fetch(`http://localhost:5001/api/bills/getBills/${roomId}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/bills/getBills/${roomId}`)
           .then((res) => res.json())
           .then((data) => {
             if (Array.isArray(data)) {
@@ -97,7 +97,7 @@ const BillsExpenses = () => {
   // Fetch room users
   useEffect(() => {
     if (roomId && roomId !== "master-room") {
-      fetch(`http://localhost:5001/api/room/getUsers/${roomId}`)
+      fetch(`${process.env.REACT_APP_API_URL}/api/room/getUsers/${roomId}`)
         .then((res) => res.json())
         .then((data) => {
           if (Array.isArray(data)) {
@@ -112,12 +112,12 @@ const BillsExpenses = () => {
 
   const fetchHistoryBills = () => {
     if (roomId === 'master-room') {
-      fetch(`http://localhost:5001/api/bills/historyMaster/${userData.userId}`)
+      fetch(`${process.env.REACT_APP_API_URL}/api/bills/historyMaster/${userData.userId}`)
         .then((res) => res.json())
         .then((data) => setHistoryBills(data))
         .catch((err) => console.error(err));
     } else {
-      fetch(`http://localhost:5001/api/bills/history/${roomId}`)
+      fetch(`${process.env.REACT_APP_API_URL}/api/bills/history/${roomId}`)
         .then((res) => res.json())
         .then((data) => setHistoryBills(data))
         .catch((err) => console.error(err));
@@ -167,7 +167,7 @@ const BillsExpenses = () => {
       splitBill: formData.splitBill,
     };
 
-    fetch(`http://localhost:5001/api/bills/addBill/${roomId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/bills/addBill/${roomId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newBill),
@@ -239,7 +239,7 @@ const BillsExpenses = () => {
       splitBill: editFormData.splitBill,
     };
 
-    fetch(`http://localhost:5001/api/bills/updateBill/${selectedBill._id}/${roomId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/bills/updateBill/${selectedBill._id}/${roomId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(updatedBill),
@@ -254,7 +254,7 @@ const BillsExpenses = () => {
 
   const handleDelete = () => {
     if (!selectedBill) return;
-    fetch(`http://localhost:5001/api/bills/deleteBill/${selectedBill._id}/${roomId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/bills/deleteBill/${selectedBill._id}/${roomId}`, {
       method: 'DELETE',
     })
       .then(() => {
@@ -267,7 +267,7 @@ const BillsExpenses = () => {
   // Recurring expense controls (active bills list only)
   const handleFinishRecurringDirect = (bill, e) => {
     if(e) e.stopPropagation();
-    fetch(`http://localhost:5001/api/bills/finishRecurring/${bill._id}/${roomId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/bills/finishRecurring/${bill._id}/${roomId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -295,7 +295,7 @@ const BillsExpenses = () => {
     console.log(bill.responsible);
     await Promise.all(
       bill.responsible.map(user =>
-        fetch(`http://localhost:5001/api/room/${roomId}/increment-task`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/room/${roomId}/increment-task`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -307,7 +307,7 @@ const BillsExpenses = () => {
         })
       )
     );
-    fetch(`http://localhost:5001/api/bills/markAsPaid/${billId}/${roomId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/bills/markAsPaid/${billId}/${roomId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -329,7 +329,7 @@ const BillsExpenses = () => {
   };
 
   const handleDeleteHistory = (billId) => {
-    fetch(`http://localhost:5001/api/bills/deleteBill/${billId}/${roomId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/bills/deleteBill/${billId}/${roomId}`, {
       method: 'DELETE',
     })
       .then(() => {
@@ -339,7 +339,7 @@ const BillsExpenses = () => {
   };
 
   const handleClearHistory = () => {
-    fetch(`http://localhost:5001/api/bills/clearHistory/${roomId}`, {
+    fetch(`${process.env.REACT_APP_API_URL}/api/bills/clearHistory/${roomId}`, {
       method: 'DELETE',
     })
       .then(() => {

@@ -71,7 +71,7 @@ const CreateRoom = ({ onClose }) => {
           if (photoFile) {
             const formData = new FormData();
             formData.append("roomImage", photoFile);
-            const photoResponse = await fetch(`http://localhost:5001/api/room/uploadRoomImage/${data.room._id}`, {
+            const photoResponse = await fetch(`${process.env.REACT_APP_API_URL}/api/room/uploadRoomImage/${data.room._id}`, {
               method: "POST",
               body: formData,
             });

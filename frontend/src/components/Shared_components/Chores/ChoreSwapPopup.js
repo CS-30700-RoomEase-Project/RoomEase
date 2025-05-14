@@ -28,7 +28,7 @@ const ChoreSwapPopup = ({ isOpen, onClose, chores, roomId }) => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await fetch(`http://localhost:5001/api/room/getMembers/${roomId}`);
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/room/getMembers/${roomId}`);
                 const data = await response.json();
 
                 const storedUser = localStorage.getItem("userData");
@@ -166,7 +166,7 @@ const ChoreSwapPopup = ({ isOpen, onClose, chores, roomId }) => {
 
                 if (!userId || !roomId) return;
 
-                const response = await fetch(`http://localhost:5001/api/chores/getUserChoreSwaps/${roomId}/${userId}`);
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chores/getUserChoreSwaps/${roomId}/${userId}`);
                 const data = await response.json();
 
                 if (response.ok) {
@@ -187,7 +187,7 @@ const ChoreSwapPopup = ({ isOpen, onClose, chores, roomId }) => {
 
     const handleAcceptSwap = async (swapRequestId) => {
         try {
-            const response = await fetch(`http://localhost:5001/api/chores/acceptSwapRequest`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chores/acceptSwapRequest`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 
