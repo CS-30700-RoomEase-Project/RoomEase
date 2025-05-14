@@ -2,7 +2,7 @@
 
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
-import React, { useState } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const GoogleSignIn = () => {
@@ -10,26 +10,28 @@ const GoogleSignIn = () => {
     '734717984588-h621pe3pomsbae2ac69qkj16fga93fvs.apps.googleusercontent.com';
   const navigate = useNavigate();
 
-  // mirror your original state
-  const [username, setName] = useState('');
-  const [userId, setId] = useState('');
-  const [email, setEmail] = useState('');
-
   const onFailure = (error) => {
     console.error('Login Failed:', error);
   };
 
-  const handleSubmit = async (userName, userId, email) => {
-    // preserve original state updates
-    setName(userName);
-    setId(userId);
-    setEmail(email);
+  // fire-and-forget overdue check
+  const checkOverdueChores = async (userId) => {
+    try {
+      const resp = await fetch(
+        `${process.env.REACT_APP_API_URL}/api/chores/checkOverdue/${userId}`,
+        { method: 'POST', headers: { 'Content-Type': 'application/json' } }
+      );
+      const body = await resp.json();
+      console.log('Overdue chores check:', body);
+    } catch (err) {
+      console.error('Error checking overdue chores:', err);
+    }
+  };
 
-    // original localStorage items
-    // localStorage.setItem('username', userName); // you can uncomment if desired
+  const handleSubmit = async (userName, userId, email) => {
+    // mirror original localStorage behavior
     localStorage.setItem('userId', userId);
     localStorage.setItem('userId2', String(userId));
-
     const userData = { username: userName, userId, email };
     console.log('Sending request with data:', userData);
 
@@ -42,37 +44,29 @@ const GoogleSignIn = () => {
           body: JSON.stringify(userData),
         }
       );
-
       const data = await response.json();
-      console.log('Response received:', data);
+      console.log('Register response:', data);
 
-      if (response.ok) {
-        // same as original: store returned userData
-        localStorage.setItem('userData', JSON.stringify(data.userData));
-
-        // fire-and-forget overdue chores
-        fetch(
-          `${process.env.REACT_APP_API_URL}/api/chores/checkOverdue/${userId}`,
-          { method: 'POST' }
-        ).catch(console.error);
-
-        // navigate right away
-        navigate('/dashboard');
-      } else {
+      if (!response.ok) {
         console.error('Error in registration:', data.message);
       }
-    } catch (error) {
-      console.error('Error in fetch request:', error);
+    } catch (err) {
+      console.error('Error in fetch request:', err);
     }
+
+    // navigate immediately
+    navigate('/dashboard');
+
+    // then kick off overdue check in background
+    checkOverdueChores(userId);
   };
 
-  // decode and invoke handleSubmit
   const onSuccess = (credentialResponse) => {
     console.log('Login Success:', credentialResponse);
 
     const token = credentialResponse.credential;
     if (!token) {
-      console.error('Credential is missing in the response');
+      console.error('Missing credential');
       return;
     }
 
@@ -86,8 +80,7 @@ const GoogleSignIn = () => {
     const userName = decoded.name;
     const email = decoded.email;
 
-    console.log('User Info:', decoded);
-
+    console.log('Decoded User:', { userId, userName, email });
     handleSubmit(userName, userId, email);
   };
 
