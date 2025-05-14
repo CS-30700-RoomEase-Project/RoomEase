@@ -20,7 +20,7 @@ export default function Clock({ onClick, enabled }) {
   useEffect(() => {
     async function fetchState() {
       if (!userId) return;
-      const res = await fetch(`http://localhost:5001/api/roomstate/queue/${userId}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/roomstate/queue/${userId}`);
       if (!res.ok) return;
       const { current } = await res.json();
       if (current) {

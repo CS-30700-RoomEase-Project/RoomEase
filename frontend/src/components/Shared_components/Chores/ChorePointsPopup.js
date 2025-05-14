@@ -22,7 +22,7 @@ const ChorePointsPopup = ({ isOpen, onClose, roomId }) => {
       try {
         // First API call: difficulty levels
         const difficultyRes = await fetch(
-          `http://localhost:5001/api/chores/getPoints/${roomId}`
+          `${process.env.REACT_APP_API_URL}/api/chores/getPoints/${roomId}`
         );
         if (!difficultyRes.ok)
           throw new Error("Failed to fetch difficulty levels");
@@ -31,7 +31,7 @@ const ChorePointsPopup = ({ isOpen, onClose, roomId }) => {
 
         // Second API call: room points
         const pointsRes = await fetch(
-          `http://localhost:5001/api/room/points/${roomId}`
+          `${process.env.REACT_APP_API_URL}/api/room/points/${roomId}`
         );
         if (!pointsRes.ok) throw new Error("Failed to fetch room points");
         const pointsData = await pointsRes.json();
@@ -56,7 +56,7 @@ const ChorePointsPopup = ({ isOpen, onClose, roomId }) => {
   const handleSubmit = async () => {
     try {
       const response = await fetch(
-        `http://localhost:5001/api/chores/putPoints/${roomId}`,
+        `${process.env.REACT_APP_API_URL}/api/chores/putPoints/${roomId}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

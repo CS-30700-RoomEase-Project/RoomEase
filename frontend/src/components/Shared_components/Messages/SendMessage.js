@@ -11,7 +11,7 @@
 //         if (message.trim()) {
 //             try {
 //                 const response = await axios.post(
-//                     `http://localhost:5001/api/groupchat/${roomId}/message`,
+//                     `${process.env.REACT_APP_API_URL}/api/groupchat/${roomId}/message`,
 //                     {
 //                         senderId,
 //                         message
@@ -84,7 +84,7 @@ const SendMessage = ({ roomId, username }) => {
       const parsedUser = JSON.parse(storedUser);
       const currentUserId = parsedUser._id;
       awardQuestPoints(currentUserId, roomId, "sendChat");
-      await axios.post(`http://localhost:5001/api/groupchat/${roomId}/message`, {
+      await axios.post(`${process.env.REACT_APP_API_URL}/api/groupchat/${roomId}/message`, {
         senderId: username,
         message: message.trim(),
       })

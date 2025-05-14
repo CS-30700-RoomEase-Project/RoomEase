@@ -28,7 +28,7 @@ function Chores() {
     const fetchChores = async () => {
         try {
             if (roomId !== "master-room") {
-                const response = await fetch(`http://localhost:5001/api/chores/getChores/${roomId}`); // Ensure API is working
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chores/getChores/${roomId}`); // Ensure API is working
                 if (!response.ok) throw new Error("Failed to fetch chores");
 
                 const data = await response.json();
@@ -40,7 +40,7 @@ function Chores() {
                 // For the aggregated (master-room) view, call get chores for all rooms
                 let totalChores = [];
                 for (const room of userData.rooms) {
-                    const response = await fetch(`http://localhost:5001/api/chores/getChores/${room._id}`);
+                    const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chores/getChores/${room._id}`);
                     if (!response.ok) continue;
 
                     let data = await response.json();
@@ -116,7 +116,7 @@ function Chores() {
         try {
             if (!chore.completed) {
                 awardQuestPoints(chore.order[chore.whoseTurn]._id, roomId, "completeChore");
-                await fetch(`http://localhost:5001/api/room/${roomId}/increment-task`, {
+                await fetch(`${process.env.REACT_APP_API_URL}/api/room/${roomId}/increment-task`, {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',
@@ -128,7 +128,7 @@ function Chores() {
                 });
                   
             }
-            const response = await fetch(`http://localhost:5001/api/chores/markComplete/${chore._id}/${roomId}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chores/markComplete/${chore._id}/${roomId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" }
             });
@@ -146,7 +146,7 @@ function Chores() {
     // Delete chore when delete button clicked
     const handleDeleteChore = async (choreId) => {
         try {
-            const response = await fetch(`http://localhost:5001/api/chores/delete/${choreId}/${roomId}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chores/delete/${choreId}/${roomId}`, {
                 method: "DELETE",
             });
     
