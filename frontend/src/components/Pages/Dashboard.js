@@ -224,7 +224,7 @@ function Dashboard() {
     formData.append("roomImage", file) // must match multer's .single('roomImage')
 
     try {
-      const response = await fetch(`http://localhost:5001/api/room/uploadRoomImage/${roomId}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/api/room/uploadRoomImage/${roomId}`, {
         method: "POST",
         body: formData,
       })

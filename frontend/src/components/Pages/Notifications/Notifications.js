@@ -20,7 +20,7 @@ function Notifications() {
 
         const fetchNotifications = async () => {
             try {
-                const response = await fetch(`http://localhost:5001/api/notifications/getNotifications/${userId}`);
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/notifications/getNotifications/${userId}`);
                 if (!response.ok) {
                     if (response.status === 404) {
                         setNotifs([]); // No notifications found, set empty array
@@ -74,7 +74,7 @@ function Notifications() {
         }
 
         try {
-            const response = await fetch(`http://localhost:5001/api/notifications/removeNotification/${userId}/${notif._id}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/notifications/removeNotification/${userId}/${notif._id}`, {
                 method: "DELETE",
             });
 
@@ -102,7 +102,7 @@ function Notifications() {
         }
 
         try {
-            const response = await fetch(`http://localhost:5001/api/notifications/clearNotifications/${userId}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/notifications/clearNotifications/${userId}`, {
                 method: "DELETE",
             });
 
