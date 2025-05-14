@@ -51,7 +51,7 @@ const ChoreCommentsPopup = ({ isOpen, onClose, chore, roomId }) => {
 
     const handleRemoveComment = async (comment) => {
         try {
-            const response = await fetch(`http://localhost:5001/api/chores/deleteComment`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chores/deleteComment`, {
                 method: 'DELETE',  // Make sure your backend supports DELETE with a body
                 headers: {
                     'Content-Type': 'application/json',

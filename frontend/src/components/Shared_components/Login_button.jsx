@@ -56,7 +56,7 @@ const GoogleSignIn = () => {
     // Function to check overdue chores
     const checkOverdueChores = async (userId) => {
         try {
-            const response = await fetch(`http://localhost:5001/api/chores/checkOverdue/${userId}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/chores/checkOverdue/${userId}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
             });

@@ -89,7 +89,7 @@ const RoomSettingsPopup = ({ isOpen, onClose }) => {
         const formData = new FormData();
         formData.append("roomImage", groupPhotoFile);
         const photoResponse = await fetch(
-          `http://localhost:5001/api/room/uploadRoomImage/${roomDataState._id}`,
+          `${process.env.REACT_APP_API_URL}/api/room/uploadRoomImage/${roomDataState._id}`,
           {
             method: "POST",
             body: formData,
@@ -115,7 +115,7 @@ const RoomSettingsPopup = ({ isOpen, onClose }) => {
     const leaveRoom = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/room/leaveRoom?roomId=${roomDataState._id}&userId=${userData.userId}`,
+          `${process.env.REACT_APP_API_URL}/api/room/leaveRoom?roomId=${roomDataState._id}&userId=${userData.userId}`,
           {
             method: "GET",
             headers: { "Content-Type": "application/json" },
