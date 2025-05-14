@@ -14,7 +14,7 @@
 //     useEffect(() => {
 //         const fetchMessages = async () => {
 //             try {
-//                 const response = await axios.get(`http://localhost:5001/api/groupchat/${roomId}/messages`);
+//                 const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/groupchat/${roomId}/messages`);
 //                 setMessages(response.data.messages);
 //             } catch (error) {
 //                 console.error("Error fetching messages:", error);
@@ -83,7 +83,7 @@ const Messages = ({ roomId }) => {
         const fetchMessages = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get(`http://localhost:5001/api/groupchat/${roomId}/messages`);
+                const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/groupchat/${roomId}/messages`);
                 setMessages(response.data.messages);
             } catch (error) {
                 console.error("Error fetching messages:", error);

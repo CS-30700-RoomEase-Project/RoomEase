@@ -78,7 +78,7 @@ function GroceryItem(props) {
       const parsedUser = JSON.parse(storedUser);
       const currentUserId = parsedUser._id;
       awardQuestPoints(currentUserId, room._id, "buyGrocery");
-      fetch(`http://localhost:5001/api/room/${room._id}/increment-task`, {
+      fetch(`${process.env.REACT_APP_API_URL}/api/room/${room._id}/increment-task`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -7,7 +7,7 @@ const RoomCard = ({ roomId }) => {
     const fetchRoomImage = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/room/roomImage/${roomId}`
+          `${process.env.REACT_APP_API_URL}/api/room/roomImage/${roomId}`
         );
         if (response.ok) {
           const blob = await response.blob();
