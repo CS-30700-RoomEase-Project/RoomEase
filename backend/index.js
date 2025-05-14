@@ -39,7 +39,6 @@ const io = new Server(server, {
 });
 
 // MongoDB connection
-ingi
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
