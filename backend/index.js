@@ -5,6 +5,10 @@ const mongoose = require("mongoose");
 const http = require("http");
 const { Server } = require("socket.io");
 
+// Load frontend URL from environment
+const FRONTEND_URL = process.env.FRONTEND_URL;
+
+// Route handlers
 const userRoutes = require("./routes/userRoutes");
 const choreRoutes = require("./routes/choreRoutes");
 const groceryRoutes = require("./routes/groceryRoutes");
@@ -16,11 +20,9 @@ const notificationRoutes = require("./routes/notificationRoutes");
 const roomRoutes = require("./routes/roomRoutes");
 const inviteRoutes = require("./routes/inviteRoutes");
 const quietHoursRoutes = require("./routes/quietHoursRoutes");
-
 const roomStateRoutes = require("./routes/stateRoutes");
-
-const ratingRoutes = require("./routes/ratingRoutes"); // ✅ NEW ROUTE
-const fetchRatingRoutes = require("./routes/ratingFetchRoutes"); // ✅ NEW ROUTE
+const ratingRoutes = require("./routes/ratingRoutes");
+const fetchRatingRoutes = require("./routes/ratingFetchRoutes");
 const rulesRoutes = require("./routes/rulesRoutes");
 const clauseRoutes = require("./routes/clauseRoutes");
 const memoryRoutes = require("./routes/memoryRoutes");
@@ -31,22 +33,29 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000", // Adjust for your frontend
+    origin: FRONTEND_URL,
     methods: ["GET", "POST", "PUT", "DELETE"],
   },
 });
 
 // MongoDB connection
+ingi
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.error("MongoDB Connection Error:", err));
 
-// Middleware
-app.use(cors());
+// Middleware: enable CORS for frontend and parse JSON
+app.use(
+  cors({
+    origin: FRONTEND_URL,
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
-// Routes
+// Register routes
 app.use("/api/chores", choreRoutes);
 app.use("/api/grocery", groceryRoutes);
 app.use("/api/notes", noteRoutes);
@@ -60,32 +69,29 @@ app.use("/api/invite", inviteRoutes);
 app.use("/api/quiethours", quietHoursRoutes);
 app.use("/api/roomstate", roomStateRoutes);
 app.use("/api/rules", rulesRoutes);
-app.use("/api/rating", ratingRoutes); // ✅ CORRECTED TO /api/rating
-app.use("/api/ratingFetch", fetchRatingRoutes); // ✅ CORRECTED TO /api/ratingFetch
-app.use("/api/disputes", disputesRoutes); // ✅ NEW ROUTE
+app.use("/api/rating", ratingRoutes);
+app.use("/api/ratingFetch", fetchRatingRoutes);
+app.use("/api/disputes", disputesRoutes);
 app.use("/api/clauses", clauseRoutes);
-// Import and pass Socket.IO to group chat routes
 const groupChatRoutes = require("./routes/groupChatRoutes")(io);
 app.use("/api/groupchat", groupChatRoutes);
 app.use("/api/memories", memoryRoutes);
 
-// Socket.IO Events
+// Socket.IO events
 io.on("connection", (socket) => {
   console.log("A user connected:", socket.id);
 
-  // Join a specific room
   socket.on("joinRoom", (roomId) => {
     socket.join(roomId);
     console.log(`User ${socket.id} joined room: ${roomId}`);
   });
 
-  // Handle user disconnection
   socket.on("disconnect", () => {
     console.log(`User ${socket.id} disconnected`);
   });
 });
 
-// Test route
+// Health check route
 app.get("/", (req, res) => {
   res.send("Express server is running");
 });
@@ -93,5 +99,5 @@ app.get("/", (req, res) => {
 // Start server
 const PORT = process.env.PORT || 5001;
 server.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });
