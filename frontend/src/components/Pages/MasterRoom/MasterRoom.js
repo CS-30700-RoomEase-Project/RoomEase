@@ -136,7 +136,7 @@ function MasterRoom() {
     const { _id: userId } = JSON.parse(localStorage.getItem('userData'));
     try {
       const response = await fetch(
-        'http://localhost:5001/api/room/purchaseDecoration',
+        process.env.REACT_APP_API_URL + '/api/room/purchaseDecoration',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -157,7 +157,7 @@ function MasterRoom() {
     const { _id: userId } = JSON.parse(localStorage.getItem('userData'));
     try {
       const response = await fetch(
-        'http://localhost:5001/api/room/toggleDecoration',
+        process.env.REACT_APP_API_URL + '/api/room/toggleDecoration',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -177,7 +177,7 @@ function MasterRoom() {
     const { _id: userId } = JSON.parse(localStorage.getItem('userData'));
     try {
       const response = await fetch(
-        'http://localhost:5001/api/room/purchaseColor',
+        process.env.REACT_APP_API_URL + '/api/room/purchaseColor',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -198,7 +198,7 @@ function MasterRoom() {
     const { _id: userId } = JSON.parse(localStorage.getItem('userData'));
     try {
       const response = await fetch(
-        'http://localhost:5001/api/room/selectColor',
+        process.env.REACT_APP_API_URL + '/api/room/selectColor',
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

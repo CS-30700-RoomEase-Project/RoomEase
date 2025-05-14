@@ -10,7 +10,7 @@ function Computer({ handleInviteClick, handleSettingsClick, roomId, roomData }) 
 
   const awardQuestPoints = async (userId, roomId, questType) => {
     try {
-        const response = await fetch('http://localhost:5001/api/room/award-quest-points', {
+        const response = await fetch(process.env.REACT_APP_API_URL + '/api/room/award-quest-points', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json', // Ensures the body is JSON
