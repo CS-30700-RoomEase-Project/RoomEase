@@ -24,7 +24,7 @@ const ChoreCommentsPopup = ({ isOpen, onClose, chore, roomId }) => {
         if (!desc.trim()) return; // Prevent empty comments
     
         try {
-            const response = await fetch('http://localhost:5001/api/chores/addComment', {
+            const response = await fetch(process.env.REACT_APP_API_URL + '/api/chores/addComment', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
