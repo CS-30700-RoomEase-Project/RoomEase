@@ -17,7 +17,7 @@ const ChorePopup = ({ isOpen, onClose, chore, roomId }) => {
     const fetchUsers = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/api/room/getMembers/${roomId}`
+          `${process.env.REACT_APP_API_URL}/api/room/getMembers/${roomId}`
         );
         const data = await response.json();
         setUsers(data);
@@ -90,7 +90,7 @@ const ChorePopup = ({ isOpen, onClose, chore, roomId }) => {
       let response;
       if (chore) {
         response = await fetch(
-          `http://localhost:5001/api/chores/updateChore/${chore._id}`,
+          `${process.env.REACT_APP_API_URL}/api/chores/updateChore/${chore._id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -99,7 +99,7 @@ const ChorePopup = ({ isOpen, onClose, chore, roomId }) => {
         );
       } else {
         response = await fetch(
-          `http://localhost:5001/api/chores/addChore/${roomId}`,
+          `${process.env.REACT_APP_API_URL}/api/chores/addChore/${roomId}`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },

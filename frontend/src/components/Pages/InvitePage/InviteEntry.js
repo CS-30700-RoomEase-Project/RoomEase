@@ -9,7 +9,7 @@ function InviteEntry({invite}) {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch(`http://localhost:5001/api/users/getUser?userId=${invite.source}`, {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/users/getUser?userId=${invite.source}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" }
             });
@@ -22,7 +22,7 @@ function InviteEntry({invite}) {
             console.log(data.message);
             setSource(data.user);
 
-            const r2 = await fetch(`http://localhost:5001/api/users/getUser?userId=${invite.reciever}`, {
+            const r2 = await fetch(`${process.env.REACT_APP_API_URL}/api/users/getUser?userId=${invite.reciever}`, {
                 method: "GET",
                 headers: { "Content-Type": "application/json" }
             });

@@ -27,7 +27,7 @@ const NotificationBell = () => {
 
         const fetchNotifications = async () => {
             try {
-                const response = await fetch(`http://localhost:5001/api/notifications/getNotifications/${userId}`);
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/notifications/getNotifications/${userId}`);
                 if (!response.ok) {
                     if (response.status === 404) {
                         setNotifs([]); // No notifications found, set empty array

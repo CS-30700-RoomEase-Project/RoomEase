@@ -16,7 +16,7 @@ export default function SubmitDispute() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`http://localhost:5001/api/disputes/queue/${roomId}`);
+      const res = await fetch(`${process.env.REACT_APP_API_URL}/api/disputes/queue/${roomId}`);
       if (!res.ok) throw new Error(res.statusText);
       const { current, next } = await res.json();
       setCurrent(current);

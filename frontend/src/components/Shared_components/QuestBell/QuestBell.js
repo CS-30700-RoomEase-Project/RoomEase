@@ -36,12 +36,12 @@ const QuestBell = () => {
             try {
                 // 🔁 Check & generate today's quests
                 if (!hasFetched.current) {
-                    await fetch(`http://localhost:5001/api/room/checkAndGenerateQuests/${userId}`, {
+                    await fetch(`${process.env.REACT_APP_API_URL}/api/room/checkAndGenerateQuests/${userId}`, {
                         method: 'POST'
                     });
                 }
 
-                const response = await fetch(`http://localhost:5001/api/room/quests-in-room?userId=${userId}&roomId=${roomId}`);
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/room/quests-in-room?userId=${userId}&roomId=${roomId}`);
                 if (!response.ok) {
                     if (response.status === 404) {
                         setQuests([]); // No quests found, set empty array

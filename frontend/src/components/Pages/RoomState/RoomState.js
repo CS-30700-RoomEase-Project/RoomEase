@@ -25,7 +25,7 @@ export default function RoomState() {
   // 1️⃣ load the 3‐slot window
   const loadQueue = useCallback(async () => {
     if (!userId) return;
-    const res = await fetch(`http://localhost:5001/api/roomstate/queue/${userId}`);
+    const res = await fetch(`${process.env.REACT_APP_API_URL}/api/roomstate/queue/${userId}`);
     if (!res.ok) return;
     const { history, current, future } = await res.json();
     setHistory(history || []);
