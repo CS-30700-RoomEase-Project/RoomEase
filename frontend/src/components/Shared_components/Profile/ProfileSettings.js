@@ -39,7 +39,7 @@ const ProfileSettings = ({ onClose }) => {
     localStorage.setItem("userData", JSON.stringify(userData));
   
     try {
-      const response = await fetch("http://localhost:5001/api/users/profile/updateProfile", {
+      const response = await fetch(process.env.REACT_APP_API_URL + "/api/users/profile/updateProfile", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),

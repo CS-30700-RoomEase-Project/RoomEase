@@ -52,7 +52,7 @@ function InvitePage() {
             // Send invite
             try {
                 console.log("userId: ", userData.userId);
-                const response = await fetch("http://localhost:5001/api/invite/sendInvite", {
+                const response = await fetch(process.env.REACT_APP_API_URL + "/api/invite/sendInvite", {
                     method: "POST",  // POST method to send data
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({

@@ -24,7 +24,7 @@ function QuietHours() {
       const userId = localStorage.getItem("userId"); // Assuming user ID is stored in localStorage
 
       // Send POST request to backend
-      const response = await fetch("http://localhost:5001/api/quiethours/addQuietHours", {
+      const response = await fetch(process.env.REACT_APP_API_URL + "/api/quiethours/addQuietHours", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

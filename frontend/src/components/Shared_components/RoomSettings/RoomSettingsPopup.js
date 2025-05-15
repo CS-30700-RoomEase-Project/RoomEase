@@ -71,7 +71,7 @@ const RoomSettingsPopup = ({ isOpen, onClose }) => {
     try {
       console.log(payload);
       const response = await fetch(
-        "http://localhost:5001/api/room/updateRoomSettings",
+        process.env.REACT_APP_API_URL + "/api/room/updateRoomSettings",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
