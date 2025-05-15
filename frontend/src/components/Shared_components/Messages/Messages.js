@@ -3,7 +3,7 @@
 // import io from "socket.io-client";
 // import styles from "./GroupChat.module.css";
 
-// const socket = io("http://localhost:5001");
+// const socket = io(process.env.REACT_APP_API_URL + "");
 
 // const slurs = ["fuck", "shit", "damn", "cunt", "retard"]; 
 
@@ -70,7 +70,7 @@ import { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import styles from "./GroupChat.module.css";
 
-const socket = io("http://localhost:5001");
+const socket = io(process.env.REACT_APP_API_URL + "");
 
 const slurs = ["fuck", "shit", "damn", "cunt", "retard", "curry muncher", "ass"]; 
 

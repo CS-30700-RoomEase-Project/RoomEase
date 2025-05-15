@@ -35,7 +35,7 @@ export default function SubmitDispute() {
 
   // 2️⃣ advance to next dispute
   const advance = async () => {
-    await fetch("http://localhost:5001/api/disputes/shift", {
+    await fetch(process.env.REACT_APP_API_URL + "/api/disputes/shift", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ roomId, direction: "right" }),
@@ -45,7 +45,7 @@ export default function SubmitDispute() {
 
   // 3️⃣ clear current → remove from queue
   const handleClear = async () => {
-    await fetch("http://localhost:5001/api/disputes/clear", {
+    await fetch(process.env.REACT_APP_API_URL + "/api/disputes/clear", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ roomId }),
@@ -57,7 +57,7 @@ export default function SubmitDispute() {
   const handleAdd = async (e) => {
     e.preventDefault();
     if (!description.trim()) return;
-    await fetch("http://localhost:5001/api/disputes/add", {
+    await fetch(process.env.REACT_APP_API_URL + "/api/disputes/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ roomId, description: description.trim() }),
