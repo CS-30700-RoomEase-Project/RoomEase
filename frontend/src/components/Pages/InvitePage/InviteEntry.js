@@ -45,7 +45,7 @@ function InviteEntry({invite}) {
         try {
             console.log(invite._id);
             console.log(invite);
-            const response = await fetch("http://localhost:5001/api/invite/deleteInvite", {
+            const response = await fetch(process.env.REACT_APP_API_URL + "/api/invite/deleteInvite", {
                 method: "DELETE",  // POST method to send data
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
