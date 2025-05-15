@@ -85,7 +85,7 @@ const RoomRate = ({ onClose }) => {
     console.log("Sending rating data:", ratingData);  // Debugging
 
     try {
-        const response = await fetch("http://localhost:5001/api/rating/updateRating", {
+        const response = await fetch(process.env.REACT_APP_API_URL + "/api/rating/updateRating", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(ratingData),

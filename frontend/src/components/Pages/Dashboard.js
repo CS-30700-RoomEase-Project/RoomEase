@@ -161,7 +161,7 @@ function Dashboard() {
   const acceptInvite = async ({ invite }) => {
     try {
       console.log("userId: ", userData.userId)
-      const response = await fetch("http://localhost:5001/api/invite/acceptInvite", {
+      const response = await fetch(process.env.REACT_APP_API_URL + "/api/invite/acceptInvite", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -190,7 +190,7 @@ function Dashboard() {
     try {
       console.log(invite._id)
       console.log(invite)
-      const response = await fetch("http://localhost:5001/api/invite/deleteInvite", {
+      const response = await fetch(process.env.REACT_APP_API_URL + "/api/invite/deleteInvite", {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

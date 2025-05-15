@@ -180,7 +180,7 @@ function Room() {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/room/purchaseColor",
+        process.env.REACT_APP_API_URL + "/api/room/purchaseColor",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -210,7 +210,7 @@ function Room() {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/api/room/selectColor",
+        process.env.REACT_APP_API_URL + "/api/room/selectColor",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -236,7 +236,7 @@ function Room() {
     const userData = JSON.parse(localStorage.getItem("userData"));
     try {
       const response = await fetch(
-        "http://localhost:5001/api/room/purchaseDecoration",
+        process.env.REACT_APP_API_URL + "/api/room/purchaseDecoration",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -257,7 +257,7 @@ function Room() {
     const userData = JSON.parse(localStorage.getItem("userData"));
     try {
       const response = await fetch(
-        "http://localhost:5001/api/room/toggleDecoration",
+        process.env.REACT_APP_API_URL + "/api/room/toggleDecoration",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -296,7 +296,7 @@ function Room() {
   const awardQuestPoints = async (userId, roomId, questType) => {
     try {
       const response = await fetch(
-        "http://localhost:5001/api/room/award-quest-points",
+        process.env.REACT_APP_API_URL + "/api/room/award-quest-points",
         {
           method: "POST",
           headers: {
