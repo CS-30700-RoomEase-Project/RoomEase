@@ -14,7 +14,7 @@ import NotesImage from "./RoomNotes.png";
 
 import RoomClausesPopup from "../../Pages/RoomClauses/RoomClauses";
 
-const API = "http://localhost:5001/api";
+const API = process.env.REACT_APP_API_URL + "/api";
 const defaultRules = ["No active rules found"];
 const defaultNotes = "No current notes";
 

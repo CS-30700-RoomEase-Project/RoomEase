@@ -1,6 +1,6 @@
 async function CallService(serviceName, data, onResponse, isNotAsync) {
 
-    const servicePath = "http://localhost:5001/api/" + serviceName;
+    const servicePath = process.env.REACT_APP_API_URL + "/api/" + serviceName;
     const options = {
         method:"POST",
         headers: {
