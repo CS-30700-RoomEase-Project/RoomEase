@@ -45,7 +45,7 @@ export default function RoomState() {
 
   // 2️⃣ manual shift
   const shiftPointer = async (direction) => {
-    await fetch("http://localhost:5001/api/roomstate/shift", {
+    await fetch(process.env.REACT_APP_API_URL + "/api/roomstate/shift", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, direction }),
@@ -55,7 +55,7 @@ export default function RoomState() {
 
   // 3️⃣ clear current → Available
   const handleClear = async () => {
-    await fetch("http://localhost:5001/api/roomstate/clear", {
+    await fetch(process.env.REACT_APP_API_URL + "/api/roomstate/clear", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId }),
@@ -78,7 +78,7 @@ export default function RoomState() {
     e.preventDefault();
     if (!request.trim()) return;
     const finalLevel = custom || level;
-    await fetch("http://localhost:5001/api/roomstate/add", {
+    await fetch(process.env.REACT_APP_API_URL + "/api/roomstate/add", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ userId, request, level: finalLevel, color }),

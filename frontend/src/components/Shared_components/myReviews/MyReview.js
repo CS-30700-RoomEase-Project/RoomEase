@@ -35,7 +35,7 @@ const MyReview = ({ isOpen, onClose }) => {
           return;
         }
 
-        const response = await fetch("http://localhost:5001/api/ratingFetch/getRating", {
+        const response = await fetch(process.env.REACT_APP_API_URL + "/api/ratingFetch/getRating", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ roomId }),
