@@ -1,126 +1,269 @@
-/* ----- Bell wrapper ----- */
 .notification-bell {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 64px;            /* larger */
-    height: 64px;
-    cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px; /* From original styling */
+  height: 64px; /* From original styling */
+  cursor: pointer;
+  /* background-color: transparent; /* Optional: if you want a specific bg */
+  /* border-radius: 50%; /* Optional: if you want it round */
+}
+
+.notification-bell .bell-icon { /* Changed from .bell-icon-img */
+  width: 100%; /* Adjust icon size within the wrapper - from original */
+  height: 100%; /* From original */
+  object-fit: contain;
+  /* filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(100%) contrast(100%); */
+  /* The filter above makes an icon white. Remove or adjust if your bellIcon.png is already styled. */
+}
+
+/* Notification count badge (Original Styling) */
+.notification-bell .notification-count { /* Changed from .notification-badge */
+  position: absolute;
+  top: 6px; /* From original */
+  right: 6px; /* From original */
+  background: linear-gradient(90deg, #8b5cf6, #6366f1); /* Accent gradient - from original */
+  color: #f8fafc; /* From original */
+  border-radius: 50%;
+  padding: 3px 7px; /* From original */
+  font-size: 0.75rem; /* From original */
+  font-weight: 600; /* From original */
+  line-height: 1;
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle border - from original */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* From original */
+  /* min-width: 20px; /* Optional: to ensure circular shape for single digits */
+  text-align: center;
+}
+
+
+/* ----- Modern Popup Styling (Kept from previous version) ----- */
+.modern-popup-content {
+  background: #1A202C;
+  color: #E2E8F0;
+  border-radius: 12px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 15px rgba(0,0,0,0.3);
+  width: 90vw;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  animation: fadeInScaleUp 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  border: 1px solid #2D3748;
+}
+
+@keyframes fadeInScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
   }
-  
-  .notification-bell .bell-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
   }
-  
-  /* Red badge */
-  .notification-bell .notification-count {
-    position: absolute;
-    top: 6px;
-    right: 6px;
-    background: #e12d39;
-    color: #fff;
-    border-radius: 50%;
-    padding: 2px 6px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    line-height: 1;
+}
+
+.popup-header {
+  padding: 16px 24px;
+  border-bottom: 1px solid #2D3748;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.popup-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #A0AEC0;
+}
+
+.popup-close-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  color: #A0AEC0;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem; /* For the 'X' text */
+  line-height: 1;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.popup-close-button:hover {
+  background-color: #2D3748;
+  color: #E2E8F0;
+}
+
+.popup-body {
+  padding: 0;
+  max-height: 60vh;
+  overflow-y: auto;
+  flex-grow: 1;
+}
+
+.popup-body::-webkit-scrollbar {
+  width: 8px;
+}
+.popup-body::-webkit-scrollbar-track {
+  background: #1A202C;
+  border-radius: 10px;
+}
+.popup-body::-webkit-scrollbar-thumb {
+  background: #4A5568;
+  border-radius: 10px;
+}
+.popup-body::-webkit-scrollbar-thumb:hover {
+  background: #718096;
+}
+
+.notifications-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 16px 24px;
+  border-bottom: 1px solid #2D3748;
+  transition: background-color 0.2s ease;
+  cursor: default;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-item:hover {
+  background-color: #2D3748;
+}
+
+.notification-item-icon {
+  margin-right: 16px;
+  color: #63B3ED;
+  font-size: 1.5rem;
+  flex-shrink: 0;
+  padding-top: 2px;
+}
+
+.notification-item-content {
+  flex-grow: 1;
+}
+
+.notification-description {
+  margin: 0 0 4px 0;
+  font-size: 0.9rem;
+  color: #CBD5E0;
+  line-height: 1.5;
+}
+
+.notification-time {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #718096;
+}
+
+.popup-message {
+  padding: 24px;
+  text-align: center;
+  font-size: 0.9rem;
+  color: #A0AEC0;
+}
+
+.popup-message.error-text {
+    color: #FC8181;
+}
+
+.popup-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #2D3748;
+  display: flex;
+  justify-content: center;
+}
+
+.popup-action-button {
+  background-color: #4299E1;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+  text-decoration: none;
+  text-align: center;
+}
+
+.popup-action-button:hover {
+  background-color: #3182CE;
+  transform: translateY(-1px);
+}
+
+.popup-action-button:active {
+  transform: translateY(0);
+}
+
+/* ----- Mobile Responsiveness for Popup (Bell trigger uses original desktop styles) ----- */
+@media (max-width: 600px) {
+  /* Note: The .notification-bell (trigger) itself does not have specific mobile styles here,
+     it will use the 64px dimensions from the original. If you want it smaller on mobile,
+     you'd add rules for .notification-bell and .notification-bell .bell-icon here.
+     For example:
+    .notification-bell {
+        width: 48px;
+        height: 48px;
+    }
+    .notification-bell .notification-count {
+        top: 2px;
+        right: 2px;
+        font-size: 0.65rem;
+        padding: 2px 5px;
+    }
+  */
+
+  .modern-popup-content {
+    width: calc(100vw - 32px);
+    max-height: 85vh;
+    margin: 16px;
   }
-  
-  /* ----- Dropdown panel ----- */
-  .dropdown {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    max-height: 60vh;
-    display: flex;
-    flex-direction: column;
-    background: #48414d;                   /* white card */
-    border-radius: 8px;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-    overflow: hidden;
-    z-index: 1000;
+
+  .popup-header h2 {
+    font-size: 1.1rem;
   }
-  
-  /* Header (Go to + title) */
-  .dropdownHeader {
-    background: #4b5563;
-    color: #48414d;
-    padding: 0.75rem 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+
+  .popup-close-button {
+    top: 8px;
+    right: 8px;
   }
-  
-  .dropdownHeader h2 {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: 600;
+
+  .notification-item {
+    padding: 12px 16px;
   }
-  
-  .dropdownHeader button {
-    background: transparent;
-    border: none;
-    color: #48414d;
-    font-size: 0.9rem;
-    cursor: pointer;
-    transition: color 0.2s ease;
+  .notification-item-icon {
+    margin-right: 12px;
+    font-size: 1.25rem;
   }
-  
-  .dropdownHeader button:hover {
-    color: #48414d;
-  }
-  
-  /* Scrollable notifications list */
-  .notificationsContainer {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0.75rem 1rem;
-    background: #411d5b;
-  }
-  
-  /* Each notification card */
-  .notificationItem {
-    background: #ffffff;
-    margin-bottom: 0.75rem;
-    padding: 0.75rem;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
+  .notification-description {
     font-size: 0.85rem;
-    line-height: 1.3;
-    color: #1f2937;
-    transition: background 0.2s ease;
   }
-  
-  .notificationItem:hover {
-    background: #f3f4f6;
+  .notification-time {
+    font-size: 0.7rem;
   }
-  
-  /* Loading / error states */
-  .errorText, .notificationsContainer p {
-    text-align: center;
-    color: #9ca3af;
-    font-size: 0.9rem;
-    margin: 0.5rem 0;
+  .popup-action-button {
+    width: 100%;
+    padding: 12px;
   }
-  
-  /* WebKit scrollbar */
-  .notificationsContainer::-webkit-scrollbar {
-    width: 6px;
-  }
-  .notificationsContainer::-webkit-scrollbar-track {
-    background: #f3f4f6;
-    border-radius: 3px;
-  }
-  .notificationsContainer::-webkit-scrollbar-thumb {
-    background: #cbd5e0;
-    border-radius: 3px;
-  }
-  .notificationsContainer::-webkit-scrollbar-thumb:hover {
-    background: #a0aec0;
-  }
-  
+}
+
+
+
+
