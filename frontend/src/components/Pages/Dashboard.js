@@ -25,6 +25,9 @@ function Dashboard() {
 
   // Update userData from localStorage on mount
   useEffect(() => {
+    document.title = "RoomEase";
+  }, []);
+  useEffect(() => {
     try {
       const data = JSON.parse(localStorage.getItem("userData")) || {}
       console.log("Updated userData:", data)

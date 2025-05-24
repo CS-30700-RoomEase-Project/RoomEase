@@ -9,7 +9,7 @@
   color: #f8fafc;
   font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden; /* Prevent horizontal scroll often caused by animations or wide elements */
   z-index: 0;
 }
 
@@ -33,7 +33,7 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 0;
+  z-index: 0; /* Ensure this is behind the navbar */
 }
 .floatingShape {
   position: absolute;
@@ -93,9 +93,9 @@
 /* Navbar / Banner */
 .navbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-between; /* This will be managed by navContent now */
   align-items: center;
-  padding: 1rem 2.5rem;
+  padding: 1rem 1.5rem;
   background: rgba(15, 10, 30, 0.8);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(99, 102, 241, 0.2);
@@ -116,27 +116,34 @@
   width: 100%;
   max-width: 1400px;
   margin: 0 auto;
+  flex-wrap: wrap; /* Allow title and navLinks to wrap if necessary */
 }
 
 .navTitle {
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 700;
-  margin: 0;
+  margin: 0; /* Default margin, adjust in media query if needed */
   background: linear-gradient(90deg, #8b5cf6, #6366f1);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.5px;
+  /* Ensure title doesn't shrink too much if space is tight, before wrapping */
+  flex-shrink: 0;
+  margin-right: 1rem; /* Add some space between title and links if they are on the same line */
 }
 
 .navLinks {
   display: flex;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1rem; /* Gap between "Features" and "Google Sign In" */
+  flex-wrap: wrap; /* Allow links themselves to wrap */
+  justify-content: flex-end; /* Align links to the right if they wrap */
 }
 
 .navLink {
   color: #e2e8f0;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
   background: transparent;
   border: none;
@@ -144,6 +151,7 @@
   padding: 0.5rem 0.75rem;
   border-radius: 0.375rem;
   transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .navLink:hover {
@@ -151,10 +159,88 @@
   background: rgba(139, 92, 246, 0.1);
 }
 
+/* NO HAMBURGER MENU ICON STYLES */
+
+/* Media Queries for Mobile Responsiveness */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+
+  .navContent {
+    /* On smaller screens, if title and links are too wide,
+       they might stack. Center them if they stack or wrap. */
+    justify-content: center; /* Center title and navLinks if they wrap */
+    gap: 0.75rem; /* Add a gap if title and navLinks stack */
+  }
+
+  .navTitle {
+    font-size: 1.25rem;
+    text-align: center; /* Center title if navContent stacks */
+    width: 100%; /* Allow title to take full width if it's on its own line */
+    margin-right: 0; /* Remove right margin if stacking */
+    margin-bottom: 0.5rem; /* Add bottom margin if links are below */
+  }
+
+  .navLinks {
+    justify-content: center; /* Center the links themselves */
+    width: 100%; /* Allow links container to take full width */
+    gap: 0.5rem; /* Reduce gap between links */
+  }
+
+  .navLink {
+    font-size: 0.85rem;
+    padding: 0.5rem 0.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .navTitle {
+    font-size: 1.1rem;
+    margin-bottom: 0.25rem; /* Further reduce margin if stacked */
+  }
+
+  /* In YourStyles.module.css or your global CSS */
+
+/* Targeting via CSS Modules if that's how your file is set up */
+.navLinks {
+  display: flex !important;
+  /* width: 300px !important; Give it an explicit large width */
+  /* height: 100px !important; Give it an explicit large height */
+  /* border: 5px solid red !important; */
+  /* background-color: yellow !important; */
+  z-index: 9999 !important; /* Bring to front */
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.navLink {
+  display: inline-block !important; /* Or block */
+  /* padding: 10px !important; */
+  /* border: 3px solid blue !important; */
+  background-color: rgb(248, 248, 248) !important;
+  color: black !important; /* Force text color */
+  width: auto !important;
+  height: auto !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  margin: 5px !important;
+}
+
+  .floatingShape {
+    filter: blur(40px);
+    opacity: 0.5;
+  }
+  .floatingShape:nth-child(1) { width: 300px; height: 300px; }
+  .floatingShape:nth-child(2) { width: 250px; height: 250px; }
+  .floatingShape:nth-child(3) { width: 200px; height: 200px; }
+  .floatingShape:nth-child(4) { width: 350px; height: 350px; }
+}
+
 /* Main Content */
 .mainContent {
   flex: 1;
-  padding: 0;
+  padding: 0; /* Keep 0, sections will handle their own padding */
   position: relative;
   z-index: 1;
   max-width: 1400px;
@@ -167,8 +253,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 4rem 2rem;
-  gap: 4rem;
+  padding: 4rem 2rem; /* Base padding */
+  gap: 4rem; /* Base gap */
 }
 
 .textContent {
@@ -177,17 +263,18 @@
 }
 
 .mainTitle {
-  font-size: 3.5rem;
+  font-size: 3.5rem; /* Base font size */
   font-weight: 800;
   line-height: 1.1;
   margin-bottom: 1.5rem;
   background: linear-gradient(90deg, #8b5cf6, #6366f1);
   -webkit-background-clip: text;
+  background-clip: text; /* Standard property */
   -webkit-text-fill-color: transparent;
 }
 
 .mainDescription {
-  font-size: 1.25rem;
+  font-size: 1.25rem; /* Base font size */
   color: #cbd5e1;
   line-height: 1.6;
   margin-bottom: 2rem;
@@ -211,6 +298,7 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+  text-align: center; /* Ensure text is centered if button becomes full width */
 }
 
 .primaryCta:hover {
@@ -218,24 +306,9 @@
   box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
 }
 
-/* Add styling for GoogleSignIn when used as primaryCta */
 .primaryCta.global {
-  background: linear-gradient(90deg, #8b5cf6, #6366f1);
-  color: white;
-  font-weight: 600;
-  font-size: 1rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
-  display: inline-block;
-}
-
-.primaryCta.global:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+  /* Styles are largely the same, ensure it behaves well when stacked */
+  display: inline-block; /* Or block if it needs to be full-width in column layout */
 }
 
 .secondaryCta {
@@ -250,7 +323,9 @@
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
+  justify-content: center; /* Center content if button becomes full width */
   gap: 0.5rem;
+  text-align: center; /* Ensure text is centered */
 }
 
 .secondaryCta:hover {
@@ -276,6 +351,7 @@
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 1rem; /* Add some horizontal padding for smaller screens */
 }
 
 .featureCard {
@@ -334,7 +410,7 @@
 }
 
 .featureIcon {
-  font-size: 2rem;
+  font-size: 2rem; /* Ensure this is an actual icon or SVG */
 }
 
 .featureCard h3 {
@@ -350,14 +426,13 @@
   margin-bottom: 1.5rem;
 }
 
-/* Remove the featureButton styles since we're not using them anymore */
 .featureButton {
   display: none;
 }
 
 /* Stats Section */
 .statsSection {
-  padding: 5rem 2rem;
+  padding: 5rem 1rem; /* Adjusted horizontal padding for mobile */
   text-align: center;
   background: rgba(15, 10, 30, 0.5);
   backdrop-filter: blur(12px);
@@ -365,11 +440,12 @@
 }
 
 .sectionTitle {
-  font-size: 2.5rem;
+  font-size: 2.5rem; /* Base font size */
   font-weight: 700;
   margin-bottom: 3rem;
   background: linear-gradient(90deg, #8b5cf6, #6366f1);
   -webkit-background-clip: text;
+  background-clip: text; /* Standard property */
   -webkit-text-fill-color: transparent;
   display: inline-block;
 }
@@ -377,7 +453,7 @@
 .statsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 2rem;
+  gap: 2rem; /* Base gap */
   max-width: 1000px;
   margin: 0 auto;
 }
@@ -396,27 +472,26 @@
 }
 
 .statNumber {
-  font-size: 3rem;
+  font-size: 3rem; /* Base font size */
   font-weight: 800;
   margin-bottom: 0.5rem;
   background: linear-gradient(90deg, #8b5cf6, #6366f1);
   -webkit-background-clip: text;
+  background-clip: text; /* Standard property */
   -webkit-text-fill-color: transparent;
 }
 
 .statLabel {
   color: #cbd5e1;
-  font-size: 1.125rem;
+  font-size: 1.125rem; /* Base font size */
   font-weight: 500;
 }
 
 /* Testimonials Section */
 .testimonialsSection {
-  padding: 5rem 2rem;
+  padding: 5rem 1rem; /* Adjusted horizontal padding for mobile */
   text-align: center;
 }
-
-/* Update the testimonial carousel styles */
 
 .testimonialCarousel {
   position: relative;
@@ -427,39 +502,45 @@
 
 .testimonialContent {
   position: relative;
-  min-height: 300px;
+  min-height: 300px; /* Or use 'auto' and manage height with content */
   background: rgba(30, 25, 50, 0.5);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(99, 102, 241, 0.2);
   border-radius: 1rem;
   padding: 2rem;
-  margin: 0 2rem;
+  margin: 0 1rem; /* Adjusted margin for smaller screens */
 }
 
 .testimonial {
   width: 100%;
   transition: opacity 0.5s ease;
-  top: 0;
-  left: 0;
-  right: 0;
+  /* Removed absolute positioning for simplicity if only one is shown at a time.
+     If you are truly cycling them in place, JS will handle visibility. */
 }
 
 .activeTestimonial {
+  /* This class would be toggled by JS to show the current testimonial */
+  /* display: block; or opacity: 1; */
   z-index: 2;
 }
+
+/* .testimonial:not(.activeTestimonial) {
+  display: none; or opacity: 0; position: absolute;
+} */
+
 
 .quoteIcon {
   position: absolute;
   top: 1rem;
   left: 1.5rem;
-  font-size: 4rem;
+  font-size: 4rem; /* Base font size */
   color: rgba(139, 92, 246, 0.2);
   font-family: serif;
   line-height: 1;
 }
 
 .quote {
-  font-size: 1.25rem;
+  font-size: 1.25rem; /* Base font size */
   line-height: 1.6;
   color: #e2e8f0;
   margin-bottom: 2rem;
@@ -479,6 +560,7 @@
   height: 50px;
   border-radius: 50%;
   background: linear-gradient(45deg, #8b5cf6, #6366f1);
+  /* If it's an <img>, add object-fit: cover; */
 }
 
 .authorName {
@@ -515,11 +597,11 @@
 }
 
 .testimonialArrow:first-of-type {
-  left: -20px;
+  left: -20px; /* Base position */
 }
 
 .testimonialArrow:last-of-type {
-  right: -20px;
+  right: -20px; /* Base position */
 }
 
 .testimonialDots {
@@ -546,7 +628,7 @@
 
 /* FAQ Section */
 .faqSection {
-  padding: 5rem 2rem;
+  padding: 5rem 1rem; /* Adjusted horizontal padding for mobile */
 }
 
 .faqList {
@@ -574,7 +656,7 @@
   background: transparent;
   border: none;
   color: #f8fafc;
-  font-size: 1.125rem;
+  font-size: 1.125rem; /* Base font size */
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -585,18 +667,22 @@
 .faqIcon {
   font-size: 1.5rem;
   color: #8b5cf6;
-  transition: all 0.3s ease;
+  transition: transform 0.3s ease; /* Animate the icon itself */
 }
+.faqItem.open .faqIcon { /* Example: if you add an 'open' class via JS */
+    transform: rotate(45deg); /* Or whatever rotation for +/- icon */
+}
+
 
 .faqAnswer {
   max-height: 0;
   overflow: hidden;
-  transition: all 0.3s ease;
+  transition: max-height 0.3s ease, padding 0.3s ease; /* Smoother transition for padding */
   padding: 0 1.25rem;
 }
 
-.faqAnswerOpen {
-  max-height: 500px;
+.faqAnswerOpen { /* This class to be toggled by JS */
+  max-height: 500px; /* Adjust as needed based on content */
   padding: 0 1.25rem 1.25rem;
 }
 
@@ -608,7 +694,7 @@
 
 /* CTA Section */
 .ctaSection {
-  padding: 5rem 2rem;
+  padding: 5rem 1rem; /* Adjusted horizontal padding for mobile */
   margin: 2rem 0;
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(99, 102, 241, 0.1));
   border-radius: 1rem;
@@ -621,14 +707,14 @@
 }
 
 .ctaContent h2 {
-  font-size: 2.5rem;
+  font-size: 2.5rem; /* Base font size */
   font-weight: 700;
   margin-bottom: 1rem;
   color: #f8fafc;
 }
 
 .ctaContent p {
-  font-size: 1.25rem;
+  font-size: 1.25rem; /* Base font size */
   color: #cbd5e1;
   margin-bottom: 2rem;
 }
@@ -638,15 +724,15 @@
   background: rgba(15, 10, 30, 0.9);
   backdrop-filter: blur(12px);
   border-top: 1px solid rgba(99, 102, 241, 0.2);
-  padding: 4rem 2rem 2rem;
+  padding: 4rem 1rem 2rem; /* Adjusted horizontal padding */
   position: relative;
   z-index: 1;
 }
 
 .footerContent {
   display: grid;
-  grid-template-columns: 1fr 2fr;
-  gap: 4rem;
+  grid-template-columns: 1fr 2fr; /* Base columns */
+  gap: 4rem; /* Base gap */
   max-width: 1200px;
   margin: 0 auto;
 }
@@ -663,6 +749,7 @@
   margin: 0;
   background: linear-gradient(90deg, #8b5cf6, #6366f1);
   -webkit-background-clip: text;
+  background-clip: text; /* Standard property */
   -webkit-text-fill-color: transparent;
 }
 
@@ -675,6 +762,8 @@
   display: flex;
   gap: 1rem;
   margin-top: 1rem;
+  flex-wrap: wrap; /* Allow icons to wrap if space is limited */
+  justify-content: flex-start; /* Align to start on mobile */
 }
 
 .socialIcon {
@@ -699,8 +788,8 @@
 
 .footerLinks {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
+  grid-template-columns: repeat(3, 1fr); /* Base columns */
+  gap: 2rem; /* Base gap */
 }
 
 .footerLinkGroup h3 {
@@ -753,89 +842,274 @@
 }
 
 /* Responsive Styles */
+
+/* Larger Mobile / Tablet Portrait */
 @media (max-width: 1024px) {
   .mainTitle {
-    font-size: 3rem;
-  }
-
-  .footerContent {
-    grid-template-columns: 1fr;
-    gap: 3rem;
-  }
-
-  .footerLinks {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    padding: 1rem;
-  }
-
-  .navLinks {
-    gap: 0.75rem;
-  }
-
-  .navLink {
-    font-size: 0.875rem;
-    padding: 0.375rem 0.5rem;
+    font-size: 3rem; /* Slightly reduced */
   }
 
   .heroSection {
-    padding: 3rem 1rem;
+    gap: 3rem;
   }
 
-  .mainTitle {
-    font-size: 2.5rem;
+  .featureCards {
+    padding: 0 1.5rem;
   }
 
-  .mainDescription {
-    font-size: 1.125rem;
+  .footerContent {
+    grid-template-columns: 1fr; /* Stack footer sections */
+    gap: 3rem;
+    text-align: center; /* Center text for stacked footer brand */
   }
-
-  .ctaButtons {
-    flex-direction: column;
-    width: 100%;
-    max-width: 300px;
-    margin: 2rem auto 0;
+  .footerBrand {
+    align-items: center; /* Center brand content */
   }
-
-  .statsGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .testimonialArrow:first-of-type {
-    left: 0;
-  }
-
-  .testimonialArrow:last-of-type {
-    right: 0;
+  .socialLinks {
+    justify-content: center; /* Center social links */
   }
 
   .footerLinks {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* More flexible footer links */
+    text-align: center; /* Center footer link group titles */
   }
+  .footerLinkGroup h3 {
+    margin-bottom: 1rem;
+  }
+  .footerLink {
+    text-align: center; /* Center individual footer links */
+  }
+  .footerLink:hover {
+    transform: translateX(0); /* Disable x-transform on hover for centered links */
+  }
+
+  /* Adjust floating shapes for tablets if needed */
+  .floatingShape:nth-child(1) { width: 300px; height: 300px; }
+  .floatingShape:nth-child(2) { width: 250px; height: 250px; left: 75%;}
+  .floatingShape:nth-child(3) { width: 200px; height: 200px; }
+  .floatingShape:nth-child(4) { width: 350px; height: 350px; left: 65%;}
 }
 
-@media (max-width: 480px) {
-  .navTitle {
-    font-size: 1.5rem;
+/* Standard Mobile */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem; /* Already good */
+  }
+  .navContent {
+    /* If using hamburger, ensure title has space */
   }
 
   .navLinks {
-    display: none;
+    /* This will be handled by your mobile menu (e.g., display: none initially, then flex for open menu) */
+    /* For example, if you have a .mobile-nav-open class on body/nav:
+    flex-direction: column;
+    position: absolute;
+    top: 100%; // Or height of navbar
+    left: 0;
+    right: 0;
+    background: rgba(15, 10, 30, 0.95); // Darker for open menu
+    padding: 1rem;
+    gap: 1rem;
+    align-items: center;
+    border-top: 1px solid rgba(99, 102, 241, 0.2);
+    */
+    gap: 0.75rem; /* If shown as is (not recommended without hamburger) */
+  }
+
+  .navLink {
+    font-size: 0.875rem; /* Already good */
+    padding: 0.375rem 0.5rem; /* Already good */
+  }
+
+  .heroSection {
+    padding: 3rem 1rem; /* Already good */
+    gap: 2rem; /* Reduce gap */
   }
 
   .mainTitle {
-    font-size: 2rem;
+    font-size: 2.5rem; /* Already good */
+  }
+
+  .mainDescription {
+    font-size: 1.125rem; /* Already good */
+    margin-bottom: 1.5rem;
+  }
+
+  .ctaButtons {
+    flex-direction: column; /* Already good */
+    width: 100%;
+    max-width: 300px; /* Already good */
+    margin: 1.5rem auto 0; /* Already good */
+  }
+  .primaryCta, .secondaryCta {
+    width: 100%; /* Make buttons full width in column layout */
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+
+  .featureCards {
+    padding: 0 1rem; /* Ensure consistent padding */
+    gap: 1.5rem;
+  }
+  .featureCard {
+    padding: 1.5rem;
+  }
+
+
+  .statsSection, .testimonialsSection, .faqSection, .ctaSection {
+    padding: 3rem 1rem; /* Reduce vertical padding for sections */
   }
 
   .statsGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Allow more flexible stat cards */
+    gap: 1rem; /* Reduce gap */
+  }
+  .statNumber {
+    font-size: 2.5rem;
+  }
+  .statLabel {
+    font-size: 1rem;
+  }
+
+  .testimonialContent {
+    margin: 0; /* Remove side margins if arrows are moved inside or removed */
+    padding: 1.5rem;
+  }
+  .quote {
+    font-size: 1.1rem;
+  }
+  .quoteIcon {
+    font-size: 3rem;
+    top: 0.5rem;
+    left: 0.5rem;
+  }
+
+  .testimonialArrow {
+    width: 35px;
+    height: 35px;
+  }
+  .testimonialArrow:first-of-type {
+    left: 5px; /* Bring arrows slightly in */
+  }
+  .testimonialArrow:last-of-type {
+    right: 5px; /* Bring arrows slightly in */
+  }
+
+  .faqQuestion {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+  .faqAnswerOpen {
+    padding: 0 1rem 1rem;
+  }
+
+
+  .ctaContent h2 {
+    font-size: 2rem;
+  }
+  .ctaContent p {
+    font-size: 1.125rem;
+  }
+
+  /* Adjust floating shapes for smaller mobiles */
+  .floatingShape {
+    opacity: 0.4; /* Reduce opacity further */
+    filter: blur(40px);
+  }
+  .floatingShape:nth-child(1) { width: 200px; height: 200px; top: 5%; left: 5%; }
+  .floatingShape:nth-child(2) { width: 180px; height: 180px; top: 70%; left: 70%;}
+  .floatingShape:nth-child(3) { display: none; } /* Hide one to reduce clutter */
+  .floatingShape:nth-child(4) { width: 220px; height: 220px; top: 25%; left: 60%;}
+
+}
+
+/* Smallest Mobile Screens */
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0.75rem 1rem;
+  }
+  .navTitle {
+    font-size: 1.5rem; /* Already good */
+  }
+
+  .hamburger-menu {
+    display: block; /* Show hamburger menu icon */
+  }
+
+  .navLinks {
+    display: none; /* Hide inline navLinks completely - rely on hamburger */
+    /* Styles for when it's OPEN would go here, toggled by JS */
+    /* e.g., position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: ... */
+  }
+
+  .heroSection {
+    padding: 2.5rem 1rem;
+    gap: 1.5rem;
+  }
+  .mainTitle {
+    font-size: 2rem; /* Already good */
+    line-height: 1.2;
+  }
+  .mainDescription {
+    font-size: 1rem;
+  }
+
+  .primaryCta, .secondaryCta {
+    font-size: 0.9rem;
+    padding: 0.6rem 1.2rem;
+  }
+
+  .featureCards {
+    grid-template-columns: 1fr; /* Ensure single column */
+  }
+
+
+  .statsGrid {
+    grid-template-columns: 1fr; /* Already good - ensure single column */
+  }
+  .statCard {
+    padding: 1rem;
   }
 
   .sectionTitle {
-    font-size: 2rem;
+    font-size: 1.75rem; /* Further reduce section titles */
+    margin-bottom: 2rem;
   }
+
+  .testimonialCarousel {
+    padding: 1rem 0;
+  }
+  .testimonialContent {
+    min-height: 250px;
+  }
+
+  .testimonialArrow { /* Optionally hide arrows if dots are enough */
+    /* display: none; */
+    transform: translateY(-50%) scale(0.9);
+  }
+   .testimonialArrow:first-of-type { left: 2px; }
+   .testimonialArrow:last-of-type { right: 2px; }
+
+
+  .footerContent {
+    gap: 2rem;
+  }
+  .footerLinks {
+    grid-template-columns: 1fr; /* Already good - ensure single column */
+    gap: 1.5rem;
+  }
+  .footerLinkGroup h3 {
+    font-size: 1rem;
+  }
+  .footerLink {
+    font-size: 0.9rem;
+  }
+  .footerBottom p {
+    font-size: 0.8rem;
+  }
+
+  /* Further simplify floating shapes or hide more */
+  .floatingShape:nth-child(1) { width: 150px; height: 150px; }
+  .floatingShape:nth-child(4) { display: none; } /* Hide another one */
 }
