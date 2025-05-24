@@ -50,6 +50,9 @@ function Room() {
   const hasCheckedWrapped = useRef(false);
 
   useEffect(() => {
+    document.title = "RoomEase";
+  }, []);
+  useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("userData"));
     setusername(userData?.username);
 

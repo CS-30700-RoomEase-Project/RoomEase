@@ -27,13 +27,13 @@ export default function RegisterPage() {
     },
     {
       quote: "The expense tracking feature saved our friendship. We always know exactly who owes what.",
-      author: "Jamie T.",
-      role: "Young Professional",
+      author: "Rev M.",
+      role: "College Studen",
     },
     {
       quote: "Setting up our apartment rules and chore schedule took minutes, and now everyone stays accountable.",
-      author: "Morgan L.",
-      role: "Graduate Student",
+      author: "Tawi B.",
+      role: "College Studen",
     },
   ]
 
@@ -125,25 +125,21 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className={styles.roomEaseContainer}>
+<div className={styles.roomEaseContainer}>
       {/* Background elements */}
       <div className={styles.backgroundElements}>
-        <div className={styles.floatingShape}></div>
-        <div className={styles.floatingShape}></div>
-        <div className={styles.floatingShape}></div>
-        <div className={styles.floatingShape}></div>
+        {/* ... floating shapes ... */}
       </div>
 
       {/* Navbar */}
       <nav className={styles.navbar}>
         <div className={styles.navContent}>
           <h1 className={styles.navTitle}>RoomEase</h1>
-          {/* 2. Remove "Pricing" and "FAQ" from the navbar and add onClick to Features */}
-          {/* Replace the navLinks div with: */}
+          {/* navLinks are now always part of the flex layout */}
           <div className={styles.navLinks}>
-            <button className={styles.navLink} onClick={scrollToFeatures}>
+            {/* <button className={styles.navLink} onClick={scrollToFeatures}>
               Features
-            </button>
+            </button> */}
             <GoogleSignIn />
           </div>
         </div>
@@ -195,7 +191,7 @@ export default function RegisterPage() {
         </div>
 
         {/* Stats Section */}
-        <div className={styles.statsSection + " " + styles.animateOnScroll} ref={statsRef}>
+        {/*<div className={styles.statsSection + " " + styles.animateOnScroll} ref={statsRef}>
           <h2 className={styles.sectionTitle}>Trusted by Roommates Everywhere</h2>
           <div className={styles.statsGrid}>
             <Counter end={10000} label="Happy Households" suffix="+" />
@@ -203,7 +199,7 @@ export default function RegisterPage() {
             <Counter end={45} label="Less Roommate Conflicts" suffix="%" />
             <Counter end={30} label="Minutes Saved Daily" />
           </div>
-        </div>
+        </div>*/}
 
         {/* Testimonials Section */}
         <div className={styles.testimonialsSection + " " + styles.animateOnScroll}>
