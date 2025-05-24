@@ -102,7 +102,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 2rem;
+  padding: 1rem 2rem; /* Base padding */
   background: rgba(15, 10, 30, 0.8);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid rgba(99, 102, 241, 0.2);
@@ -115,26 +115,31 @@
 .header {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 2rem; /* Base gap */
   position: relative;
 }
 
 .logoContainer {
   position: relative;
+  /* Ensures the glow is contained visually with the logo */
+  display: inline-flex; /* Or flex, depending on if you want it to behave like a block */
+  align-items: center;
 }
 
 .logo {
-  font-size: 1.75rem;
+  font-size: 1.75rem; /* Base font size */
   font-weight: 700;
   margin: 0;
   background: linear-gradient(90deg, #8b5cf6, #6366f1);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   letter-spacing: -0.5px;
+  position: relative; /* To ensure it's above the glow in stacking context */
+  z-index: 1;
 }
 
 .welcomeMessage {
-  font-size: 0.95rem;
+  font-size: 0.95rem; /* Base font size */
   color: #94a3b8;
 }
 
@@ -145,36 +150,109 @@
 
 .headerGlow {
   position: absolute;
-  width: 150px;
-  height: 50px;
+  width: 150px; /* Base width */
+  height: 50px; /* Base height */
   background: radial-gradient(ellipse at center, rgba(139, 92, 246, 0.4) 0%, transparent 70%);
-  filter: blur(15px);
+  filter: blur(15px); /* Base blur */
   top: 50%;
-  left: 0;
-  transform: translateY(-50%);
-  z-index: -1;
+  left: 50%; /* Center under the logo for better responsiveness */
+  transform: translate(-50%, -50%); /* Center using transform */
+  z-index: 0; /* Behind the logo text */
   animation: pulseGlow 3s infinite alternate;
 }
 
 @keyframes pulseGlow {
   0% {
     opacity: 0.5;
-    transform: translateY(-50%) scale(1);
+    transform: translate(-50%, -50%) scale(1);
   }
   100% {
     opacity: 0.8;
-    transform: translateY(-50%) scale(1.2);
+    transform: translate(-50%, -50%) scale(1.2);
   }
 }
 
 .headerActions {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1rem; /* Base gap */
   position: relative;
-  z-index: 1;
+  z-index: 1; /* Ensure actions are clickable above any potential banner-wide pseudo-elements */
 }
 
+/* --- Mobile Friendly Adjustments --- */
+
+@media (max-width: 768px) { /* Tablet and smaller */
+  .dashboardBanner {
+    flex-direction: column; /* Stack header and actions */
+    align-items: flex-start; /* Align items to the start */
+    padding: 1rem 1.5rem; /* Reduce horizontal padding */
+    gap: 1rem; /* Add gap between stacked header and actions */
+  }
+
+  .header {
+    width: 100%; /* Allow header to take full width */
+    justify-content: space-between; /* Space out logo area and welcome message if still on same line */
+    gap: 1rem; /* Reduce gap in header */
+  }
+
+  .logo {
+    font-size: 1.5rem; /* Slightly smaller logo */
+  }
+
+  .welcomeMessage {
+    font-size: 0.875rem; /* Slightly smaller welcome text */
+    text-align: right; /* If it's on the right of the logo */
+  }
+
+  .headerGlow {
+    width: 120px; /* Adjust glow size */
+    height: 40px;
+    filter: blur(12px);
+  }
+
+  .headerActions {
+    width: 100%; /* Allow actions to take full width */
+    justify-content: flex-start; /* Align actions to start, or center if preferred */
+    /* justify-content: center; */
+    gap: 0.75rem; /* Reduce gap in actions */
+    flex-wrap: wrap; /* Allow action items to wrap if they don't fit */
+  }
+}
+
+@media (max-width: 480px) { /* Smaller mobile devices */
+  .dashboardBanner {
+    padding: 0.75rem 1rem; /* Further reduce padding */
+    gap: 0.75rem; /* Further reduce gap */
+  }
+
+  .header {
+    flex-direction: column; /* Stack logo and welcome message */
+    align-items: center; /* Center logo and welcome message */
+    gap: 0.5rem; /* Reduce gap between logo and message */
+    text-align: center; /* Center text for all header items */
+  }
+
+  .logo {
+    font-size: 1.35rem; /* Even smaller logo */
+  }
+
+  .welcomeMessage {
+    font-size: 0.8rem; /* Smaller welcome message */
+    text-align: center; /* Ensure it's centered */
+  }
+
+  .headerGlow {
+    width: 100px; /* Further adjust glow */
+    height: 35px;
+    filter: blur(10px);
+  }
+
+  .headerActions {
+    justify-content: center; /* Center actions */
+    gap: 0.5rem; /* Further reduce gap for action items */
+  }
+}
 .actionButton {
   display: flex;
   align-items: center;
