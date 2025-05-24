@@ -301,7 +301,7 @@ export default function RegisterPage() {
 
       {/* Footer */}
       <footer className={styles.footer}>
-        <div className={styles.footerContent}>
+        {/* <div className={styles.footerContent}>
           <div className={styles.footerBrand}>
             <h2 className={styles.footerLogo}>RoomEase</h2>
             <p>Simplifying roommate living since 2023</p>
@@ -334,7 +334,7 @@ export default function RegisterPage() {
               <button className={styles.footerLink}>Cookie Policy</button>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className={styles.footerBottom}>
           <p>© 2025 RoomEase. All rights reserved.</p>
         </div>
